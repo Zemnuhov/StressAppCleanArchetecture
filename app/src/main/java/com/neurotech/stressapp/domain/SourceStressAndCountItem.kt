@@ -1,4 +1,4 @@
-package com.neurotech.stressapp.domain.mainScreen
+package com.neurotech.stressapp.domain
 
 import java.util.*
 
