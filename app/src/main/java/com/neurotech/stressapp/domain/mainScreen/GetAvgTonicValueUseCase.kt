@@ -1,4 +1,4 @@
-package com.neurotech.stressapp.domain
+package com.neurotech.stressapp.domain.mainScreen
 
 import androidx.lifecycle.LiveData
 
