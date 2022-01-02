@@ -3,14 +3,13 @@ package com.neurotech.stressapp.domain.repository
 import androidx.lifecycle.LiveData
 import com.neurotech.stressapp.domain.Device
 import com.neurotech.stressapp.domain.SourceStressAndCountItem
+import com.polidea.rxandroidble2.RxBleConnection
 
 interface MainFunctions {
 
     fun getAvgTonicValue(timeInterval:Long): LiveData<Int>
 
-    fun getDeviceState(): String
-
-    fun getListDevice(): LiveData<List<Device>>
+    fun getDeviceState(): LiveData<RxBleConnection.RxBleConnectionState>
 
     fun getNumberOfPeak(timeInterval:Long):LiveData<Int>
 
