@@ -1,4 +1,4 @@
-package com.neurotech.stressapp.domain.usecases
+package com.neurotech.stressapp.domain.usecases.mainfunctions
 
 import androidx.lifecycle.LiveData
 import com.neurotech.stressapp.domain.repository.MainFunctions

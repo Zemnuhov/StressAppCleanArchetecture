@@ -9,7 +9,7 @@ interface MainFunctions {
 
     fun getAvgTonicValue(timeInterval:Long): LiveData<Int>
 
-    fun getDeviceState(): LiveData<RxBleConnection.RxBleConnectionState>
+    fun getDeviceState(): LiveData<Int>
 
     fun getNumberOfPeak(timeInterval:Long):LiveData<Int>
 
@@ -22,5 +22,7 @@ interface MainFunctions {
     fun getValueForGraphTonic(): LiveData<Float>
 
     fun increaseCountSourceStressItem(sourceStressAndCountItem: SourceStressAndCountItem)
+
+    fun disconnectDevice()
 
 }

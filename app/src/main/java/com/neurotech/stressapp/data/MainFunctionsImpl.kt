@@ -1,5 +1,6 @@
 package com.neurotech.stressapp.data
 
+import android.util.Log
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.LiveDataReactiveStreams
@@ -23,11 +24,8 @@ import javax.inject.Inject
 class MainFunctionsImpl: MainFunctions {
 
     @Inject
-    lateinit var device: RxBleDevice
-    @Inject
-    lateinit var connection: Observable<RxBleConnection>
-
-
+    lateinit var bleConnection: BleConnection
+    var tonicValue = MutableLiveData<Int>()
 
     init {
         Singleton.daggerComponent.inject(this)
@@ -37,9 +35,8 @@ class MainFunctionsImpl: MainFunctions {
         TODO("Not yet implemented")
     }
 
-    override fun getDeviceState(): LiveData<RxBleConnection.RxBleConnectionState> {
-        return LiveDataReactiveStreams.fromPublisher(device.observeConnectionStateChanges().toFlowable(
-            BackpressureStrategy.BUFFER))
+    override fun getDeviceState(): LiveData<Int> {
+        TODO("Not yet implemented")
     }
 
 
@@ -52,14 +49,10 @@ class MainFunctionsImpl: MainFunctions {
     }
 
     override fun getTonicValue(): LiveData<Int> {
-        return LiveDataReactiveStreams.fromPublisher {
-            connection
-                .subscribeOn(Schedulers.computation())
-                .flatMap { rxBleConnection -> rxBleConnection.setupNotification(BleService.notificationDataUUID) }
-                .flatMap { it }
-                .map { ByteBuffer.wrap(it).int }
-                .subscribe()
+        val disposable = bleConnection.tonicValueObservable.subscribe{
+            tonicValue.postValue(it)
         }
+        return tonicValue
     }
 
     override fun getValueForGraphPhase(): LiveData<Float> {
@@ -72,5 +65,9 @@ class MainFunctionsImpl: MainFunctions {
 
     override fun increaseCountSourceStressItem(sourceStressAndCountItem: SourceStressAndCountItem) {
         TODO("Not yet implemented")
+    }
+
+    override fun disconnectDevice() {
+        bleConnection.disconnectDevice()
     }
 }

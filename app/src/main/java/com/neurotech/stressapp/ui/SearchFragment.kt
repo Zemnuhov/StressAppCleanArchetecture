@@ -1,5 +1,6 @@
 package com.neurotech.stressapp.ui
 
+import android.bluetooth.BluetoothGatt
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,18 +13,23 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.neurotech.stressapp.R
+import com.neurotech.stressapp.Singleton
+import com.neurotech.stressapp.data.BleConnection
+import com.neurotech.stressapp.ui.adapter.SearchCardAdapter
 import com.neurotech.stressapp.ui.viewmodel.SearchFragmentViewModel
+import com.polidea.rxandroidble2.RxBleConnection
 
-class SearchFragment:Fragment() {
+class SearchFragment : Fragment() {
 
-    lateinit var searchView: View
-    companion object{
+    private lateinit var searchView: View
+
+    companion object {
         lateinit var viewModel: SearchFragmentViewModel
     }
 
-    lateinit var swipeRefresher: SwipeRefreshLayout
-    lateinit var recyclerView: RecyclerView
-    lateinit var progressBar: ProgressBar
+    private lateinit var swipeRefresher: SwipeRefreshLayout
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var progressBar: ProgressBar
 
 
     override fun onCreateView(
@@ -31,14 +37,17 @@ class SearchFragment:Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        searchView = inflater.inflate(R.layout.search_fragment,container,false)
+        searchView = inflater.inflate(R.layout.search_fragment, container, false)
         viewModel = ViewModelProvider(this)[SearchFragmentViewModel::class.java]
         initView()
         setObservers()
+        setListeners()
         return searchView
     }
 
-    private fun initView(){
+    private fun initView() {
+        (context as MainActivity).appMenu.findItem(R.id.menu_search).isVisible = true
+        (context as MainActivity).appMenu.findItem(R.id.disconnect_device).isVisible = false
         swipeRefresher = searchView.findViewById(R.id.refresh_list_device)
         recyclerView = searchView.findViewById(R.id.recycler_view_list)
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -47,21 +56,40 @@ class SearchFragment:Fragment() {
         progressBar.visibility = View.GONE
     }
 
-    private fun setObservers(){
+    private fun setListeners() {
         swipeRefresher.setOnRefreshListener {
-            viewModel.deviceList.observe(viewLifecycleOwner){
-                recyclerView.adapter = SearchCardAdapter(it)
-            }
+            viewModel.searchDevice()
         }
-        viewModel.searchState.observe(viewLifecycleOwner){
-            if(!it){
-                progressBar.visibility = View.GONE
-                swipeRefresher.isRefreshing = false
 
+        (context as MainActivity).appMenu.findItem(R.id.menu_search).setOnMenuItemClickListener {
+            viewModel.searchDevice()
+            return@setOnMenuItemClickListener false
+        }
+    }
+
+    private fun setObservers() {
+        viewModel.searchState.observe(viewLifecycleOwner) {
+            swipeRefresher.isRefreshing = it
+        }
+        viewModel.deviceList.observe(viewLifecycleOwner) {
+            recyclerView.adapter = SearchCardAdapter(it)
+        }
+        viewModel.deviceState.observe(viewLifecycleOwner) {
+            Log.e("DS", it.toString())
+            when (it) {
+                BleConnection.CONNECTING -> progressBar.visibility = View.VISIBLE
+                BleConnection.CONNECTED -> {
+                    progressBar.visibility = View.GONE
+                    Singleton.showFragment(MainFragment(), "base")
+                    Singleton.fragmentManager.beginTransaction().remove(this).commit()
+                }
+                else -> progressBar.visibility = View.GONE
             }
         }
-        viewModel.deviceState.observe(viewLifecycleOwner){
-            Log.e("ConnectState",it.toString())
-        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel
     }
 }

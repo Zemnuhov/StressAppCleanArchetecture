@@ -1,14 +1,14 @@
-package com.neurotech.stressapp.ui
+package com.neurotech.stressapp.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.neurotech.stressapp.R
 import com.neurotech.stressapp.domain.Device
+import com.neurotech.stressapp.ui.SearchFragment
 import com.neurotech.stressapp.ui.viewmodel.SearchFragmentViewModel
 
 class SearchCardAdapter(private val devices: List<Device>): RecyclerView.Adapter<SearchCardAdapter.Companion.CardViewHolder>() {

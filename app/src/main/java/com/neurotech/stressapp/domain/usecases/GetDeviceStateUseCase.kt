@@ -6,7 +6,7 @@ import com.neurotech.stressapp.domain.repository.MainFunctions
 import com.polidea.rxandroidble2.RxBleConnection
 
 class GetDeviceStateUseCase(private val connectionRepository: ConnectionRepository) {
-    fun getDeviceState(): LiveData<RxBleConnection.RxBleConnectionState> {
+    fun getDeviceState(): LiveData<String> {
         return connectionRepository.getDeviceState()
     }
 }

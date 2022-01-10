@@ -41,6 +41,7 @@ dependencies {
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
     //RxAndroidBLE
     implementation "com.polidea.rxandroidble2:rxandroidble:1.13.1"
+    implementation 'com.jakewharton.rx2:replaying-share:2.2.0'
 
     implementation 'com.google.dagger:dagger:2.35.1'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
