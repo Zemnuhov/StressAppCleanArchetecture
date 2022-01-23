@@ -6,8 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.neurotech.stressapp.App
 import com.neurotech.stressapp.R
 import com.neurotech.stressapp.Singleton
-import com.neurotech.stressapp.data.BleConnection
-import com.polidea.rxandroidble2.RxBleConnection
+import com.neurotech.stressapp.data.ble.BleConnection
+import com.neurotech.stressapp.ui.fragment.MainFragment
+import com.neurotech.stressapp.ui.fragment.SearchFragment
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {

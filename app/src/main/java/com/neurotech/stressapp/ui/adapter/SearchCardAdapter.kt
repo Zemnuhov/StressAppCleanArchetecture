@@ -8,7 +8,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.neurotech.stressapp.R
 import com.neurotech.stressapp.domain.Device
-import com.neurotech.stressapp.ui.SearchFragment
+import com.neurotech.stressapp.ui.fragment.SearchFragment
 import com.neurotech.stressapp.ui.viewmodel.SearchFragmentViewModel
 
 class SearchCardAdapter(private val devices: List<Device>): RecyclerView.Adapter<SearchCardAdapter.Companion.CardViewHolder>() {

@@ -1,18 +1,19 @@
 package com.neurotech.stressapp.dagger
 
-import com.neurotech.stressapp.Singleton.context
-import com.neurotech.stressapp.data.BleConnection
-import com.neurotech.stressapp.data.ConnectionRepositoryImpl
-import com.neurotech.stressapp.data.MainFunctionsImpl
-import com.neurotech.stressapp.data.spsettings.SettingsApi
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import com.neurotech.stressapp.data.ble.BleConnection
+import com.neurotech.stressapp.data.database.AppDatabase
+import com.neurotech.stressapp.data.implementations.ConnectionRepositoryImpl
+import com.neurotech.stressapp.data.implementations.GraphRepositoryImpl
+import com.neurotech.stressapp.data.implementations.MainFunctionsImpl
+import com.neurotech.stressapp.data.implementations.TonicCaseRepositoryImpl
 import com.neurotech.stressapp.domain.repository.ConnectionRepository
+import com.neurotech.stressapp.domain.repository.GraphRepository
 import com.neurotech.stressapp.domain.repository.MainFunctions
-import com.polidea.rxandroidble2.RxBleClient
-import com.polidea.rxandroidble2.RxBleConnection
-import com.polidea.rxandroidble2.RxBleDevice
+import com.neurotech.stressapp.domain.repository.TonicCaseRepository
 import dagger.Module
 import dagger.Provides
-import io.reactivex.Observable
 import javax.inject.Singleton
 
 
@@ -20,20 +21,17 @@ import javax.inject.Singleton
 class DaggerModule{
     @Provides
     @Singleton
-    fun getConnectionRepository(): ConnectionRepository{
-        return ConnectionRepositoryImpl()
-    }
-
-    @Provides
-    @Singleton
-    fun getMainFunctionsRepository(): MainFunctions{
-        return MainFunctionsImpl()
-    }
-
-    @Provides
-    @Singleton
-    fun getBleConnection(): BleConnection{
+    fun provideBleConnection(): BleConnection {
         return BleConnection()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDataBase(): AppDatabase {
+        return Room.databaseBuilder(
+            com.neurotech.stressapp.Singleton.context,
+            AppDatabase::class.java, "stress_database"
+        ).build()
     }
 }
 

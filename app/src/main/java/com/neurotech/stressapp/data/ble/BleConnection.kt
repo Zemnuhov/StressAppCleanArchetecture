@@ -1,4 +1,4 @@
-package com.neurotech.stressapp.data
+package com.neurotech.stressapp.data.ble
 
 import android.util.Log
 import com.jakewharton.rx.ReplayingShare
@@ -15,6 +15,8 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import java.nio.ByteBuffer
+import java.util.*
+import kotlin.collections.HashMap
 
 
 class BleConnection {
@@ -24,8 +26,8 @@ class BleConnection {
     var connectionState = DISCONNECTED
 
     val connectionStateObservable: PublishSubject<String> = PublishSubject.create()
-    val tonicValueObservable: PublishSubject<Int> = PublishSubject.create()
-    val phaseValueObservable: PublishSubject<Double> = PublishSubject.create()
+    val tonicValueObservable: PublishSubject<HashMap<String,Any>> = PublishSubject.create()
+    val phaseValueObservable: PublishSubject<HashMap<String,Any>> = PublishSubject.create()
     private val disconnectObservable: PublishSubject<Boolean> = PublishSubject.create()
 
     private var compositeDisposable = CompositeDisposable()
@@ -110,7 +112,7 @@ class BleConnection {
 
     private fun tonicValue() {
         val kalmanFilter = KalmanFilter(0.0, 0.1)
-        val expRunningAverage = ExpRunningAverage()
+        val expRunningAverage = ExpRunningAverage(0.01)
         compositeDisposable.add( connection!!
             .subscribeOn(Schedulers.computation())
             .flatMap { rxBleConnection -> rxBleConnection.setupNotification(BleService.notificationDataUUID) }
@@ -120,7 +122,7 @@ class BleConnection {
             .map { kalmanFilter.correct(it) }
             .map { expRunningAverage.filter(it).toInt() }
             .subscribe(
-                { tonicValueObservable.onNext(it) },
+                { tonicValueObservable.onNext(hashMapOf("value" to it, "time" to Date())) },
                 { Log.e("BleConTonic", it.toString()) }
             )
         )
@@ -129,17 +131,19 @@ class BleConnection {
 
     private fun phaseValue() {
         val kalmanFilter = KalmanFilter(0.0, 0.1)
-        val expRunningAverage = ExpRunningAverage()
+        val expRunningAverage = ExpRunningAverage(0.01)
+        val expRunningAverageTonic = ExpRunningAverage(0.1)
         compositeDisposable.add(connection!!
             .flatMap { rxBleConnection -> rxBleConnection.setupNotification(BleService.notificationDataUUID) }
             .flatMap { it }
             .map { ByteBuffer.wrap(it).int }
             .map { valueConverter.rangeConvert(it) }
+            .map { expRunningAverageTonic.filter(it).toInt() }
             .map { valueConverter.toPhaseValue(it) }
             .map { kalmanFilter.correct(it) }
             .map { expRunningAverage.filter(it) }
             .subscribe(
-                { phaseValueObservable.onNext(it) },
+                { phaseValueObservable.onNext(hashMapOf("value" to it, "time" to Date())) },
                 { Log.e("BleConPhase", it.toString()) }
             )
         )

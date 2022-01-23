@@ -3,13 +3,21 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/drawable/ic_baseline_settings_24.xml" value="0.21927083333333333" />
+        <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/drawable/ic_baseline_stop_24.xml" value="0.21927083333333333" />
+        <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/drawable/ic_baseline_swap_horizontal_circle_24.xml" value="0.21927083333333333" />
         <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/drawable/shadow.xml" value="0.23541666666666666" />
         <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/layout/activity_main.xml" value="0.21927083333333333" />
+        <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/layout/main_avg_current_value.xml" value="0.33" />
+        <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/layout/main_custom_scale.xml" value="0.19166666666666668" />
+        <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/layout/main_fragment.xml" value="0.19166666666666668" />
+        <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/layout/main_number_of_peaks.xml" value="0.3625" />
+        <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/layout/main_phasic_graph_layout.xml" value="0.203125" />
+        <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/layout/main_statistic_lable.xml" value="0.203125" />
+        <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/layout/main_statistic_lable_source.xml" value="0.203125" />
         <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/layout/search_card_item.xml" value="0.35833333333333334" />
         <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/layout/search_fragment.xml" value="0.21927083333333333" />
-        <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressAppCleanArchetecture/app/src/main/res/layout/main_fragment.xml" value="0.3625" />
-        <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressAppCleanArchetecture/app/src/main/res/layout/search_card_item.xml" value="0.25833333333333336" />
-        <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressAppCleanArchetecture/app/src/main/res/menu/app_menu.xml" value="0.1890625" />
+        <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/layout/tonic_scale.xml" value="0.19895833333333332" />
       </map>
     </option>
   </component>

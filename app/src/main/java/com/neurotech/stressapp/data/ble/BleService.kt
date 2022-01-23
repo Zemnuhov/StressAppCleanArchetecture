@@ -1,15 +1,17 @@
-package com.neurotech.stressapp.data
+package com.neurotech.stressapp.data.ble
 
 import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import android.util.Log
+import com.cesarferreira.tempo.*
 import com.neurotech.stressapp.App
 import com.neurotech.stressapp.Singleton
+import com.neurotech.stressapp.data.database.AppDatabase
+import com.neurotech.stressapp.data.database.entity.TonicEntity
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import java.nio.ByteBuffer
 import java.util.*
 import javax.inject.Inject
 
@@ -17,8 +19,12 @@ class BleService : Service() {
 
     @Inject
     lateinit var bleConnection: BleConnection
+    @Inject
+    lateinit var dataBase: AppDatabase
 
-    val compositeDisposable = CompositeDisposable()
+    private val compositeDisposable = CompositeDisposable()
+
+    private var lastInsertDatabase = Tempo.now
 
     companion object {
         //--------------Device UUID--------------//
@@ -51,10 +57,17 @@ class BleService : Service() {
                     if (Singleton.DEBUG) {
                         Log.i("ServiceDataTonic", it.toString())
                     }
+                    if(Tempo.now-30.seconds>lastInsertDatabase){
+                        lastInsertDatabase = Tempo.now
+                        val time = Tempo.now.toString("yyyy-MM-dd HH:mm:ss.SSS")
+                        dataBase.tonicDao().insertTonicValue(TonicEntity(time,it["value"] as Int))
+                    }
+
                 },
                 {
                     Log.e("ServiceDataTonic", it.toString())
                 }
+
             ))
     }
 

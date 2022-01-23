@@ -1,7 +1,6 @@
 package com.neurotech.stressapp.data.filters
 
-class ExpRunningAverage {
-    var k = 0.1 // коэффициент фильтрации, 0.0-1.0
+class ExpRunningAverage(private val k: Double) {
     var filVal = 0.0
 
     public fun filter(newVal: Int): Double {

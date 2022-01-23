@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
+    <color name="primary">#ffccbc</color>
+    <color name="primary_light">#ABFF6B3D</color>
+    <color name="primary_dark">#cb9b8c</color>
+    <color name="secondary">#ffab91</color>
+    <color name="secondary_light">#ffddc1</color>
+    <color name="secondary_dark">#c97b63</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="green_not_active">#dcedc8</color>
+    <color name="green_active">#81c784</color>
+    <color name="yellow_not_active">#fff9c4</color>
+    <color name="yellow_active">#ffee58</color>
+    <color name="red_not_active">#ffccbc</color>
+    <color name="red_active">#ff7043</color>
+
+    <color name="pie_chart_user1">#ff7043</color>
+    <color name="pie_chart_user2">#ffa270</color>
 </resources>

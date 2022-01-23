@@ -1,6 +1,5 @@
-package com.neurotech.stressapp.ui
+package com.neurotech.stressapp.ui.fragment
 
-import android.bluetooth.BluetoothGatt
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,10 +13,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.neurotech.stressapp.R
 import com.neurotech.stressapp.Singleton
-import com.neurotech.stressapp.data.BleConnection
+import com.neurotech.stressapp.data.ble.BleConnection
+import com.neurotech.stressapp.ui.MainActivity
 import com.neurotech.stressapp.ui.adapter.SearchCardAdapter
 import com.neurotech.stressapp.ui.viewmodel.SearchFragmentViewModel
-import com.polidea.rxandroidble2.RxBleConnection
 
 class SearchFragment : Fragment() {
 

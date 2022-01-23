@@ -9,10 +9,13 @@ import io.reactivex.subjects.PublishSubject
 
 @SuppressLint("StaticFieldLeak")
 object Singleton {
-    const val DEBUG = true
+    const val DEBUG = false
     lateinit var context: Context
     lateinit var daggerComponent: DaggerComponent
     lateinit var fragmentManager:FragmentManager
+    const val TEN_MINUTE = "TEN_MINUTE"
+    const val HOUR = "HOUR"
+    const val DAY = "DAY"
 
 
     fun showFragment(fragment: Fragment, backStack: String) {

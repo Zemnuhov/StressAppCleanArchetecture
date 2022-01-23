@@ -34,6 +34,15 @@ android {
 
 dependencies {
 
+    implementation 'com.github.cesarferreira:tempo:0.7.0'
+
+
+    def room_version = "2.4.1"
+
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-rxjava2:$room_version"
+
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
 
     //RxJava
@@ -42,6 +51,9 @@ dependencies {
     //RxAndroidBLE
     implementation "com.polidea.rxandroidble2:rxandroidble:1.13.1"
     implementation 'com.jakewharton.rx2:replaying-share:2.2.0'
+
+    implementation 'com.jjoe64:graphview:4.2.2'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
     implementation 'com.google.dagger:dagger:2.35.1'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'

@@ -11,7 +11,7 @@ class ValueConverter {
     fun toPhaseValue(value: Int): Int{
         val result = value - previousValue
         previousValue = value
-        return value
+        return result
     }
 
 

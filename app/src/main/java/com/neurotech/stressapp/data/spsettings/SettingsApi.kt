@@ -14,7 +14,12 @@ class SettingsApi {
     }
 
     fun getThreshold(): Double {
-        return settingsModel.getSettings(settingsModel.THRESHOLD_TAG)!!.toDouble()
+        var threshold = settingsModel.getSettings(settingsModel.THRESHOLD_TAG)
+
+        return when(threshold){
+            is String -> threshold.toDouble()
+            else -> 1.25
+        }
     }
 
     fun setThreshold(value: Double) {

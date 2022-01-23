@@ -17,7 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StressApp">
         <service
-            android:name=".data.BleService" />
+            android:name=".data.ble.BleService" />
 
         <activity
             android:name=".ui.MainActivity"

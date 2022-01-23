@@ -1,4 +1,4 @@
-package com.neurotech.stressapp.data
+package com.neurotech.stressapp.data.implementations
 
 import android.content.ComponentName
 import android.content.Context
@@ -10,6 +10,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.neurotech.stressapp.Singleton
 import com.neurotech.stressapp.Singleton.context
+import com.neurotech.stressapp.data.ble.BleConnection
+import com.neurotech.stressapp.data.ble.BleService
 import com.neurotech.stressapp.data.spsettings.SettingsApi
 import com.neurotech.stressapp.domain.Device
 import com.neurotech.stressapp.domain.repository.ConnectionRepository
@@ -99,7 +101,14 @@ class ConnectionRepositoryImpl : ConnectionRepository {
             .subscribeOn(Schedulers.computation())
             .subscribe(
                 {
-                    deviceSet.add(Device(it.bleDevice.name ?: "No name", it.bleDevice.macAddress))
+                    if(it.bleDevice.name!=null) {
+                        deviceSet.add(
+                            Device(
+                                it.bleDevice.name!!,
+                                it.bleDevice.macAddress
+                            )
+                        )
+                    }
                     if (deviceSet.size > deviceSetLiveData.value!!.size) {
                         deviceSetLiveData.postValue(deviceSet.toList())
                     }
