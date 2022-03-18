@@ -4,48 +4,56 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.neurotech.stressapp.R
+import com.neurotech.stressapp.Singleton
+import com.neurotech.stressapp.databinding.ItemMainTonicBinding
 import com.neurotech.stressapp.ui.viewmodel.TonicItemFragmentViewModel
 
 
 class TonicItemFragment : Fragment() {
+    private var _binding: ItemMainTonicBinding? = null
+    private val binding  get() = _binding!!
 
     private lateinit var viewModel: TonicItemFragmentViewModel
-    private lateinit var tonicValueEditText: TextView
-    private lateinit var tonicAvgValueEditText: TextView
-    lateinit var scale: ScaleView
+    private val timeInterval = arrayOf(Singleton.TEN_MINUTE,Singleton.HOUR,Singleton.DAY)
+    private var indexInterval = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val tonicItemView = inflater.inflate(R.layout.main_avg_current_value,container,false)
-        viewModel = ViewModelProvider(this)[TonicItemFragmentViewModel::class.java]
-        initView(tonicItemView)
-        setObserves()
-        return tonicItemView
+        _binding = ItemMainTonicBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    private fun initView(view: View){
-        tonicValueEditText = view.findViewById(R.id.current_value)
-        tonicAvgValueEditText = view.findViewById(R.id.avg_value)
-        scale = ScaleView()
-        childFragmentManager.beginTransaction()
-            .replace(R.id.scale_fragment, scale)
-            .commit()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider(this)[TonicItemFragmentViewModel::class.java]
+        initView()
+        setObserves()
+    }
+
+    private fun initView(){
+        binding.timeRangeTonic.text = timeInterval[indexInterval]
+        binding.timeRangeTonic.setOnClickListener {
+            indexInterval++
+            if(indexInterval == 3){
+                indexInterval = 0
+            }
+            binding.timeRangeTonic.text = timeInterval[indexInterval]
+            viewModel.setInterval(timeInterval[indexInterval])
+        }
     }
 
     private fun setObserves(){
         viewModel.tonicValue.observe(viewLifecycleOwner){
-            tonicValueEditText.text = it.toString()
-            scale.setScale(it)
+            binding.currentValue.text = it.toString()
+            binding.scale.value = it
         }
         viewModel.avgTonic.observe(viewLifecycleOwner){
-            tonicAvgValueEditText.text = it.toString()
+            binding.avgValue.text = it.toString()
         }
 
     }

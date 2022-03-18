@@ -12,16 +12,9 @@ object Singleton {
     const val DEBUG = false
     lateinit var context: Context
     lateinit var daggerComponent: DaggerComponent
-    lateinit var fragmentManager:FragmentManager
-    const val TEN_MINUTE = "TEN_MINUTE"
-    const val HOUR = "HOUR"
-    const val DAY = "DAY"
+    const val TEN_MINUTE = "10М"
+    const val HOUR = "1Ч"
+    const val DAY = "1Д"
 
 
-    fun showFragment(fragment: Fragment, backStack: String) {
-        fragmentManager.beginTransaction()
-            .replace(R.id.container, fragment)
-            .addToBackStack(backStack)
-            .commit()
-    }
 }

@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">StressApp</string>
+    <string name="sources">Источники стресса</string>
+    <string name="day_schedule">Разметка дня</string>
+    <string name="input_source">Введите источник</string>
+    <string name="add">Добавить</string>
 </resources>

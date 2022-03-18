@@ -11,7 +11,6 @@ class MainFunctionsImpl: MainFunctions {
 
     @Inject
     lateinit var bleConnection: BleConnection
-    var tonicValue = MutableLiveData<Int>()
 
     init {
         Singleton.daggerComponent.inject(this)

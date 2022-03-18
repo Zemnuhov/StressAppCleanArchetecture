@@ -29,12 +29,12 @@ class ConnectionRepositoryImpl : ConnectionRepository {
     private var deviceSet = hashSetOf<Device>()
     private var deviceSetLiveData = MutableLiveData<List<Device>>()
     lateinit var bleService: BleService
-    lateinit var searchDisposable: Disposable
+    private lateinit var searchDisposable: Disposable
     private var searchState = MutableLiveData<Boolean>()
     private var connectionState = MutableLiveData<String>()
     private var isConnectedService = false
     private val compositeDisposable = CompositeDisposable()
-    var previousDevice = ""
+    private var previousDevice = ""
     private val serviceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             val binder = service as BleService.LocalBinder

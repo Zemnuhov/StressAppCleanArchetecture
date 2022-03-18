@@ -7,6 +7,7 @@ import com.neurotech.stressapp.data.ble.BleConnection
 import com.neurotech.stressapp.data.database.AppDatabase
 import com.neurotech.stressapp.domain.repository.TonicCaseRepository
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class TonicCaseRepositoryImpl : TonicCaseRepository {
@@ -19,7 +20,7 @@ class TonicCaseRepositoryImpl : TonicCaseRepository {
     private val tonicValue = MutableLiveData<Int>()
     private val avgTonic = MutableLiveData<Int>()
     private val tonicDisposable = CompositeDisposable()
-    private val dataBaseDisposable = CompositeDisposable()
+    private var dataBaseJob: Job = Job()
 
     init {
         Singleton.daggerComponent.inject(this)
@@ -40,31 +41,41 @@ class TonicCaseRepositoryImpl : TonicCaseRepository {
     override fun setInterval(interval: String) {
         when (interval) {
             Singleton.TEN_MINUTE -> {
-                dataBaseDisposable.clear()
-                dataBaseDisposable.add(dataBase.tonicDao()
-                    .getTenMinuteAvg()
-                    .subscribe {
-                        avgTonic.postValue(it)
+                dataBaseJob.cancel()
+                dataBaseJob = CoroutineScope(Dispatchers.IO).launch {
+                    dataBase.tonicDao().getTenMinuteAvgFlow().collect{
+                        if(it != null){
+                            avgTonic.postValue(it)
+                        }else{
+                            avgTonic.postValue(0)
+                        }
+
                     }
-                )
+                }
             }
             Singleton.HOUR -> {
-                dataBaseDisposable.clear()
-                dataBaseDisposable.add(dataBase.tonicDao()
-                    .getOneHourAvg()
-                    .subscribe {
-                        avgTonic.postValue(it)
+                dataBaseJob.cancel()
+                dataBaseJob = CoroutineScope(Dispatchers.IO).launch {
+                    dataBase.tonicDao().getOneHourAvgFlow().collect{
+                        if(it != null){
+                            avgTonic.postValue(it)
+                        }else{
+                            avgTonic.postValue(0)
+                        }
                     }
-                )
+                }
             }
             Singleton.DAY -> {
-                dataBaseDisposable.clear()
-                dataBaseDisposable.add(dataBase.tonicDao()
-                    .getOneDayAvg()
-                    .subscribe {
-                        avgTonic.postValue(it)
+                dataBaseJob.cancel()
+                dataBaseJob = CoroutineScope(Dispatchers.IO).launch {
+                    dataBase.tonicDao().getOneDayAvgFlow().collect{
+                        if(it != null){
+                            avgTonic.postValue(it)
+                        }else{
+                            avgTonic.postValue(0)
+                        }
                     }
-                )
+                }
             }
         }
     }

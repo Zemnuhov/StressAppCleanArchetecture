@@ -7,8 +7,10 @@ import androidx.room.PrimaryKey
 @Entity
 data class PeakEntity(
     @PrimaryKey
-    @ColumnInfo(name = "time")
-    val time: String,
+    @ColumnInfo(name = "timeBegin")
+    val timeBegin: String,
+    @ColumnInfo(name = "timeEnd")
+    val timeEnd: String,
     @ColumnInfo(name = "max")
     val max: Double
 )

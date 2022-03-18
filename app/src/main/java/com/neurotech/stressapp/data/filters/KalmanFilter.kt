@@ -3,10 +3,10 @@ package com.neurotech.stressapp.data.filters
 class KalmanFilter(
     private var state: Double,
     private var covariance: Double,
-    val F: Double = 1.0,
-    val H: Double = 1.0,
-    val Q: Double = 2.0,
-    val R: Double = 20.0
+    private val F: Double = 1.0,
+    private val H: Double = 1.0,
+    private val Q: Double = 2.0,
+    private val R: Double = 20.0
         //Q в диапазоне от 0-1
         //R величина шумов
 ) {

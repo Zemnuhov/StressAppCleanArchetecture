@@ -18,5 +18,5 @@ data class ResultEntity(
     @ColumnInfo(name = "conditionAssessment")
     val conditionAssessment: Int,
     @ColumnInfo(name = "stressCause")
-    val stressCause: String,
+    val stressCause: String? = null,
 )

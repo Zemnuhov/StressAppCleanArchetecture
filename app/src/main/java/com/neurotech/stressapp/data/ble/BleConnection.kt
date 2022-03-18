@@ -24,15 +24,17 @@ class BleConnection {
     private var device: RxBleDevice? = null
     private var connection: Observable<RxBleConnection>? = null
     var connectionState = DISCONNECTED
-
     val connectionStateObservable: PublishSubject<String> = PublishSubject.create()
-    val tonicValueObservable: PublishSubject<HashMap<String,Any>> = PublishSubject.create()
-    val phaseValueObservable: PublishSubject<HashMap<String,Any>> = PublishSubject.create()
+    val tonicValueObservable: PublishSubject<HashMap<String, Any>> = PublishSubject.create()
+    val phaseValueObservable: PublishSubject<HashMap<String, Any>> = PublishSubject.create()
     private val disconnectObservable: PublishSubject<Boolean> = PublishSubject.create()
-
     private var compositeDisposable = CompositeDisposable()
-
     private val valueConverter = ValueConverter()
+
+    private val notificationDataUUID: UUID = UUID.fromString("0000ffe1-0000-1000-8000-00805f9b34fb")
+    private val writePeaksUUID: UUID = UUID.fromString("0000ffe2-0000-1000-8000-00805f9b34fb")
+    private val writeTonicUUID: UUID = UUID.fromString("0000ffe3-0000-1000-8000-00805f9b34fb")
+    private val writeTimeUUID: UUID = UUID.fromString("0000ffe4-0000-1000-8000-00805f9b34fb")
 
 
     companion object {
@@ -48,11 +50,11 @@ class BleConnection {
     }
 
     private fun connectionStateObserver() {
-        compositeDisposable.add( device!!
+        compositeDisposable.add(device!!
             .observeConnectionStateChanges()
             .subscribe(
                 {
-                    Log.i("DeviceState", "State:${it.name} Name:${device?.name}" )
+                    Log.i("DeviceState", "State:${it.name} Name:${device?.name}")
                     when (it.name) {
                         "DISCONNECTED" -> {
                             connectionStateObservable.onNext(DISCONNECTED)
@@ -113,9 +115,9 @@ class BleConnection {
     private fun tonicValue() {
         val kalmanFilter = KalmanFilter(0.0, 0.1)
         val expRunningAverage = ExpRunningAverage(0.01)
-        compositeDisposable.add( connection!!
+        compositeDisposable.add(connection!!
             .subscribeOn(Schedulers.computation())
-            .flatMap { rxBleConnection -> rxBleConnection.setupNotification(BleService.notificationDataUUID) }
+            .flatMap { rxBleConnection -> rxBleConnection.setupNotification(notificationDataUUID) }
             .flatMap { it }
             .map { ByteBuffer.wrap(it).int }
             .map { valueConverter.rangeConvert(it) }
@@ -134,7 +136,7 @@ class BleConnection {
         val expRunningAverage = ExpRunningAverage(0.01)
         val expRunningAverageTonic = ExpRunningAverage(0.1)
         compositeDisposable.add(connection!!
-            .flatMap { rxBleConnection -> rxBleConnection.setupNotification(BleService.notificationDataUUID) }
+            .flatMap { rxBleConnection -> rxBleConnection.setupNotification(notificationDataUUID) }
             .flatMap { it }
             .map { ByteBuffer.wrap(it).int }
             .map { valueConverter.rangeConvert(it) }

@@ -1,26 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/shadow"
-    android:padding="@dimen/pading_13">
+    android:padding="@dimen/padding_13">
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/scale_fragment"
+            <com.neurotech.stressapp.ui.customview.ScaleView
+                android:id="@+id/scale"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="0.5"
                 android:gravity="center"
-                android:layout_marginLeft="@dimen/margin_10"/>
-            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_marginLeft="@dimen/margin_10"
+                android:layout_marginTop="@dimen/margin_16"
+                android:layout_marginBottom="@dimen/margin_16"
+                android:orientation="horizontal" />
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
@@ -60,18 +63,18 @@
                     android:textColor="@color/black"
                     android:textStyle="bold"/>
 
-            </androidx.appcompat.widget.LinearLayoutCompat>
-        </androidx.appcompat.widget.LinearLayoutCompat>
+            </LinearLayout>
+        </LinearLayout>
         <TextView
             android:id="@+id/time_range_tonic"
             android:layout_width="@dimen/range_size"
             android:layout_height="@dimen/range_size"
-            android:gravity="bottom|right"
-            android:layout_gravity="bottom|right"
+            android:gravity="end|bottom"
+            android:layout_gravity="end|bottom"
             android:textColor="@color/black"
             android:textSize="@dimen/range_text_size"
             android:layout_marginRight="@dimen/margin_5"
             android:layout_marginBottom="@dimen/margin_5"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-</androidx.appcompat.widget.LinearLayoutCompat>
+</LinearLayout>

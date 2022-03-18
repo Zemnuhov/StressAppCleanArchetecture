@@ -5,61 +5,56 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.neurotech.stressapp.R
-import com.neurotech.stressapp.Singleton
 import com.neurotech.stressapp.data.ble.BleConnection
+import com.neurotech.stressapp.databinding.FragmentSearchBinding
 import com.neurotech.stressapp.ui.MainActivity
 import com.neurotech.stressapp.ui.adapter.SearchCardAdapter
 import com.neurotech.stressapp.ui.viewmodel.SearchFragmentViewModel
 
-class SearchFragment : Fragment() {
+class SearchFragment : Fragment(R.layout.fragment_search) {
 
-    private lateinit var searchView: View
+    private var _binding: FragmentSearchBinding? = null
+    private val binding get() = _binding!!
 
     companion object {
         lateinit var viewModel: SearchFragmentViewModel
     }
-
-    private lateinit var swipeRefresher: SwipeRefreshLayout
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var progressBar: ProgressBar
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        searchView = inflater.inflate(R.layout.search_fragment, container, false)
+        _binding = FragmentSearchBinding.inflate(inflater,container,false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel = ViewModelProvider(this)[SearchFragmentViewModel::class.java]
         initView()
         setObservers()
         setListeners()
-        return searchView
     }
 
     private fun initView() {
         (context as MainActivity).appMenu.findItem(R.id.menu_search).isVisible = true
         (context as MainActivity).appMenu.findItem(R.id.disconnect_device).isVisible = false
-        swipeRefresher = searchView.findViewById(R.id.refresh_list_device)
-        recyclerView = searchView.findViewById(R.id.recycler_view_list)
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = SearchCardAdapter(listOf())
-        progressBar = searchView.findViewById(R.id.connect_progress)
-        progressBar.visibility = View.GONE
+        binding.recyclerViewList.layoutManager = LinearLayoutManager(context)
+        binding.recyclerViewList.adapter = SearchCardAdapter(listOf())
+        binding.connectProgress.visibility = View.GONE
     }
 
     private fun setListeners() {
-        swipeRefresher.setOnRefreshListener {
+        binding.refreshListDevice.setOnRefreshListener {
             viewModel.searchDevice()
         }
-
         (context as MainActivity).appMenu.findItem(R.id.menu_search).setOnMenuItemClickListener {
             viewModel.searchDevice()
             return@setOnMenuItemClickListener false
@@ -68,27 +63,30 @@ class SearchFragment : Fragment() {
 
     private fun setObservers() {
         viewModel.searchState.observe(viewLifecycleOwner) {
-            swipeRefresher.isRefreshing = it
+            binding.refreshListDevice.isRefreshing = it
         }
         viewModel.deviceList.observe(viewLifecycleOwner) {
-            recyclerView.adapter = SearchCardAdapter(it)
+            binding.recyclerViewList.adapter = SearchCardAdapter(it)
         }
         viewModel.deviceState.observe(viewLifecycleOwner) {
             Log.e("DS", it.toString())
             when (it) {
-                BleConnection.CONNECTING -> progressBar.visibility = View.VISIBLE
+                BleConnection.CONNECTING -> binding.connectProgress.visibility = View.VISIBLE
                 BleConnection.CONNECTED -> {
-                    progressBar.visibility = View.GONE
-                    Singleton.showFragment(MainFragment(), "base")
-                    Singleton.fragmentManager.beginTransaction().remove(this).commit()
+                    binding.connectProgress.visibility = View.GONE
+                    findNavController().navigate(R.id.action_searchFragment_to_mainHostFragment,
+                        bundleOf(),
+                        navOptions {
+                            this.anim {
+                                enter = R.anim.nav_default_enter_anim
+                                popEnter = R.anim.nav_default_pop_enter_anim
+                                exit = R.anim.nav_default_exit_anim
+                                popExit = R.anim.nav_default_pop_exit_anim
+                            }
+                        })
                 }
-                else -> progressBar.visibility = View.GONE
+                else -> binding.connectProgress.visibility = View.GONE
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        viewModel
     }
 }

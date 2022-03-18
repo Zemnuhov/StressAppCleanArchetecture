@@ -11,22 +11,13 @@ import com.neurotech.stressapp.domain.Device
 import com.neurotech.stressapp.ui.fragment.SearchFragment
 import com.neurotech.stressapp.ui.viewmodel.SearchFragmentViewModel
 
-class SearchCardAdapter(private val devices: List<Device>): RecyclerView.Adapter<SearchCardAdapter.Companion.CardViewHolder>() {
+class SearchCardAdapter(private val devices: List<Device>): RecyclerView.Adapter<SearchCardAdapter.CardViewHolder>() {
     private val viewModel: SearchFragmentViewModel = SearchFragment.viewModel
-
-    companion object{
-        class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val cardView: CardView = itemView.findViewById(R.id.card_view)
-            val nameDevice:TextView = itemView.findViewById(R.id.name_device)
-            val deviceMAC:TextView = itemView.findViewById(R.id.mac_device)
-
-        }
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
         val view = LayoutInflater
             .from(parent.context)
-            .inflate(R.layout.search_card_item,parent,false)
+            .inflate(R.layout.item_search_card,parent,false)
         return CardViewHolder(view)
     }
 
@@ -40,5 +31,12 @@ class SearchCardAdapter(private val devices: List<Device>): RecyclerView.Adapter
 
     override fun getItemCount(): Int {
         return devices.size
+    }
+
+    class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val cardView: CardView = itemView.findViewById(R.id.card_view)
+        val nameDevice:TextView = itemView.findViewById(R.id.name_device)
+        val deviceMAC:TextView = itemView.findViewById(R.id.mac_device)
+
     }
 }
