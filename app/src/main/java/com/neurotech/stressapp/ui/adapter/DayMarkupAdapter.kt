@@ -16,6 +16,7 @@ class DayMarkupAdapter(private val markups: List<MarkupEntity>): RecyclerView.Ad
 
     interface DayMarkupCallback{
         fun deleteMarkup(markup: MarkupEntity)
+        fun showUpdateFragment(markup: MarkupEntity)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MarkupViewHolder {
@@ -27,6 +28,9 @@ class DayMarkupAdapter(private val markups: List<MarkupEntity>): RecyclerView.Ad
 
     override fun onBindViewHolder(holder: MarkupViewHolder, position: Int) {
         holder.markupTitle.text = markups[position].markupName
+        holder.markupTitle.setOnClickListener {
+            dayMarkupCallback?.showUpdateFragment(markups[position])
+        }
         holder.timeTextView.text = markups[position].time?: "Время не задано"
         if(markups[position].firstSource != null || markups[position].secondSource != null){
             if(markups[position].firstSource != null){

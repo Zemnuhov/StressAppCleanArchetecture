@@ -9,12 +9,15 @@ import com.neurotech.stressapp.App
 import com.neurotech.stressapp.Singleton
 import com.neurotech.stressapp.data.DataFlowAnalyzer
 import com.neurotech.stressapp.data.database.AppDatabase
+import com.neurotech.stressapp.data.notification.NotificationBuilderApp
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+
+const val FOREGROUND_ID = 1
 
 class BleService : Service() {
 
@@ -26,12 +29,18 @@ class BleService : Service() {
     private val compositeDisposable = CompositeDisposable()
     private val dataFlowAnalyzer = DataFlowAnalyzer()
     private val binder = LocalBinder()
+    private val notificationBuilderApp by lazy { NotificationBuilderApp(applicationContext) }
 
 
     override fun onCreate() {
-        (applicationContext as App).component.inject(this)
         super.onCreate()
+        (applicationContext as App).component.inject(this)
         setBackgroundListeners()
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        startForeground(FOREGROUND_ID, notificationBuilderApp.buildForegroundNotification())
+        return super.onStartCommand(intent, flags, startId)
     }
 
     private fun setBackgroundListeners() {

@@ -1,4 +1,4 @@
-package com.neurotech.stressapp.dagger
+package com.neurotech.stressapp.di
 
 import com.neurotech.stressapp.data.DataFlowAnalyzer
 import com.neurotech.stressapp.data.ble.BleService
@@ -20,6 +20,8 @@ interface DaggerComponent {
     fun inject(viewModel: PhaseItemFragmentViewModel)
     fun inject(viewModel: StatisticItemFragmentViewModel)
     fun inject(viewModel: SourceViewModel)
+    fun inject(viewModel: DayMarkupViewModel)
+    fun inject(viewModel: DayMarkupUpdateViewModel)
     fun inject(repository: ConnectionRepositoryImpl)
     fun inject(repository: MainFunctionsImpl)
     fun inject(repository: GraphRepositoryImpl)
@@ -27,8 +29,8 @@ interface DaggerComponent {
     fun inject(repository: StatisticCaseRepositoryImpl)
     fun inject(repository: PhaseCaseRepositoryImpl)
     fun inject(repository: MarkupCaseRepositoryImpl)
+    fun inject(repository: MarkupSettingsRepositoryImpl)
     fun inject(service: BleService)
     fun inject(dataFlowAnalyzer: DataFlowAnalyzer)
     fun inject(startFragment: StartFragment)
-    fun inject(viewModel: DayMarkupViewModel)
 }

@@ -20,40 +20,10 @@ import com.neurotech.stressapp.ui.viewmodel.MainFragmentViewModel
 
 class MainFragment: Fragment(R.layout.fragment_main) {
 
-    lateinit var viewModel: MainFragmentViewModel
-    lateinit var menu: Menu
 
-    private fun menuInit(){
-        menu = (context as MainActivity).appMenu
-        menu.findItem(R.id.menu_search).isVisible = false
-        menu.findItem(R.id.disconnect_device).isVisible = true
-        menu.findItem(R.id.disconnect_device).setOnMenuItemClickListener {
-            viewModel.disconnectDevice()
-            findNavController().navigate(R.id.action_mainHostFragment_to_searchFragment,
-                bundleOf(),
-                navOptions {
-                    this.anim {
-                        enter = R.anim.nav_default_enter_anim
-                        popEnter = R.anim.nav_default_pop_enter_anim
-                        exit = R.anim.nav_default_exit_anim
-                        popExit = R.anim.nav_default_pop_exit_anim
-                    }
-                })
-            return@setOnMenuItemClickListener false
-        }
-    }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        menuInit()
-        return inflater.inflate(R.layout.fragment_main,container,false)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel = ViewModelProvider(this)[MainFragmentViewModel::class.java]
         fillFragment()
         super.onViewCreated(view, savedInstanceState)
     }

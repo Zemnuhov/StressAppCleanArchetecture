@@ -38,12 +38,6 @@ class MarkupCaseRepositoryImpl: MarkupCaseRepository {
         return "OK"
     }
 
-    override fun updateMarkup(markup: MarkupEntity): String {
-        CoroutineScope(Dispatchers.IO).launch {
-            database.markupDao().updateMarkup(markup)
-        }
-        return "OK"
-    }
 
     override fun getMarkupList(): LiveData<List<MarkupEntity>> {
         markupList.postValue(listOf())

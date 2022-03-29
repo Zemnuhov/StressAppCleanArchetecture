@@ -26,9 +26,6 @@ class DayMarkupViewModel(application: Application) : AndroidViewModel(applicatio
         AddMarkup(repository).invoke(markupName)
     }
 
-    fun updateMarkup(markup: MarkupEntity){
-        UpdateMarkup(repository).invoke(markup)
-    }
 
     fun deleteMarkup(markup: MarkupEntity){
         DeleteMarkup(repository).invoke(markup)

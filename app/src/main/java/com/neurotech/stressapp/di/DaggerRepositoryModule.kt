@@ -1,4 +1,4 @@
-package com.neurotech.stressapp.dagger
+package com.neurotech.stressapp.di
 
 import com.neurotech.stressapp.data.implementations.*
 import com.neurotech.stressapp.domain.repository.*
@@ -55,5 +55,11 @@ class DaggerRepositoryModule {
     @Singleton
     fun provideMarkupCaseRepository(): MarkupCaseRepository{
         return MarkupCaseRepositoryImpl()
+    }
+
+    @Provides
+    @Singleton
+    fun provideMarkupSettingsRepository(): MarkupSettingsRepository{
+        return MarkupSettingsRepositoryImpl()
     }
 }

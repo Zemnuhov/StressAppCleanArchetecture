@@ -2,10 +2,7 @@ package com.neurotech.stressapp
 
 import android.annotation.SuppressLint
 import android.content.Context
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import com.neurotech.stressapp.dagger.DaggerComponent
-import io.reactivex.subjects.PublishSubject
+import com.neurotech.stressapp.di.DaggerComponent
 
 @SuppressLint("StaticFieldLeak")
 object Singleton {

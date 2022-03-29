@@ -14,5 +14,17 @@
         android:id="@+id/settingsFragment"
         android:name="com.neurotech.stressapp.ui.fragment.SettingsFragment"
         android:label="SettingsFragment"
-        tools:layout="@layout/fragment_settings"/>
+        tools:layout="@layout/fragment_settings">
+        <action
+            android:id="@+id/action_settingsFragment_to_dayMarkupUpdateFragment"
+            app:destination="@id/dayMarkupUpdateFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/dayMarkupUpdateFragment"
+        android:name="com.neurotech.stressapp.ui.fragment.settings.DayMarkupUpdateFragment"
+        android:label="DayMarkupUpdateFragment" >
+        <action
+            android:id="@+id/action_dayMarkupUpdateFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
 </navigation>

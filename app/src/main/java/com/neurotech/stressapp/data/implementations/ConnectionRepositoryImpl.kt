@@ -4,6 +4,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -28,24 +29,14 @@ class ConnectionRepositoryImpl : ConnectionRepository {
     lateinit var bleConnection: BleConnection
     private var deviceSet = hashSetOf<Device>()
     private var deviceSetLiveData = MutableLiveData<List<Device>>()
-    lateinit var bleService: BleService
+
     private lateinit var searchDisposable: Disposable
     private var searchState = MutableLiveData<Boolean>()
     private var connectionState = MutableLiveData<String>()
-    private var isConnectedService = false
+
     private val compositeDisposable = CompositeDisposable()
     private var previousDevice = ""
-    private val serviceConnection: ServiceConnection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            val binder = service as BleService.LocalBinder
-            bleService = binder.getService()
-            isConnectedService = true
-        }
 
-        override fun onServiceDisconnected(name: ComponentName?) {
-            isConnectedService = false
-        }
-    }
 
 
     init {
@@ -84,8 +75,7 @@ class ConnectionRepositoryImpl : ConnectionRepository {
         searchState.postValue(false)
         SettingsApi().saveDevice(MAC)
         bleConnection.updateBleDevice(SettingsApi().getDevice()!!)
-        val intent = Intent(context, BleService::class.java)
-        context.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+
 
     }
 

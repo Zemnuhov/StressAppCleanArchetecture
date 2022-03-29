@@ -1,7 +1,6 @@
 package com.neurotech.stressapp.ui.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -69,7 +68,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             binding.recyclerViewList.adapter = SearchCardAdapter(it)
         }
         viewModel.deviceState.observe(viewLifecycleOwner) {
-            Log.e("DS", it.toString())
             when (it) {
                 BleConnection.CONNECTING -> binding.connectProgress.visibility = View.VISIBLE
                 BleConnection.CONNECTED -> {

@@ -3,6 +3,7 @@ package com.neurotech.stressapp.data.database.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 @Entity
 data class MarkupEntity(
@@ -10,9 +11,9 @@ data class MarkupEntity(
     @ColumnInfo(name = "markupName")
     val markupName: String,
     @ColumnInfo(name = "time")
-    val time: String?,
+    var time: String?,
     @ColumnInfo(name = "firstSource")
-    val firstSource: String?,
+    var firstSource: String?,
     @ColumnInfo(name = "secondSource")
-    val secondSource: String?,
-)
+    var secondSource: String?,
+) : Serializable

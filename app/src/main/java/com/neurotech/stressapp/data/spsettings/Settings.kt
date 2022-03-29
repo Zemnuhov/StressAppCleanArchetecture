@@ -15,7 +15,6 @@ class Settings {
 
     //------------Default Settings------------//
     val DEFAULT_STIMULUS = "Семья|Работа|Друзья|Здоровье|Артефакты"
-    val DEFAULT_SCHEDULE = "Утро_8:00-11:59|День_12:00-17:59|Вечер_18:00-00:00"
     val DEFAULT_THRESHOLD = "1.25"
 
     private var sPref: SharedPreferences

@@ -4,4 +4,7 @@
     <string name="day_schedule">Разметка дня</string>
     <string name="input_source">Введите источник</string>
     <string name="add">Добавить</string>
+    <string name="title">title</string>
+    <string name="time">Время</string>
+    <string name="default_time">00:00</string>
 </resources>
