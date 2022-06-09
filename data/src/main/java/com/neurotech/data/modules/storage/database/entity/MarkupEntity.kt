@@ -1,4 +1,4 @@
-package com.neurotech.test.storage.database.entity
+package com.neurotech.data.modules.storage.database.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -10,10 +10,12 @@ data class MarkupEntity(
     @PrimaryKey
     @ColumnInfo(name = "markupName")
     val markupName: String,
-    @ColumnInfo(name = "time")
-    var time: String?,
+    @ColumnInfo(name = "timeBegin")
+    var timeBegin: String?,
+    @ColumnInfo(name = "timeEnd")
+    var timeEnd: String?,
     @ColumnInfo(name = "firstSource")
     var firstSource: String?,
     @ColumnInfo(name = "secondSource")
-    var secondSource: String?,
+    var secondSource: String?
 ) : Serializable

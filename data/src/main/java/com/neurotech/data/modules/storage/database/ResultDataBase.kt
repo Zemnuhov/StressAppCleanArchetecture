@@ -1,22 +1,21 @@
-package com.neurotech.test.storage.database
+package com.neurotech.data.modules.storage.database
 
-import android.content.Context
-import com.neurotech.test.App
-import com.neurotech.test.storage.ResultStorage
-import com.neurotech.test.storage.database.dao.ResultDao
-import com.neurotech.test.storage.database.entity.ResultEntity
-import com.neurotech.test.storage.database.entity.ResultSourceCounterItem
-import com.neurotech.test.storage.database.entity.ResultTimeAndPeak
+import com.neurotech.data.di.RepositoryDI.Companion.component
+import com.neurotech.data.modules.storage.ResultStorage
+import com.neurotech.data.modules.storage.database.dao.ResultDao
+import com.neurotech.data.modules.storage.database.entity.ResultEntity
+import com.neurotech.data.modules.storage.database.entity.ResultSourceCounterItem
+import com.neurotech.data.modules.storage.database.entity.ResultTimeAndPeak
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class ResultDataBase(context: Context):ResultStorage {
+class ResultDataBase: ResultStorage {
 
     @Inject
     lateinit var dao: ResultDao
 
     init {
-        (context as App).component.inject(this)
+        component.inject(this)
     }
 
     override suspend fun getTenMinuteCount(): Int {
@@ -29,6 +28,10 @@ class ResultDataBase(context: Context):ResultStorage {
 
     override suspend fun getCountBySources(sources: List<String>): Flow<List<ResultSourceCounterItem>> {
         return dao.getCountBySources(sources)
+    }
+
+    override suspend fun setStressCauseByTime(stressCause: String, time: List<String>) {
+        dao.setStressCauseByTime(stressCause, time)
     }
 
     override suspend fun saveResult(resultEntity: ResultEntity) {

@@ -1,7 +1,7 @@
-package com.neurotech.test.storage.database.dao
+package com.neurotech.data.modules.storage.database.dao
 
 import androidx.room.*
-import com.neurotech.test.storage.database.entity.MarkupEntity
+import com.neurotech.data.modules.storage.database.entity.MarkupEntity
 import kotlinx.coroutines.flow.Flow
 
 
@@ -16,7 +16,10 @@ interface MarkupDao {
     @Delete
     fun deleteMarkup(vararg markup: MarkupEntity)
 
-    @Query("SELECT * from MarkupEntity")
-    fun getMarkupList(): Flow<List<MarkupEntity>>
+    @Query("SELECT * from MarkupEntity GROUP BY timeBegin")
+    fun getMarkupListFlow(): Flow<List<MarkupEntity>>
+
+    @Query("SELECT * from MarkupEntity WHERE NOT markupName = :markup ")
+     fun getMarkupList(vararg markup: String): List<MarkupEntity>
 
 }

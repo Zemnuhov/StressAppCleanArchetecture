@@ -1,4 +1,4 @@
-package com.neurotech.test.bluetooth.data.filters
+package com.neurotech.data.modules.bluetooth.data.filters
 
 class KalmanFilter(
     private var state: Double,
@@ -28,4 +28,5 @@ class KalmanFilter(
         covariance = (1 - K * H) * p
         return state
     }
+
 }

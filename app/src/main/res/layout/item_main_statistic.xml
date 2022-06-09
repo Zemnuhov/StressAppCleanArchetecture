@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:background="@drawable/shadow"
-    android:padding="@dimen/padding_13">
+    android:padding="@dimen/default_indent">
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/pieChart"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/margin_16"
+        android:layout_margin="@dimen/default_indent"
         android:layout_weight="0.5"/>
 
     <LinearLayout
@@ -26,9 +25,10 @@
 
     <ImageView
         android:id="@+id/setting_icon"
-        android:layout_width="@dimen/statistic_button_size"
-        android:layout_height="@dimen/statistic_button_size"
+        android:layout_width="@dimen/routed_button_size"
+        android:layout_height="@dimen/routed_button_size"
         android:src="@drawable/ic_baseline_settings_24"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:contentDescription="@string/statistic_icon" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

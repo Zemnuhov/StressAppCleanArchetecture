@@ -7,12 +7,16 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.neurotech.stressapp.ui.fragment.MainFragment"
+        android:name="com.neurotech.stressapp.ui.Main.MainFragment"
         android:label="MainFragment"
-        tools:layout="@layout/fragment_main"/>
+        tools:layout="@layout/fragment_main">
+        <action
+            android:id="@+id/action_mainFragment_to_statisticFragment"
+            app:destination="@id/statisticFragment" />
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.neurotech.stressapp.ui.fragment.SettingsFragment"
+        android:name="com.neurotech.stressapp.ui.Setting.SettingsFragment"
         android:label="SettingsFragment"
         tools:layout="@layout/fragment_settings">
         <action
@@ -21,10 +25,18 @@
     </fragment>
     <fragment
         android:id="@+id/dayMarkupUpdateFragment"
-        android:name="com.neurotech.stressapp.ui.fragment.settings.DayMarkupUpdateFragment"
+        android:name="com.neurotech.stressapp.ui.DayMarkupUpdate.DayMarkupUpdateFragment"
         android:label="DayMarkupUpdateFragment" >
         <action
             android:id="@+id/action_dayMarkupUpdateFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/markupFragment"
+        android:name="com.neurotech.stressapp.ui.Markup.MarkupFragment"
+        android:label="MarkupFragment" />
+    <fragment
+        android:id="@+id/statisticFragment"
+        android:name="com.neurotech.stressapp.ui.Statistic.StatisticFragment"
+        android:label="StatisticFragment" />
 </navigation>

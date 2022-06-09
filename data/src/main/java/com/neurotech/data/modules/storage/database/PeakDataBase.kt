@@ -1,20 +1,22 @@
-package com.neurotech.test.storage.database
+package com.neurotech.data.modules.storage.database
 
-import android.content.Context
-import com.neurotech.test.App
-import com.neurotech.test.storage.PeakStorage
+
+import android.util.Log
+import com.neurotech.data.di.RepositoryDI.Companion.component
+import com.neurotech.data.modules.storage.PeakStorage
 import com.neurotech.data.modules.storage.database.dao.PeakDao
 import com.neurotech.test.storage.database.entity.PeakEntity
 import kotlinx.coroutines.flow.Flow
+import java.lang.Exception
 import javax.inject.Inject
 
-class PeakDataBase(context: Context):PeakStorage {
+class PeakDataBase(): PeakStorage {
 
     @Inject
     lateinit var dao: PeakDao
 
     init {
-        (context as App).component.inject(this)
+        component.inject(this)
     }
 
     override suspend fun getTenMinuteCountFlow(): Flow<Int> {
@@ -34,7 +36,12 @@ class PeakDataBase(context: Context):PeakStorage {
     }
 
     override suspend fun savePeak(peak: PeakEntity) {
-        dao.insertPeak(peak)
+        try {
+            dao.insertPeak(peak)
+        }catch (e: Exception){
+            Log.e("PeakInsertError", e.toString())
+        }
+
     }
 
     override suspend fun deletePeak() {

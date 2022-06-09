@@ -1,13 +1,17 @@
-package com.neurotech.test.di
+package com.neurotech.data.di
 
 import android.content.Context
-import com.neurotech.test.bluetooth.Bluetooth
-import com.neurotech.test.bluetooth.connection.BluetoothConnection
-import com.neurotech.test.bluetooth.connection.Connection
-import com.neurotech.test.bluetooth.data.GsrData
-import com.neurotech.test.bluetooth.data.GsrDataBluetooth
-import com.neurotech.test.bluetooth.writing.WritingData
-import com.neurotech.test.bluetooth.writing.WritingDataDevice
+import com.neurotech.data.modules.bluetooth.connection.BluetoothConnection
+import com.neurotech.data.modules.bluetooth.Bluetooth
+import com.neurotech.data.modules.bluetooth.BluetoothRX
+import com.neurotech.data.modules.bluetooth.connection.BluetoothConnectionRX
+import com.neurotech.data.modules.bluetooth.connection.Connection
+import com.neurotech.data.modules.bluetooth.data.GsrData
+import com.neurotech.data.modules.bluetooth.data.GsrDataBluetooth
+import com.neurotech.data.modules.bluetooth.data.GsrDataBluetoothRx
+import com.neurotech.data.modules.bluetooth.writing.WriteDataDeviceRx
+import com.neurotech.data.modules.bluetooth.writing.WritingData
+import com.neurotech.data.modules.bluetooth.writing.WritingDataDevice
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -18,23 +22,33 @@ class BluetoothModule {
 
     @Provides
     @Singleton
-    fun provideBluetooth(context: Context):Bluetooth{
+    fun provideBluetoothRx(context: Context): BluetoothRX {
+        return BluetoothRX(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideBluetooth(context: Context): Bluetooth {
         return Bluetooth(context)
     }
 
+
     @Provides
-    fun provideConnection(context: Context): Connection{
-        return BluetoothConnection(context)
+    @Singleton
+    fun provideConnection(): Connection {
+        return BluetoothConnectionRX()
     }
 
     @Provides
-    fun provideGsrData(context: Context): GsrData{
-        return GsrDataBluetooth(context)
+    @Singleton
+    fun provideGsrData(): GsrData {
+        return GsrDataBluetoothRx()
     }
 
     @Provides
-    fun provideWriter(context: Context): WritingData{
-        return WritingDataDevice(context)
+    @Singleton
+    fun provideWriter(): WritingData {
+        return WriteDataDeviceRx()
     }
 
 }

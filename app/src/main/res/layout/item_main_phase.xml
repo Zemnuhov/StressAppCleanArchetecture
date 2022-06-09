@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/shadow"
-    android:padding="@dimen/padding_13">
+    android:padding="@dimen/default_indent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,8 +15,8 @@
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Количество пиков"
-            android:textSize="@dimen/peaks_layout_text_dimens"
+            android:text="@string/phase_item_title"
+            android:textSize="@dimen/default_text_size"
             android:textColor="@color/black"
             android:layout_gravity="center"/>
 
@@ -31,8 +31,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1.25"
-            android:text="0"
-            android:textSize="@dimen/peaks_layout_value_dimens"
+            android:text="@string/default_value"
+            android:textSize="@dimen/peak_text_size"
             android:textColor="@color/black"
             android:textStyle="bold"
             android:layout_gravity="center"/>
@@ -44,9 +44,9 @@
         android:gravity="end|bottom"
         android:layout_gravity="end|bottom"
         android:textColor="@color/black"
-        android:textSize="@dimen/range_text_size"
-        android:layout_marginRight="@dimen/margin_5"
-        android:layout_marginBottom="@dimen/margin_5"/>
+        android:textSize="@dimen/default_text_size"
+        android:layout_marginEnd="@dimen/small_indent"
+        android:layout_marginBottom="@dimen/small_indent"/>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,6 +1,6 @@
-package com.neurotech.test.storage
+package com.neurotech.data.modules.storage
 
-import com.neurotech.test.storage.database.entity.MarkupEntity
+import com.neurotech.data.modules.storage.database.entity.MarkupEntity
 import kotlinx.coroutines.flow.Flow
 
 interface MarkupStorage {

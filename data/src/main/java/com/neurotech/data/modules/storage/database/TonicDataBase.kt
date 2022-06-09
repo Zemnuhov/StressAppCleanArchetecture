@@ -1,20 +1,19 @@
-package com.neurotech.test.storage.database
+package com.neurotech.data.modules.storage.database
 
-import android.content.Context
-import com.neurotech.test.App
-import com.neurotech.test.storage.TonicStorage
+import com.neurotech.data.di.RepositoryDI.Companion.component
+import com.neurotech.data.modules.storage.TonicStorage
 import com.neurotech.test.storage.database.dao.TonicDao
 import com.neurotech.test.storage.database.entity.TonicEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class TonicDataBase(context: Context):TonicStorage {
+class TonicDataBase: TonicStorage {
 
     @Inject
     lateinit var dao: TonicDao
 
     init {
-        (context as App).component.inject(this)
+        component.inject(this)
     }
 
 

@@ -1,11 +1,9 @@
-package com.neurotech.test.settings
+package com.neurotech.data.modules.settings
 
-import android.content.Context
-import com.neurotech.data.modules.settings.Settings
-import com.neurotech.test.App
+import com.neurotech.data.di.RepositoryDI.Companion.component
 import javax.inject.Inject
 
-class SettingsApi(context: Context): Settings {
+class SettingsApi: Settings {
 
     @Inject
     lateinit var settingsModel: SharedPrefSettings
@@ -13,7 +11,7 @@ class SettingsApi(context: Context): Settings {
     private val defaultMAC = "00:00:00:00:00:00"
 
     init {
-        (context as App).component.inject(this)
+        component.inject(this)
     }
 
     override fun saveDevice(MAC: String) {

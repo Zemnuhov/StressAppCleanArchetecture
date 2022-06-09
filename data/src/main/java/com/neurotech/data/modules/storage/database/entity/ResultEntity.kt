@@ -1,4 +1,4 @@
-package com.neurotech.test.storage.database.entity
+package com.neurotech.data.modules.storage.database.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

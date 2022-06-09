@@ -1,4 +1,4 @@
-package com.neurotech.test.storage
+package com.neurotech.data.modules.storage
 
 
 import com.neurotech.test.storage.database.entity.PeakEntity

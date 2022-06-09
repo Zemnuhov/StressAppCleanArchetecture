@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/margin_16">
+    android:padding="@dimen/default_indent"
+    android:background="@drawable/markup_background"
+    android:layout_margin="@dimen/half_small_indent"
+    android:id="@+id/markupCardView">
 
     <TextView
         android:id="@+id/markupTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="0dp"
-        android:text="Событие"
-        android:textSize="16sp"
+        android:layout_marginStart="@dimen/default_indent"
+        android:text="@string/event_title"
+        android:textSize="@dimen/default_text_size"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,8 +23,8 @@
         android:id="@+id/sourceLayoutInMarkup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="@dimen/large_indent"
+        android:layout_marginTop="@dimen/small_indent"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="@+id/markupTitle"
         app:layout_constraintTop_toBottomOf="@+id/markupTitle">
@@ -32,14 +33,15 @@
             android:id="@+id/firstSource"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:text="-Семья" />
+            android:layout_marginBottom="@dimen/half_small_indent"
+            android:textSize="@dimen/small_text_size"
+            android:text="@string/default_value" />
 
         <TextView
             android:id="@+id/secondSource"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="-Друзья" />
+            android:text="@string/default_value" />
     </LinearLayout>
 
     <TextView
@@ -47,20 +49,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:text="8:00 - 12:00"
+        android:text="@string/time_interval_default"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/deleteMurkupButton"
+        app:layout_constraintEnd_toStartOf="@+id/deleteMarkupButton"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/deleteMurkupButton"
+        android:id="@+id/deleteMarkupButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.469"
-        app:srcCompat="@drawable/ic_baseline_delete_outline_24" />
+        app:srcCompat="@drawable/ic_baseline_delete_outline_24"
+        android:contentDescription="@string/delete_icon" />
 </androidx.constraintlayout.widget.ConstraintLayout>

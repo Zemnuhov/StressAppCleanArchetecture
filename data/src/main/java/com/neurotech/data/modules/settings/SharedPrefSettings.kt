@@ -1,10 +1,10 @@
-package com.neurotech.test.settings
+package com.neurotech.data.modules.settings
 
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 
-class SharedPrefSettings(private val context: Context) {
+class SharedPrefSettings(context: Context) {
     //------------TAGS------------//
     private val SHARED_PREFERENCES_TAG = "STRESS_APP"
     val DEVICE_ADDRESS_TAG = "DEVICE_ADDRESS"

@@ -1,4 +1,4 @@
-package com.neurotech.test.bluetooth.data.filters
+package com.neurotech.data.modules.bluetooth.data.filters
 
 class ExpRunningAverage(private val k: Double) {
     var filVal = 0.0

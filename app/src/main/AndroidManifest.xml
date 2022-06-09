@@ -16,9 +16,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.StressApp">
-        <service
-            android:name=".data.ble.BleService" />
 
+        <service android:name=".service.AppService"/>
         <activity
             android:name=".ui.MainActivity"
             android:exported="true">
@@ -28,6 +27,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <receiver android:name=".notification.NotificationReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.neurotech.stressapp.notification.FIRST_SOURCE_ACTION"/>
+                <action android:name="com.neurotech.stressapp.notification.SECOND_SOURCE_ACTION"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

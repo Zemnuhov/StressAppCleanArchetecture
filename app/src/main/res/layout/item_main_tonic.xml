@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/shadow"
-    android:padding="@dimen/padding_13">
+    android:padding="@dimen/default_indent">
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -19,9 +19,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.5"
                 android:gravity="center"
-                android:layout_marginLeft="@dimen/margin_10"
-                android:layout_marginTop="@dimen/margin_16"
-                android:layout_marginBottom="@dimen/margin_16"
+                android:layout_marginStart="@dimen/small_indent"
+                android:layout_marginTop="@dimen/default_indent"
+                android:layout_marginBottom="@dimen/default_indent"
                 android:orientation="horizontal" />
             <LinearLayout
                 android:layout_width="match_parent"
@@ -32,33 +32,33 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Текущее\nзначение"
-                    android:textSize="@dimen/current_and_avg_layout_text_dimens"
+                    android:text="@string/current_value_title"
+                    android:textSize="@dimen/small_text_size"
                     android:textColor="@color/black"
                     android:layout_gravity="center"/>
                 <TextView
                     android:id="@+id/current_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textSize="@dimen/current_and_avg_layout_value_dimens"
+                    android:text="@string/default_value"
+                    android:textSize="@dimen/default_text_size"
                     android:layout_gravity="center"
                     android:textColor="@color/black"
                     android:textStyle="bold"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Среднее\nзначение"
+                    android:text="@string/average_value_title"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/current_and_avg_layout_text_dimens"
+                    android:textSize="@dimen/small_text_size"
                     android:layout_gravity="center"
-                    android:layout_marginTop="@dimen/margin_15"/>
+                    android:layout_marginTop="@dimen/default_indent"/>
                 <TextView
                     android:id="@+id/avg_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textSize="@dimen/current_and_avg_layout_value_dimens"
+                    android:text="@string/default_value"
+                    android:textSize="@dimen/default_text_size"
                     android:layout_gravity="center"
                     android:textColor="@color/black"
                     android:textStyle="bold"/>
@@ -72,9 +72,9 @@
             android:gravity="end|bottom"
             android:layout_gravity="end|bottom"
             android:textColor="@color/black"
-            android:textSize="@dimen/range_text_size"
-            android:layout_marginRight="@dimen/margin_5"
-            android:layout_marginBottom="@dimen/margin_5"/>
+            android:textSize="@dimen/default_text_size"
+            android:layout_marginEnd="@dimen/half_small_indent"
+            android:layout_marginBottom="@dimen/half_small_indent"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </LinearLayout>

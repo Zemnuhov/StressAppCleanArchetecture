@@ -15,10 +15,18 @@
         app:showAsAction="ifRoom"
         android:orderInCategory="2"
         />
+
     <item
         android:title="Отключить устройство"
         android:id="@+id/disconnect_device"
         app:showAsAction="never"
         android:orderInCategory="3"
+        />
+    <!--    TODO(Не забыть удалить)-->
+    <item
+        android:title="Запись"
+        android:id="@+id/recording"
+        app:showAsAction="never"
+        android:orderInCategory="4"
         />
 </menu>

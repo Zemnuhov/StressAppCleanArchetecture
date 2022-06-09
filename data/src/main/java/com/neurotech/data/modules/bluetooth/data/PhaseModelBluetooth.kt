@@ -1,4 +1,4 @@
-package com.neurotech.test.bluetooth.data
+package com.neurotech.data.modules.bluetooth.data
 
 import java.util.*
 
