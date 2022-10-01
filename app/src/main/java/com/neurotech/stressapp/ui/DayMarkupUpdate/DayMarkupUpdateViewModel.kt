@@ -23,7 +23,7 @@ class DayMarkupUpdateViewModel(
 
     init {
         viewModelScope.launch {
-            getStimulusList.invoke().collect{
+            getStimulusList.getFlow().collect{
                 _sources.postValue(it)
             }
         }

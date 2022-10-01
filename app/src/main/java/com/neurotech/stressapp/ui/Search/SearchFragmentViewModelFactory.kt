@@ -12,7 +12,7 @@ class SearchFragmentViewModelFactory @Inject constructor(
     private val connectionToPeripheral: ConnectionToPeripheral,
     private val stopScan: StopScan
 ): ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return SearchFragmentViewModel(
             getDeviceListFlow,
             getConnectionStateFlow,

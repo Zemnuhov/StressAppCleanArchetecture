@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter
@@ -58,6 +59,7 @@ class PhaseGraphFragment : Fragment() {
                     peakSeries.appendData(point, true, maxPoint)
                 }
                 phaseSeries.appendData(point, true, maxPoint)
+
             }
         }
     }
@@ -67,8 +69,8 @@ class PhaseGraphFragment : Fragment() {
         binding.phaseGraphMain.addSeries(peakSeries)
         binding.phaseGraphMain.viewport.isYAxisBoundsManual = true
         binding.phaseGraphMain.viewport.isXAxisBoundsManual = false
-        binding.phaseGraphMain.viewport.setMinY(-3.0)
-        binding.phaseGraphMain.viewport.setMaxY(3.0)
+        binding.phaseGraphMain.viewport.setMinY(-20.0)
+        binding.phaseGraphMain.viewport.setMaxY(20.0)
         binding.phaseGraphMain.viewport.setMinX(0.0)
         binding.phaseGraphMain.viewport.setMaxX(30000.0)
         binding.phaseGraphMain.viewport.isScalable = true

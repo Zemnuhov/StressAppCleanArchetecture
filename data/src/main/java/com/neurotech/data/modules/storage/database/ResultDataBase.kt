@@ -37,4 +37,11 @@ class ResultDataBase: ResultStorage {
     override suspend fun saveResult(resultEntity: ResultEntity) {
         dao.insertResult(resultEntity)
     }
+
+    override suspend fun getResultsInInterval(
+        beginInterval: String,
+        endInterval: String
+    ): Flow<List<ResultEntity>> {
+        return dao.getResultsInInterval(beginInterval,endInterval)
+    }
 }

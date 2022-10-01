@@ -3,8 +3,14 @@ package com.neurotech.data.modules.bluetooth.connection
 import android.util.Log
 import com.neurotech.data.di.RepositoryDI.Companion.component
 import com.neurotech.data.modules.bluetooth.Bluetooth
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import com.polidea.rxandroidble2.scan.ScanSettings
+import io.reactivex.disposables.Disposable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class BluetoothConnection : Connection {
@@ -12,73 +18,75 @@ class BluetoothConnection : Connection {
     @Inject
     lateinit var bluetooth: Bluetooth
 
-    private val deviceListFlow = MutableStateFlow<List<DeviceModelBluetooth>>(listOf())
-    private val deviceList = mutableListOf<DeviceModelBluetooth>()
-    private val scanStateFlow = MutableSharedFlow<Boolean>()
-    private val connectionStateFlow = MutableSharedFlow<String>()
-
-    private val scope = CoroutineScope(Dispatchers.Default)
+    private val deviceListFlow = MutableStateFlow(listOf<DeviceModelBluetooth>())
+    private var deviceSet = hashSetOf<DeviceModelBluetooth>()
+    private lateinit var scanDisposable: Disposable
+    private val scanStateFlow = MutableStateFlow(false)
 
     init {
         component.inject(this)
     }
 
+
     override suspend fun getDeviceListFlow(): Flow<List<DeviceModelBluetooth>> {
-//        deviceListFlow.value = listOf()
-//        scope.launch {
-//            scanStateFlow.emit(true)
-//            launch {
-//                bluetooth.central.scanForPeripherals(
-//                    { peripheral, _ ->
-//                        val device = DeviceModelBluetooth(peripheral.name, peripheral.address)
-//                        if (device !in deviceList && device.name.isNotEmpty()){
-//                            deviceList.add(device)
-//                        }
-//                        deviceListFlow.value = deviceList
-//                    },
-//                    { scanFailure ->
-//                        Log.e("DeviceScan", scanFailure.toString())
-//                    }
-//                )
-//            }
-//            launch {
-//                delay(10000L)
-//                stopScan()
-//            }
-//        }
+        if (!scanStateFlow.value) {
+            deviceListFlow.value = arrayListOf()
+            CoroutineScope(Dispatchers.IO).launch {
+                launch {
+                    scanStateFlow.value = true
+                    scanDisposable = bluetooth.client.scanBleDevices(ScanSettings.Builder().build())
+                        .subscribe(
+                            {
+                                if (it.bleDevice.name != null) {
+                                    deviceSet.add(
+                                        DeviceModelBluetooth(
+                                            it.bleDevice.name!!,
+                                            it.bleDevice.macAddress
+                                        )
+                                    )
+                                }
+                                if (deviceSet.size > deviceListFlow.value.size) {
+                                    deviceListFlow.value = deviceSet.toList()
+                                }
+                            },
+                            {
+                                Log.e("ScanError", it.toString())
+                            }
+                        )
+                }
+                launch {
+                    delay(10000)
+                    stopScan()
+                }
+            }
+        }
         return deviceListFlow
     }
 
     override suspend fun getScanState(): Flow<Boolean> {
-        scanStateFlow.emit(false)
         return scanStateFlow
     }
 
     override suspend fun stopScan() {
-//        bluetooth.central.stopScan()
-//        scanStateFlow.emit(false)
+        scanDisposable.dispose()
+        if (scanStateFlow.value) {
+            scanStateFlow.value = false
+        }
     }
-
 
     override suspend fun connectionToPeripheral(MAC: String) {
-//        bluetooth._peripheral = bluetooth.central.getPeripheral(MAC)
-//        bluetooth.peripheral.autoConnect()
+        bluetooth.connectDevice(MAC)
     }
 
-    override suspend fun getConnectionStateFlow(): SharedFlow<String> {
-//        bluetooth.central.observeConnectionState { _, state ->
-//            CoroutineScope(Dispatchers.IO).launch {
-//                connectionStateFlow.emit(state.name)
-//            }
-//        }
-        return connectionStateFlow
+    override suspend fun getConnectionStateFlow(): Flow<String> {
+        return bluetooth.getConnectionFlow()
     }
 
     override suspend fun getConnectionState(): String {
-        return "" //bluetooth.peripheral.getState().name
+        return bluetooth.connectionState
     }
 
     override suspend fun disconnectDevice() {
-//        bluetooth.central.cancelConnection(bluetooth.peripheral)
+        bluetooth.disconnectDevice()
     }
 }

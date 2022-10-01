@@ -1,15 +1,19 @@
 package com.neurotech.stressapp.ui.Statistic
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.cesarferreira.tempo.Tempo
+import com.cesarferreira.tempo.endOfDay
 import com.cesarferreira.tempo.toDate
 import com.cesarferreira.tempo.toString
 import com.jjoe64.graphview.DefaultLabelFormatter
@@ -71,7 +75,7 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
     }
 
     private fun mapValue(value: Double, min: Int): Double {
-        return value  / 10000 * (min+50 - min) + min
+        return value  / 10000 * (min+100 - min) + min
     }
 
     private fun setObservers() {
@@ -88,21 +92,23 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
                     val bar = DataPoint(time, peaks)
                     barSeries.appendData(bar, true, 10000)
                     val tonic = result.tonicAvg.toDouble()
-                    val point = DataPoint(time, mapValue(tonic,it.maxOf { it.peakCount }))
+                    val point = DataPoint(time, mapValue(tonic,it.maxOf { it.peakCount }-20))
                     tonicSeries.appendData(point,true, 10000)
                 }
             graphSettings()
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun graphSettings() {
+        binding.statisticGraph.removeAllSeries()
         binding.statisticGraph.addSeries(tonicSeries)
         binding.statisticGraph.addSeries(barSeries)
 
         binding.statisticGraph.viewport.isXAxisBoundsManual = true
         binding.statisticGraph.viewport.isYAxisBoundsManual = true
         binding.statisticGraph.viewport.setMinX(barSeries.lowestValueX - 500000)
-        binding.statisticGraph.viewport.setMaxX(barSeries.highestValueX + 500000)
+        binding.statisticGraph.viewport.setMaxX((Tempo.now.endOfDay.time + 500000).toDouble())
         binding.statisticGraph.viewport.setMinY(0.0)
         binding.statisticGraph.viewport.setMaxY(tonicSeries.highestValueY + 2)
         binding.statisticGraph.viewport.isScalable = true
@@ -137,6 +143,17 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
             ContextCompat.getColor(requireContext(), R.color.red_active)
         }
         tonicSeries.color = Color.BLACK
+
+//        binding.statisticGraph.setOnTouchListener { _, event ->
+//            barSeries.onTap(event.x, event.y)
+//            return@setOnTouchListener true
+//        }
+
+        barSeries.setOnDataPointTapListener{
+                _, dataPoint ->
+            Toast.makeText(context, "${dataPoint.y}  ${dataPoint.x.toLong()}", Toast.LENGTH_SHORT).show()
+        }
+
         binding.statisticGraph.invalidate()
     }
 }

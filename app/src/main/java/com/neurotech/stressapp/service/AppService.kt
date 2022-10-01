@@ -63,7 +63,7 @@ class AppService : Service() {
                 if(Singleton.recoding){
 
                     Singleton.file.appendText(
-                        "${(it.get("Time") as Date).toString(TimeFormat.dateTimeFormatDataBase)}, ${it.get("Tonic")}, ${it.get("Phase")}\n"
+                        "${(it["Time"] as Date).toString(TimeFormat.dateTimeFormatDataBase)}, ${it["Tonic"]}, ${it["Phase"]}\n"
                     )
                 }
             }

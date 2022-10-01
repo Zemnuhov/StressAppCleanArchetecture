@@ -7,6 +7,6 @@ interface Settings {
     fun setThreshold(value: Double)
     fun setDefaultMAC()
     fun getStimulusList(): List<String>
-    fun addStimulus(source:String)
+    fun addStimulus(source:String): Boolean
     fun deleteStimulus(source: String)
 }

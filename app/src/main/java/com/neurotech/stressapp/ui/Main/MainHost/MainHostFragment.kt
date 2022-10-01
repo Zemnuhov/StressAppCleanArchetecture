@@ -3,6 +3,7 @@ package com.neurotech.stressapp.ui.Main.MainHost
 import android.os.Bundle
 import android.view.*
 import androidx.core.os.bundleOf
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
@@ -14,54 +15,54 @@ import com.neurotech.stressapp.R
 import com.neurotech.stressapp.Singleton
 import com.neurotech.stressapp.databinding.FragmentHostBinding
 import com.neurotech.stressapp.service.Service
-import com.neurotech.stressapp.ui.MainActivity
 import javax.inject.Inject
 
 class MainHostFragment : Fragment(R.layout.fragment_host) {
     @Inject
     lateinit var factory: MainFragmentViewModelFactory
-
     @Inject
     lateinit var service: Service
-
     private var _binding: FragmentHostBinding? = null
     private val binding get() = _binding!!
     val viewModel by lazy { ViewModelProvider(this, factory)[MainFragmentViewModel::class.java] }
 
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        menu.findItem(R.id.menu_search).isVisible = false
-        menu.findItem(R.id.disconnect_device).isVisible = true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId){
-            R.id.disconnect_device ->{
-                viewModel.disconnectDevice()
-                findNavController().navigate(R.id.action_mainHostFragment_to_searchFragment,
-                    bundleOf(),
-                    navOptions {
-                        this.anim {
-                            enter = R.anim.nav_default_enter_anim
-                            popEnter = R.anim.nav_default_pop_enter_anim
-                            exit = R.anim.nav_default_exit_anim
-                            popExit = R.anim.nav_default_pop_exit_anim
-                        }
-                    })
-                true
+    private fun menuController(){
+        activity?.addMenuProvider(object : MenuProvider{
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menu.findItem(R.id.menu_search).isVisible = false
+                menu.findItem(R.id.disconnect_device).isVisible = true
             }
-            R.id.recording -> {
-                //TODO(Удалить)
-                    if (Singleton.recoding){
-                        Singleton.stopRecoding()
-                    }else{
-                        Singleton.startRecoding()
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when(menuItem.itemId){
+                    R.id.disconnect_device ->{
+                        viewModel.disconnectDevice()
+                        findNavController().navigate(R.id.action_mainHostFragment_to_searchFragment,
+                            bundleOf(),
+                            navOptions {
+                                this.anim {
+                                    enter = R.anim.nav_default_enter_anim
+                                    popEnter = R.anim.nav_default_pop_enter_anim
+                                    exit = R.anim.nav_default_exit_anim
+                                    popExit = R.anim.nav_default_pop_exit_anim
+                                }
+                            })
+                        true
                     }
-                    true
+                    R.id.recording -> {
+                        //TODO(Удалить)
+                        if (Singleton.recoding){
+                            Singleton.stopRecoding()
+                        }else{
+                            Singleton.startRecoding()
+                        }
+                        true
+                    }
+                    else -> false
+                }
             }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
 
+        })
+    }
 
 
     override fun onCreateView(
@@ -75,7 +76,7 @@ class MainHostFragment : Fragment(R.layout.fragment_host) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setHasOptionsMenu(true)
+        menuController()
         service.bindService()
         val navHostFragment =
             childFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment

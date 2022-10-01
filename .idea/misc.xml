@@ -13,6 +13,8 @@
         <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/drawable/selected_background.xml" value="0.1695" />
         <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/drawable/shadow.xml" value="0.23541666666666666" />
         <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/layout/activity_main.xml" value="0.21927083333333333" />
+        <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/layout/fragment_analitycs.xml" value="0.2254278728606357" />
+        <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/layout/fragment_analytics.xml" value="0.14453125" />
         <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/layout/fragment_day_markup.xml" value="0.346875" />
         <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/layout/fragment_host.xml" value="0.3625" />
         <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/layout/fragment_main.xml" value="0.22" />
@@ -28,9 +30,9 @@
         <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/layout/item_main_phase_graph.xml" value="0.26536885245901637" />
         <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/layout/item_main_statistic.xml" value="0.22" />
         <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/layout/item_main_statistic_source.xml" value="0.1762917933130699" />
-        <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/layout/item_main_tonic.xml" value="0.1762917933130699" />
+        <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/layout/item_main_tonic.xml" value="0.25" />
         <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/layout/item_main_tonic_graph.xml" value="0.1762917933130699" />
-        <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/layout/item_markup.xml" value="0.5" />
+        <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/layout/item_markup.xml" value="0.22" />
         <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/layout/item_search_card.xml" value="0.1762917933130699" />
         <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/layout/item_settings_dat_markup.xml" value="0.346875" />
         <entry key="..\:/Users/zemnu/AndroidStudioProjects/StressApp/app/src/main/res/layout/item_settings_day_markup.xml" value="0.259963768115942" />

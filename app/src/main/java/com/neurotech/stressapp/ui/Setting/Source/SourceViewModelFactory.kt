@@ -13,7 +13,7 @@ class SourceViewModelFactory @Inject constructor(
     private val deleteStimulus: DeleteStimulus
 ): ViewModelProvider.Factory {
 
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return SourceViewModel(getStimulusList, addStimulus, deleteStimulus) as T
     }
 }

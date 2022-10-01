@@ -4,6 +4,7 @@ import com.neurotech.stressapp.notification.NotificationBuilderApp
 import com.neurotech.stressapp.notification.NotificationReceiver
 import com.neurotech.stressapp.service.AppService
 import com.neurotech.stressapp.service.DataFlowAnalyzer
+import com.neurotech.stressapp.ui.Analitycs.AnalyticsFragment
 import com.neurotech.stressapp.ui.Main.MainHost.MainHostFragment
 import com.neurotech.stressapp.ui.Search.SearchFragment
 import com.neurotech.stressapp.ui.StartFragment
@@ -54,5 +55,6 @@ interface AppComponent {
     fun inject(fragment: MarkupFragment)
     fun inject(fragment: StatisticFragment)
     fun inject(fragment: TonicGraphFragment)
+    fun inject(analyticsFragment: AnalyticsFragment)
 
 }

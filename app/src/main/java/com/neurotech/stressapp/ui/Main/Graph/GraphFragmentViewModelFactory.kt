@@ -12,7 +12,7 @@ class GraphFragmentViewModelFactory @Inject constructor(
     private val getTonicValueFlow: GetTonicValueFlow,
     private val getThreshold: GetThreshold
 ): ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return GraphFragmentViewModel(getPhaseValueFlow, getTonicValueFlow, getThreshold) as T
     }
 }

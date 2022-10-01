@@ -10,7 +10,7 @@ class DayMarkupUpdateFactory @Inject constructor(
     private val getStimulusList: GetStimulusList,
     private val updateMarkupUseCase: UpdateMarkup
 ): ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return DayMarkupUpdateViewModel(getStimulusList,updateMarkupUseCase) as T
     }
 }

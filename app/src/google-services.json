@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1075379492394",
+    "project_id": "stressapp-a8d16",
+    "storage_bucket": "stressapp-a8d16.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1075379492394:android:b1ef3223450a9ee87b5553",
+        "android_client_info": {
+          "package_name": "com.neurotech.stressapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1075379492394-j4i7faaigs4vucb9mlvdeduprjgl36r1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC07bSOrHGU1tfbdiygsjDjjcOBC5tNmtI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1075379492394-j4i7faaigs4vucb9mlvdeduprjgl36r1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -16,5 +16,10 @@
             android:id="@+id/markupFragment"
             android:icon="@drawable/ic_baseline_bookmark_24"
             android:title="Разметка" />
+
+        <item
+            android:id="@+id/analyticsFragment"
+            android:icon="@drawable/ic_baseline_analytics_24"
+            android:title="Аналитика" />
     </group>
 </menu>

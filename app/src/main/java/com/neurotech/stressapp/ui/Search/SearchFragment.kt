@@ -1,7 +1,12 @@
 package com.neurotech.stressapp.ui.Search
 
+import android.Manifest
+import android.app.Activity
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.*
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -66,6 +71,7 @@ class SearchFragment : Fragment(R.layout.fragment_search), SearchCardAdapter.Cal
         initView()
         setObservers()
         setListeners()
+        requestPermissions()
     }
 
     private fun initView() {
@@ -113,5 +119,22 @@ class SearchFragment : Fragment(R.layout.fragment_search), SearchCardAdapter.Cal
 
     override fun connectDeviceCallBack(MAC: String) {
         viewModel.connectionToDevice(MAC)
+    }
+
+    private fun requestPermissions(){
+        val permissionFineLocationStatus = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+        if(permissionFineLocationStatus == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
+        }
+
+        val permissionReadStorageStatus = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
+        if(permissionReadStorageStatus == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 1)
+        }
+
+        val permissionWriteStorageStatus = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        if(permissionWriteStorageStatus == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+        }
     }
 }

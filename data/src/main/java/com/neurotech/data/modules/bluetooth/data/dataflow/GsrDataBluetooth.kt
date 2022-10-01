@@ -1,36 +1,32 @@
-package com.neurotech.data.modules.bluetooth.data
+package com.neurotech.data.modules.bluetooth.data.dataflow
 
-import android.util.Log
 import com.neurotech.data.DataModuleLog.appLog
 import com.neurotech.data.di.RepositoryDI.Companion.component
-import com.neurotech.data.modules.bluetooth.BluetoothRX
-import com.neurotech.data.modules.bluetooth.BluetoothRX.Companion.notificationDataUUID
+import com.neurotech.data.modules.bluetooth.Bluetooth
+import com.neurotech.data.modules.bluetooth.Bluetooth.Companion.phaseFlowUUID
+import com.neurotech.data.modules.bluetooth.Bluetooth.Companion.tonicFlowUUID
+import com.neurotech.data.modules.bluetooth.data.GsrData
 import com.neurotech.data.modules.bluetooth.data.filters.ExpRunningAverage
-import com.neurotech.data.modules.bluetooth.data.filters.KalmanFilter
-import com.neurotech.data.modules.bluetooth.data.filters.ValueConverter
 import com.neurotech.domain.BleConstant
-import com.neurotech.domain.Codes
-import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
-import io.reactivex.plugins.RxJavaPlugins
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.nio.ByteBuffer
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class GsrDataBluetoothRx: GsrData {
+class GsrDataBluetooth: GsrData {
 
     @Inject
-    lateinit var bluetooth: BluetoothRX
+    lateinit var bluetooth: Bluetooth
 
     private val tonicValueFlow = MutableStateFlow(TonicModelBluetooth(0, Date()))
     private val phaseValueFlow = MutableStateFlow(PhaseModelBluetooth(0.0, Date()))
-    private val valueConverter = ValueConverter()
 
     private var phaseDisposable:Disposable? = null
     private var tonicDisposable:Disposable? = null
@@ -58,25 +54,25 @@ class GsrDataBluetoothRx: GsrData {
     }
 
     private suspend fun beginTonicFlow(){
-        val kalmanFilter = KalmanFilter(0.0, 0.1)
-        val expRunningAverage = ExpRunningAverage(0.01)
         bluetooth.connectionFlow.collect{
             if(it != null){
                 tonicDisposable?.dispose()
                 tonicDisposable =
                     it.flatMap { rxBleConnection ->
                         rxBleConnection.setupNotification(
-                            notificationDataUUID
+                            tonicFlowUUID
                         )
                     }
                         .flatMap { v -> v }
                         .map { v -> ByteBuffer.wrap(v).int }
-                        .map { v -> valueConverter.rangeConvert(v) }
-                        .map { v -> kalmanFilter.correct(v) }
-                        .map { v -> expRunningAverage.filter(v).toInt() }
+                        .concatMap { v ->
+                            Observable.just(v).delay(25, TimeUnit.MILLISECONDS)
+                        }
                         .subscribe(
                             { v ->
-                                tonicValueFlow.value = TonicModelBluetooth(v, Date())
+                                if(v in 0..10000){
+                                    tonicValueFlow.value = TonicModelBluetooth(v, Date())
+                                }
                             },
                             { v ->
                                 appLog("Ble tonic data flow error: $v")
@@ -95,28 +91,25 @@ class GsrDataBluetoothRx: GsrData {
     }
 
     private suspend fun beginPhaseFlow(){
-        val kalmanFilter = KalmanFilter(0.0, 0.1)
-        val expRunningAverage = ExpRunningAverage(0.01)
-        val expRunningAverageTonic = ExpRunningAverage(0.1)
+        val filter = ExpRunningAverage(0.1)
         bluetooth.connectionFlow.collect{
             if(it != null){
                 phaseDisposable?.dispose()
                 phaseDisposable =
                     it.flatMap { rxBleConnection ->
                         rxBleConnection.setupNotification(
-                            notificationDataUUID
+                            phaseFlowUUID
                         )
                     }
                         .flatMap { v -> v }
                         .map { v -> ByteBuffer.wrap(v).int }
-                        .map { v -> valueConverter.rangeConvert(v) }
-                        .map { v -> expRunningAverageTonic.filter(v).toInt() }
-                        .map { v -> valueConverter.toPhaseValue(v) }
-                        .map { v -> kalmanFilter.correct(v) }
-                        .map { v -> expRunningAverage.filter(v) }
+                        .map { v -> filter.filter(v) }
+                        .concatMap { v ->
+                            Observable.just(v).delay(25, TimeUnit.MILLISECONDS)
+                        }
                         .subscribe(
-                            { v ->
-                                phaseValueFlow.value = PhaseModelBluetooth(v, Date())
+                            { phaseValue ->
+                                phaseValueFlow.value = PhaseModelBluetooth(phaseValue.toDouble(), Date())
                             },
                             { v ->
                                 appLog("Ble phase data flow error: $v")

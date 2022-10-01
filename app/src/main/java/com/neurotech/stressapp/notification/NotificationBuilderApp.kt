@@ -17,7 +17,6 @@ import com.neurotech.domain.models.MarkupDomainModel
 import com.neurotech.domain.usecases.markupdata.GetMarkupList
 import com.neurotech.stressapp.App
 import com.neurotech.stressapp.ui.MainActivity
-import kotlinx.coroutines.delay
 import java.util.*
 import javax.inject.Inject
 
@@ -94,9 +93,40 @@ class NotificationBuilderApp(private val context: Context) {
         return resultMarkup
     }
 
-    suspend fun buildWarningNotification(time: Date) {
-        val markup = getMarkupOutOfRange(time.toString(timeFormat))!!
+    private suspend fun getPendingIntent(time: Date): Map<String,PendingIntent>{
+        val markup = getMarkupOutOfRange(time.toString(timeFormat))
+        if(markup?.firstSource != null && markup.secondSource != null){
+            val firstSourcePendingIntent: PendingIntent =
+                Intent(context, NotificationReceiver::class.java).let {
+                    it.action = NotificationReceiver.FIRST_SOURCE_ACTION
+                    it.putExtra(NotificationReceiver.SOURCE_EXTRA, markup.firstSource)
+                    it.putExtra(NotificationReceiver.TIME_EXTRA, time.toString(dateTimeFormat))
+                    PendingIntent.getBroadcast(
+                        context,
+                        0,
+                        it,
+                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                    )
+                }
 
+            val secondSourcePendingIntent: PendingIntent =
+                Intent(context, NotificationReceiver::class.java).let {
+                    it.action = NotificationReceiver.SECOND_SOURCE_ACTION
+                    it.putExtra(NotificationReceiver.SOURCE_EXTRA, markup.secondSource)
+                    it.putExtra(NotificationReceiver.TIME_EXTRA, time.toString(dateTimeFormat))
+                    PendingIntent.getBroadcast(
+                        context,
+                        0,
+                        it,
+                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                    )
+                }
+            return mapOf(markup.firstSource!! to firstSourcePendingIntent, markup.secondSource!! to secondSourcePendingIntent)
+        }
+        return mapOf()
+    }
+
+    suspend fun buildWarningNotification(time: Date) {
         val pendingIntent: PendingIntent =
             Intent(context, MainActivity::class.java).let { notificationIntent ->
                 PendingIntent.getActivity(
@@ -107,42 +137,17 @@ class NotificationBuilderApp(private val context: Context) {
                 )
             }
 
-        val firstSourcePendingIntent: PendingIntent =
-            Intent(context, NotificationReceiver::class.java).let {
-                it.action = NotificationReceiver.FIRST_SOURCE_ACTION
-                it.putExtra(NotificationReceiver.SOURCE_EXTRA, markup.firstSource)
-                it.putExtra(NotificationReceiver.TIME_EXTRA, time.toString(dateTimeFormat))
-                PendingIntent.getBroadcast(
-                    context,
-                    0,
-                    it,
-                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-                )
-            }
-
-        val secondSourcePendingIntent: PendingIntent =
-            Intent(context, NotificationReceiver::class.java).let {
-                it.action = NotificationReceiver.SECOND_SOURCE_ACTION
-                it.putExtra(NotificationReceiver.SOURCE_EXTRA, markup.secondSource)
-                it.putExtra(NotificationReceiver.TIME_EXTRA, time.toString(dateTimeFormat))
-                PendingIntent.getBroadcast(
-                    context,
-                    0,
-                    it,
-                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-                )
-            }
-
-
         val builder = NotificationCompat.Builder(context, WARNING_CHANNEL_ID)
             .setSmallIcon(R.drawable.icon_stress)
             .setContentTitle(titleNotification)
             .setContentText(warningContent)
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .addAction(R.drawable.icon_stress, markup.firstSource, firstSourcePendingIntent)
-            .addAction(R.drawable.icon_stress, markup.secondSource, secondSourcePendingIntent)
             .setAutoCancel(true)
+
+        getPendingIntent(time).forEach {
+            builder.addAction(R.drawable.icon_stress, it.key , it.value)
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel(WARNING_CHANNEL_ID, WARNING_CHANNEL_ID, WARNING_CHANNEL_ID)

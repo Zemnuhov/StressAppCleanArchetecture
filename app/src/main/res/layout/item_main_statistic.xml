@@ -27,7 +27,7 @@
         android:id="@+id/setting_icon"
         android:layout_width="@dimen/routed_button_size"
         android:layout_height="@dimen/routed_button_size"
-        android:src="@drawable/ic_baseline_settings_24"
+        android:src="@drawable/ic_baseline_info_24"
         android:gravity="center"
         android:contentDescription="@string/statistic_icon" />
 

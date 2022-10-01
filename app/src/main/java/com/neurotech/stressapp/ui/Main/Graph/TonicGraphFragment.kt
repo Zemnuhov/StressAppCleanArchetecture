@@ -54,8 +54,8 @@ class TonicGraphFragment: Fragment() {
             val point = DataPoint(x, y)
             if(tonicSeries.highestValueX < x.time) {
                 tonicSeries.appendData(point, true, maxPoint)
-                binding.phaseGraphMain.viewport.setMinY(y - 500)
-                binding.phaseGraphMain.viewport.setMaxY(y + 500)
+                binding.phaseGraphMain.viewport.setMinY(y - 1000)
+                binding.phaseGraphMain.viewport.setMaxY(y + 1000)
             }
         }
     }

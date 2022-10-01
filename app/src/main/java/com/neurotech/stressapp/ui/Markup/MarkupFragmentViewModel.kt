@@ -3,15 +3,12 @@ package com.neurotech.stressapp.ui.Markup
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.neurotech.domain.models.PhaseFlowDomainModel
 import com.neurotech.domain.models.ResultDomainModel
-import com.neurotech.domain.usecases.gsrdata.GetPhaseValueFlow
 import com.neurotech.domain.usecases.resultdata.GetGoingBeyondLimit
 import com.neurotech.domain.usecases.resultdata.SetStressCauseByTime
 import com.neurotech.domain.usecases.settings.GetStimulusList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class MarkupFragmentViewModel(
@@ -35,7 +32,7 @@ class MarkupFragmentViewModel(
                 }
             }
             launch {
-                getStimulusList.invoke().collect{
+                getStimulusList.getFlow().collect{
                     _stimulus.postValue(it)
                 }
             }

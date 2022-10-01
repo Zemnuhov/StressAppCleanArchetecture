@@ -79,11 +79,13 @@ class PhaseItemFragment : Fragment() {
                     6)
             }
             graphSetting()
+            binding.peaksCounterGraph.invalidate()
         }
     }
 
 
     private fun graphSetting() {
+        binding.peaksCounterGraph.removeAllSeries()
         binding.peaksCounterGraph.viewport.isXAxisBoundsManual = true
         binding.peaksCounterGraph.viewport.isYAxisBoundsManual = true
         binding.peaksCounterGraph.viewport.setMinX(barSeries.lowestValueX-500000)
@@ -91,11 +93,11 @@ class PhaseItemFragment : Fragment() {
         binding.peaksCounterGraph.viewport.setMinY(0.0)
         binding.peaksCounterGraph.viewport.setMaxY(barSeries.highestValueY + 2)
         binding.peaksCounterGraph.viewport.isScalable = false
-        binding.peaksCounterGraph.viewport.isScrollable = true
+        binding.peaksCounterGraph.viewport.isScrollable = false
         binding.peaksCounterGraph.viewport.setScalableY(false)
         binding.peaksCounterGraph.viewport.setScrollableY(false)
         binding.peaksCounterGraph.setBackgroundColor(Color.WHITE)
-        binding.peaksCounterGraph.gridLabelRenderer.gridColor = Color.GRAY
+        binding.peaksCounterGraph.gridLabelRenderer.gridColor = Color.BLACK
         binding.peaksCounterGraph.gridLabelRenderer.isVerticalLabelsVisible = false
         binding.peaksCounterGraph.gridLabelRenderer.isHorizontalLabelsVisible = false
         barSeries.spacing = 1
@@ -115,4 +117,6 @@ class PhaseItemFragment : Fragment() {
         }
         binding.peaksCounterGraph.addSeries(barSeries)
     }
+
+
 }

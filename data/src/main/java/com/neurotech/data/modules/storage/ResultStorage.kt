@@ -12,5 +12,6 @@ interface ResultStorage {
     suspend fun getCountBySources(sources: List<String>): Flow<List<ResultSourceCounterItem>>
     suspend fun setStressCauseByTime(stressCause:String, time: List<String>)
     suspend fun saveResult(resultEntity: ResultEntity)
+    suspend fun getResultsInInterval(beginInterval: String, endInterval:String): Flow<List<ResultEntity>>
 
 }

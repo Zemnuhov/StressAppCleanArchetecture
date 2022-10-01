@@ -11,7 +11,7 @@ class MainFragmentViewModelFactory @Inject constructor(
     private val connectionStateUseCase: GetConnectionStateFlow
 ): ViewModelProvider.Factory {
 
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return MainFragmentViewModel(
             disconnectDevice,
             connectionStateUseCase

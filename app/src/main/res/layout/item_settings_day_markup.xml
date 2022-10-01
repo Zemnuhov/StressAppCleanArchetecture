@@ -41,7 +41,9 @@
             android:id="@+id/secondSource"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/default_value" />
+            android:text="@string/default_value"
+            android:textSize="@dimen/small_text_size"
+            />
     </LinearLayout>
 
     <TextView

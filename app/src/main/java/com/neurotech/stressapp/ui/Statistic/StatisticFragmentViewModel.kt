@@ -6,14 +6,15 @@ import androidx.lifecycle.ViewModel
 import com.cesarferreira.tempo.*
 import com.neurotech.domain.TimeFormat
 import com.neurotech.domain.models.ResultDomainModel
-import com.neurotech.domain.usecases.resultdata.GetResults
+import com.neurotech.domain.usecases.resultdata.GetResultsByInterval
+import com.neurotech.domain.usecases.resultdata.GetResultsCountAndSourceInInterval
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class StatisticFragmentViewModel(
-    private val getResults: GetResults
+    private val getResults: GetResultsByInterval
 ) : ViewModel() {
 
     val results: LiveData<List<ResultDomainModel>> get() = _results
@@ -30,12 +31,8 @@ class StatisticFragmentViewModel(
     fun setDayResults(){
         job?.cancel()
         job = scope.launch {
-            getResults.invoke().collect {
-                _results.postValue(
-                    it.filter { result ->
-                        1.day.ago.before(result.time.toDate(TimeFormat.dateTimeFormatDataBase))
-                    }.reversed()
-                )
+            getResults.invoke(Tempo.now.beginningOfDay, Tempo.now.endOfDay).collect {
+                _results.postValue(it)
             }
         }
     }
@@ -43,12 +40,8 @@ class StatisticFragmentViewModel(
     fun setWeekResults(){
         job?.cancel()
         job = scope.launch {
-            getResults.invoke().collect {
-                _results.postValue(
-                    it.filter { result ->
-                        1.week.ago.before(result.time.toDate(TimeFormat.dateTimeFormatDataBase))
-                    }.reversed()
-                )
+            getResults.invoke(Tempo.now.beginningOfMonth,Tempo.now.endOfMonth).collect {
+                _results.postValue(it)
             }
         }
     }
@@ -56,12 +49,8 @@ class StatisticFragmentViewModel(
     fun setMonthResults(){
         job?.cancel()
         job = scope.launch {
-            getResults.invoke().collect {
-                _results.postValue(
-                    it.filter {result ->
-                        30.day.ago.before(result.time.toDate(TimeFormat.dateTimeFormatDataBase))
-                    }.reversed()
-                )
+            getResults.invoke(Tempo.now.beginningOfMonth,Tempo.now.endOfMonth).collect {
+                _results.postValue(it)
             }
         }
         //TODO("Доделать месяц")

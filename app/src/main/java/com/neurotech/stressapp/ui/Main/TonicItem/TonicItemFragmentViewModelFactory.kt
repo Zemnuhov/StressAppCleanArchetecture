@@ -15,7 +15,7 @@ class TonicItemFragmentViewModelFactory @Inject constructor (
     private val getOneDayAvgFlow: GetOneDayAvgFlow,
         ):ViewModelProvider.Factory {
 
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return TonicItemFragmentViewModel(
             getTonicValueFlow,
             getOneHourAvgFlow,

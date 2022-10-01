@@ -21,7 +21,7 @@ class SourceViewModel(
 
     init {
         viewModelScope.launch {
-            getStimulusList.invoke().collect{
+            getStimulusList.getFlow().collect{
                 _sourcesList.postValue(it)
             }
         }

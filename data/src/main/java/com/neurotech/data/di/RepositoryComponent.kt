@@ -1,11 +1,9 @@
 package com.neurotech.data.di
 
 import com.neurotech.data.modules.bluetooth.connection.BluetoothConnection
-import com.neurotech.data.modules.bluetooth.connection.BluetoothConnectionRX
-import com.neurotech.data.modules.bluetooth.data.GsrDataBluetooth
-import com.neurotech.data.modules.bluetooth.data.GsrDataBluetoothRx
-import com.neurotech.data.modules.bluetooth.writing.WriteDataDeviceRx
-import com.neurotech.data.modules.bluetooth.writing.WritingDataDevice
+import com.neurotech.data.modules.bluetooth.data.dataflow.GsrDataBluetooth
+import com.neurotech.data.modules.bluetooth.syncdata.SyncBlePeaks
+import com.neurotech.data.modules.bluetooth.writing.WriteDataDevice
 import com.neurotech.data.modules.settings.SettingsApi
 import com.neurotech.data.modules.storage.database.MarkupDataBase
 import com.neurotech.data.modules.storage.database.PeakDataBase
@@ -26,9 +24,6 @@ import javax.inject.Singleton
     ]
 )
 interface RepositoryComponent {
-    fun inject(bluetooth: BluetoothConnection)
-    fun inject(bluetooth: GsrDataBluetooth)
-    fun inject(bluetooth: WritingDataDevice)
     fun inject(settingsApi: SettingsApi)
     fun inject(dataBase: MarkupDataBase)
     fun inject(peakDataBase: PeakDataBase)
@@ -41,9 +36,9 @@ interface RepositoryComponent {
     fun inject(repository: GsrDataRepositoryImpl)
     fun inject(repository: ConnectionRepositoryImpl)
     fun inject(repository: ResultDataRepositoryImpl)
-    fun inject(bluetoothConnectionRX: BluetoothConnectionRX)
-    fun inject(gsrDataBluetoothRx: GsrDataBluetoothRx)
+    fun inject(bluetoothConnection: BluetoothConnection)
+    fun inject(gsrDataBluetooth: GsrDataBluetooth)
     fun inject(recodingInDeviceImpl: RecodingInDeviceImpl)
-    fun inject(writeDataDeviceRx: WriteDataDeviceRx)
-
+    fun inject(writeDataDevice: WriteDataDevice)
+    fun inject(syncBlePeaks: SyncBlePeaks)
 }

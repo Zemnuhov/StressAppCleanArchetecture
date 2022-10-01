@@ -20,7 +20,7 @@ class StatisticItemFragmentViewModel(
 
     init {
         viewModelScope.launch {
-            getStimulusList.invoke().collect{
+            getStimulusList.getFlow().collect{
                 Log.e("VVV", it.toString())
                 getCountBySources.invoke(it).collect{ countSourceList ->
                     _sourceCount.postValue(countSourceList)

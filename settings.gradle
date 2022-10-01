@@ -4,9 +4,10 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven { url 'https://jitpack.io' }
-         // Warning: this repository is going to shut down soon
+        jcenter()
     }
 }
+
 rootProject.name = "StressApp"
 include ':app'
 include ':data'

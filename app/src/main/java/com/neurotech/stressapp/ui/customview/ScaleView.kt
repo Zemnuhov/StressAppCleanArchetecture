@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.neurotech.stressapp.R
+import kotlin.math.min
 
 class ScaleView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -36,6 +37,43 @@ class ScaleView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
         drawGreenScale(canvas)
         drawYellowScale(canvas)
         drawRedScale(canvas)
+    }
+
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val desiredWidth = 150
+        val desiredHeight = 350
+
+        val widthMode = MeasureSpec.getMode(widthMeasureSpec)
+        val widthSize = MeasureSpec.getSize(widthMeasureSpec)
+        val heightMode = MeasureSpec.getMode(heightMeasureSpec)
+        val heightSize = MeasureSpec.getSize(heightMeasureSpec)
+
+        val width: Int = when (widthMode) {
+            MeasureSpec.EXACTLY -> {
+                widthSize
+            }
+            MeasureSpec.AT_MOST -> {
+                min(desiredWidth, widthSize)
+            }
+            else -> {
+                desiredWidth
+            }
+        }
+
+        val height: Int = when (heightMode) {
+            MeasureSpec.EXACTLY -> {
+                heightSize
+            }
+            MeasureSpec.AT_MOST -> {
+                min(desiredHeight, heightSize)
+            }
+            else -> {
+                desiredHeight
+            }
+        }
+
+        setMeasuredDimension(width, height)
     }
 
     private fun drawGreenScale(canvas: Canvas){

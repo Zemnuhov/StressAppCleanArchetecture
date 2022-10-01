@@ -53,4 +53,21 @@ class ResultDataUseCaseModule {
         return GetResults(repository)
     }
 
+    @Provides
+    @Singleton
+    fun providesGetResultsInMonth(repository: ResultDataRepository): GetResultsInMonth {
+        return GetResultsInMonth(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun providesGetResultsCountAndSourceInInterval(repository: ResultDataRepository): GetResultsCountAndSourceInInterval {
+        return GetResultsCountAndSourceInInterval(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun providesGetResultsInInterval(repository: ResultDataRepository): GetResultsByInterval {
+        return GetResultsByInterval(repository)
+    }
 }

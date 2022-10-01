@@ -3,11 +3,10 @@ package com.neurotech.data.modules.settings
 import com.neurotech.data.di.RepositoryDI.Companion.component
 import javax.inject.Inject
 
-class SettingsApi: Settings {
+class SettingsApi : Settings {
 
     @Inject
     lateinit var settingsModel: SharedPrefSettings
-
     private val defaultMAC = "00:00:00:00:00:00"
 
     init {
@@ -24,9 +23,9 @@ class SettingsApi: Settings {
     }
 
     override fun getThreshold(): Double {
-        return when(val threshold = settingsModel.getSettings(settingsModel.THRESHOLD_TAG)){
+        return when (val threshold = settingsModel.getSettings(settingsModel.THRESHOLD_TAG)) {
             is String -> threshold.toDouble()
-            else -> 1.25
+            else -> 3.0
         }
     }
 
@@ -44,15 +43,19 @@ class SettingsApi: Settings {
             .split("|").filter { it != "" }
     }
 
-    override fun addStimulus(source: String) {
-        val stimulusList = getStimulusList().toMutableList()
-        stimulusList.add(source)
-        settingsModel.setSettings(settingsModel.STIMULUS_TAG,stimulusList.joinToString("|"))
+    override fun addStimulus(source: String): Boolean {
+        if (getStimulusList().size < 15) {
+            val stimulusList = getStimulusList().toMutableList()
+            stimulusList.add(source.trim())
+            settingsModel.setSettings(settingsModel.STIMULUS_TAG, stimulusList.joinToString("|"))
+            return true
+        }
+        return false
     }
 
     override fun deleteStimulus(source: String) {
         val stimulusList = getStimulusList().toMutableList()
         stimulusList.remove(source)
-        settingsModel.setSettings(settingsModel.STIMULUS_TAG,stimulusList.joinToString("|"))
+        settingsModel.setSettings(settingsModel.STIMULUS_TAG, stimulusList.joinToString("|"))
     }
 }

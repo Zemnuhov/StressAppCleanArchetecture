@@ -14,7 +14,7 @@ class PhaseItemFragmentViewModelFactory @Inject constructor(
     private val getOneDayCountFlow: GetOneDayCountFlow,
     private val getResultsInOneHour: GetResultsInOneHour
 ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return PhaseItemFragmentViewModel(
             getTenMinuteCountFlow,
             getOneHourCountFlow,

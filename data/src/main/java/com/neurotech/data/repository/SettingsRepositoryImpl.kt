@@ -24,9 +24,13 @@ class SettingsRepositoryImpl: SettingsRepository {
         return settings.getThreshold()
     }
 
-    override fun getStimulusList(): Flow<List<String>> {
+    override fun getStimulusListFlow(): Flow<List<String>> {
         stimulusFlow.value = settings.getStimulusList()
         return stimulusFlow
+    }
+
+    override fun getStimulusList(): List<String> {
+        return settings.getStimulusList()
     }
 
     override fun addStimulus(source: String) {

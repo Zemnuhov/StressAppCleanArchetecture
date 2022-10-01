@@ -1,6 +1,7 @@
 package com.neurotech.data.repository
 
 import com.neurotech.data.di.RepositoryDI.Companion.component
+import com.neurotech.data.modules.bluetooth.syncdata.SyncData
 import com.neurotech.data.modules.bluetooth.writing.WritingData
 import com.neurotech.domain.repository.RecodingInDevice
 import java.util.*
@@ -10,6 +11,9 @@ class RecodingInDeviceImpl: RecodingInDevice {
 
     @Inject
     lateinit var writer: WritingData
+
+    @Inject
+    lateinit var syncData: SyncData
 
     init {
         component.inject(this)

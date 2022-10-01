@@ -12,7 +12,7 @@ class DayMarkupFragmentFactory @Inject constructor(
     val deleteMarkupUseCase: DeleteMarkup,
     val getMarkupListFlow: GetMarkupListFlow,
 ): ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return DayMarkupViewModel(addMarkupUseCase, deleteMarkupUseCase, getMarkupListFlow) as T
     }
 }

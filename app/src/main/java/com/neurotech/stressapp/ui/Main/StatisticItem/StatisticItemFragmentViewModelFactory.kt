@@ -10,7 +10,7 @@ class StatisticItemFragmentViewModelFactory @Inject constructor(
     private val getCountBySources: GetCountBySources,
     private val getStimulusList: GetStimulusList
 ): ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return StatisticItemFragmentViewModel(getCountBySources, getStimulusList) as T
     }
 }

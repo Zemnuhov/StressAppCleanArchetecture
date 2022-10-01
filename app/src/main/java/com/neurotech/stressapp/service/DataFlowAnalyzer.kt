@@ -25,6 +25,7 @@ import com.neurotech.stressapp.notification.NotificationReceiver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
@@ -94,14 +95,18 @@ class DataFlowAnalyzer(context: Context) {
         if (value < threshold && isPeak) {
             endPeak = time
             scope.launch {
-                writePhase.invoke(
-                    PeakDomainModel(
-                        beginPeak!!.toString(TimeFormat.dateTimeFormatDataBase),
-                        endPeak!!.toString(TimeFormat.dateTimeFormatDataBase),
-                        maxValue
+                try {
+                    writePhase.invoke(
+                        PeakDomainModel(
+                            beginPeak!!.toString(TimeFormat.dateTimeFormatDataBase),
+                            endPeak!!.toString(TimeFormat.dateTimeFormatDataBase),
+                            maxValue
+                        )
                     )
-                )
-                deviceBleWriter.recordPeaks(getTenMinutePhase.invoke())
+                    deviceBleWriter.recordPeaks(getTenMinutePhase.invoke())
+                }catch (e: Exception){
+
+                }
             }
             isPeak = false
         }
