@@ -1,28 +1,27 @@
 package com.neurotech.stressapp.ui.Statistic
 
-import android.annotation.SuppressLint
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cesarferreira.tempo.Tempo
-import com.cesarferreira.tempo.endOfDay
 import com.cesarferreira.tempo.toDate
 import com.cesarferreira.tempo.toString
-import com.jjoe64.graphview.DefaultLabelFormatter
-import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter
+import com.github.mikephil.charting.components.Description
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.jjoe64.graphview.series.BarGraphSeries
 import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
 import com.neurotech.domain.ThresholdValues
 import com.neurotech.domain.TimeFormat
+import com.neurotech.domain.models.ResultDomainModel
 import com.neurotech.stressapp.App
 import com.neurotech.stressapp.R
 import com.neurotech.stressapp.databinding.FragmentStatisticBinding
@@ -74,8 +73,8 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
         buttonListeners()
     }
 
-    private fun mapValue(value: Double, min: Int): Double {
-        return value  / 10000 * (min+100 - min) + min
+    private fun mapValue(value: Float, min: Int): Float {
+        return value / 10000 * (min + 100 - min) + min
     }
 
     private fun setObservers() {
@@ -83,77 +82,68 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
             binding.recyclerView.adapter = StatisticFragmentAdapter(it)
         }
         viewModel.results.observe(viewLifecycleOwner) {
-            barSeries = BarGraphSeries(arrayOf<DataPoint>())
-            tonicSeries = LineGraphSeries(arrayOf<DataPoint>())
-            it.sortedBy { result -> result.time.toDate(TimeFormat.dateTimeFormatDataBase) }
-                .forEach { result ->
-                    val time = result.time.toDate(TimeFormat.dateTimeFormatDataBase)
-                    val peaks = result.peakCount.toDouble()
-                    val bar = DataPoint(time, peaks)
-                    barSeries.appendData(bar, true, 10000)
-                    val tonic = result.tonicAvg.toDouble()
-                    val point = DataPoint(time, mapValue(tonic,it.maxOf { it.peakCount }-20))
-                    tonicSeries.appendData(point,true, 10000)
-                }
-            graphSettings()
+            drawGraph(getCombinedData(it))
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    private fun graphSettings() {
-        binding.statisticGraph.removeAllSeries()
-        binding.statisticGraph.addSeries(tonicSeries)
-        binding.statisticGraph.addSeries(barSeries)
+    private fun getCombinedData(resultList: List<ResultDomainModel>): CombinedData {
+        val barDataSet = BarDataSet(arrayListOf(), "")
+        val lineDataSet = LineDataSet(arrayListOf(), "")
 
-        binding.statisticGraph.viewport.isXAxisBoundsManual = true
-        binding.statisticGraph.viewport.isYAxisBoundsManual = true
-        binding.statisticGraph.viewport.setMinX(barSeries.lowestValueX - 500000)
-        binding.statisticGraph.viewport.setMaxX((Tempo.now.endOfDay.time + 500000).toDouble())
-        binding.statisticGraph.viewport.setMinY(0.0)
-        binding.statisticGraph.viewport.setMaxY(tonicSeries.highestValueY + 2)
-        binding.statisticGraph.viewport.isScalable = true
-        binding.statisticGraph.viewport.isScrollable = true
-        binding.statisticGraph.viewport.setScalableY(false)
-        binding.statisticGraph.viewport.setScrollableY(false)
-        binding.statisticGraph.setBackgroundColor(Color.WHITE)
-        binding.statisticGraph.gridLabelRenderer.gridColor = Color.GRAY
-        binding.statisticGraph.gridLabelRenderer.isVerticalLabelsVisible = false
-
-        binding.statisticGraph.gridLabelRenderer.labelFormatter = object :DefaultLabelFormatter(){
-            override fun formatLabel(value: Double, isValueX: Boolean): String {
-                val date = Date(value.toLong())
-                return date.toString(TimeFormat.timeFormat) + "\n" + date.toString(TimeFormat.dateFormatNoYear)
-            }
+        val sortedResultList =
+            resultList.sortedBy { result -> result.time.toDate(TimeFormat.dateTimeFormatDataBase) }
+        sortedResultList.forEach { result ->
+            val time = result.time.toDate(TimeFormat.dateTimeFormatDataBase).time.toFloat()
+            val peaks = result.peakCount.toFloat()
+            val tonic = mapValue( result.tonicAvg.toFloat(),sortedResultList.maxOf { it.peakCount })
+            barDataSet.addEntry(BarEntry(time, peaks))
+            lineDataSet.addEntry(Entry(time, tonic))
         }
-        binding.statisticGraph.gridLabelRenderer.numHorizontalLabels = 3
 
-        barSeries.spacing = 1
-        barSeries.dataWidth = 500000.0
-        barSeries.setValueDependentColor { data: DataPoint ->
-            if (data.y < ThresholdValues.normal) {
-                return@setValueDependentColor ContextCompat.getColor(
-                    requireContext(),
-                    R.color.green_active
-                )
-            }
-            if (data.y in ThresholdValues.normal .. ThresholdValues.high) {
-                return@setValueDependentColor ContextCompat
-                    .getColor(requireContext(), R.color.yellow_active)
-            }
-            ContextCompat.getColor(requireContext(), R.color.red_active)
-        }
-        tonicSeries.color = Color.BLACK
-
-//        binding.statisticGraph.setOnTouchListener { _, event ->
-//            barSeries.onTap(event.x, event.y)
-//            return@setOnTouchListener true
+//        barDataSet.apply {
+//            colors = mutableListOf<Int>().apply {
+//                sortedResultList.map { it.peakCount }.forEach{
+//                    if(it<ThresholdValues.normal){
+//                        add(ContextCompat.getColor(requireContext(),R.color.green_active))
+//                    }else if (it>= ThresholdValues.normal && it<ThresholdValues.high){
+//                        add(ContextCompat.getColor(requireContext(),R.color.yellow_active))
+//                    }else{
+//                        add(ContextCompat.getColor(requireContext(),R.color.red_active))
+//                    }
+//                }
+//            }
 //        }
-
-        barSeries.setOnDataPointTapListener{
-                _, dataPoint ->
-            Toast.makeText(context, "${dataPoint.y}  ${dataPoint.x.toLong()}", Toast.LENGTH_SHORT).show()
+        val data = CombinedData().apply {
+            setData(BarData(barDataSet))
+            setData(LineData(lineDataSet))
         }
-
-        binding.statisticGraph.invalidate()
+        return data
     }
+
+    private fun drawGraph(data: CombinedData){
+        binding.statisticGraph.apply {
+            axisLeft.setDrawGridLines(false)
+            axisLeft.setDrawAxisLine(false)
+            axisLeft.isEnabled = false
+            axisRight.isEnabled = false
+            xAxis.setDrawGridLines(false)
+            xAxis.setDrawAxisLine(false)
+            xAxis.position = XAxis.XAxisPosition.BOTTOM
+            xAxis.textSize = 7F
+            xAxis.labelRotationAngle = 45f
+            //viewPortHandler.setMinMaxScaleX(1F, 1F)
+            //viewPortHandler.setMinMaxScaleY(1F, 1F)
+            legend.isEnabled = false
+            description = Description().apply { text = "" }
+            xAxis.valueFormatter = object : IndexAxisValueFormatter(){
+                override fun getFormattedValue(value: Float): String {
+                    return Date(value.toLong()).toString("HH-mm")
+                }
+            }
+            setData(data)
+            animateY(500)
+            invalidate()
+        }
+    }
+
 }
