@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.cesarferreira.tempo.toString
+import com.neurotech.domain.TimeFormat
 import com.neurotech.stressapp.App
 import com.neurotech.stressapp.R
 import com.neurotech.stressapp.databinding.FragmentMarkupBinding
@@ -40,7 +42,7 @@ class MarkupFragment : Fragment(R.layout.fragment_markup) {
         binding.saveButton.setOnClickListener {
             for(markup in adapter.markups){
                 if(markup.stressCause != null){
-                    viewModel.setStressCause(markup.time, markup.stressCause!!)
+                    viewModel.setStressCause(markup.time.toString(TimeFormat.dateTimeFormatDataBase), markup.stressCause!!)
                 }
             }
         }

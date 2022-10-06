@@ -29,11 +29,9 @@ class MarkupFragmentAdapter( val markups: List<ResultDomainModel>,
     override fun onBindViewHolder(holder: MarkupViewHolder, position: Int) {
         holder.date.text = markups[position]
             .time
-            .toDate(TimeFormat.dateTimeFormatDataBase)
             .toString(TimeFormat.dateFormat)
         holder.time.text = markups[position]
             .time
-            .toDate(TimeFormat.dateTimeFormatDataBase)
             .toString(TimeFormat.timeFormat)
         holder.peaks.text = markups[position].peakCount.toString()
         holder.tonic.text = markups[position].tonicAvg.toString()

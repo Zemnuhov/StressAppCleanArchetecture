@@ -8,6 +8,7 @@ import com.neurotech.data.modules.storage.database.dao.ResultDao
 import com.neurotech.data.modules.storage.database.entity.ResultEntity
 import com.neurotech.data.modules.storage.database.entity.ResultForTheDay
 import com.neurotech.data.modules.storage.database.entity.ResultSourceCounterItem
+import com.neurotech.domain.TimeFormat
 import com.neurotech.domain.TimeFormat.dateFormatDataBase
 import com.neurotech.domain.TimeFormat.dateTimeFormatDataBase
 import com.neurotech.domain.models.ResultCountSourceDomainModel
@@ -36,7 +37,7 @@ class ResultDataRepositoryImpl : ResultDataRepository {
             resultDao.getResult().collect {
                 emit(it.map { resultEntity ->
                     ResultDomainModel(
-                        resultEntity.time,
+                        resultEntity.time.toDate(dateTimeFormatDataBase).beginningOfMinute,
                         resultEntity.peakCount,
                         resultEntity.tonicAvg,
                         resultEntity.conditionAssessment,
@@ -89,7 +90,7 @@ class ResultDataRepositoryImpl : ResultDataRepository {
         if(model.tonicAvg != 0){
             resultDao.insertResult(
                 ResultEntity(
-                    model.time,
+                    model.time.toString(dateTimeFormatDataBase),
                     model.peakCount,
                     model.tonicAvg,
                     model.conditionAssessment,
@@ -109,7 +110,7 @@ class ResultDataRepositoryImpl : ResultDataRepository {
                 emit(
                     it.map { resultEntity ->
                         ResultDomainModel(
-                            resultEntity.time,
+                            resultEntity.time.toDate(dateTimeFormatDataBase).beginningOfMinute,
                             resultEntity.peakCount,
                             resultEntity.tonicAvg,
                             resultEntity.conditionAssessment,
@@ -201,7 +202,7 @@ class ResultDataRepositoryImpl : ResultDataRepository {
                 emit(
                     it.map { entity ->
                         ResultDomainModel(
-                            entity.time,
+                            entity.time.toDate(dateTimeFormatDataBase).beginningOfMinute,
                             entity.peakCount,
                             entity.tonicAvg,
                             entity.conditionAssessment,

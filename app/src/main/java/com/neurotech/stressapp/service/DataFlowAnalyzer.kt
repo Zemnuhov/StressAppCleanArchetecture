@@ -122,7 +122,7 @@ class DataFlowAnalyzer(context: Context) {
             val tonicAvg = getTenMinuteTonic.invoke()
             if (getTenMinuteResultCount.invoke() == 0) {
                 val result = ResultDomainModel(
-                    time.toString(TimeFormat.dateTimeFormatDataBase),
+                    time,
                     peakCount,
                     tonicAvg,
                     1

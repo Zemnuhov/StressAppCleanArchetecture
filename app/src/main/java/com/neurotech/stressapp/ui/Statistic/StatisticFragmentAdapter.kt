@@ -29,7 +29,7 @@ class StatisticFragmentAdapter(private val results: List<ResultDomainModel>) :
     }
 
     override fun onBindViewHolder(holder: StatisticCardView, position: Int) {
-        val dateTime = results[position].time.toDate(TimeFormat.dateTimeFormatDataBase)
+        val dateTime = results[position].time
         holder.timeTextView.text = dateTime.toString(TimeFormat.timeFormat)
         holder.dateTextView.text = dateTime.toString(TimeFormat.dateFormat)
         holder.peakTextView.text = results[position].peakCount.toString()
