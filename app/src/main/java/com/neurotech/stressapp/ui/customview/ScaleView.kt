@@ -24,9 +24,12 @@ class ScaleView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
     private val redRectTwo = RectF()
     private val redRectThree = RectF()
 
-    private val margin = 40
+    private val margin get() = (height - rectHeight*9)/9
+    private val rectHeight get() = height/11
+    private val rectWidth get() = width/5
+    private val ledge get() = rectWidth / 6
 
-    public var value = 0
+     var value = 0
         set(value) {
             field = value
             invalidate()
@@ -34,15 +37,74 @@ class ScaleView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        drawGreenScale(canvas)
-        drawYellowScale(canvas)
-        drawRedScale(canvas)
+        with(canvas){
+            drawGreenScale()
+            drawYellowScale()
+            drawRedScale()
+        }
     }
 
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        greenRectOne.set(
+            (0 + rectWidth).toFloat(),
+            (height-rectHeight).toFloat(),
+            (width - rectWidth).toFloat(),
+            (height).toFloat()
+        )
+        greenRectTwo.set(
+            greenRectOne.left,
+            greenRectOne.top- margin - rectHeight,
+            greenRectOne.right,
+            greenRectOne.top-margin
+        )
+        greenRectThree.set(
+            greenRectTwo.left,
+            greenRectTwo.top-margin - rectHeight,
+            greenRectTwo.right,
+            greenRectTwo.top-margin
+        )
+
+        yellowRectOne.set(
+            greenRectThree.left-ledge,
+            greenRectThree.top - margin - rectHeight,
+            greenRectThree.right+ledge,
+            greenRectThree.top-margin
+        )
+        yellowRectTwo.set(
+            yellowRectOne.left-ledge,
+            yellowRectOne.top - margin - rectHeight,
+            yellowRectOne.right+ledge,
+            yellowRectOne.top-margin
+        )
+        yellowRectThree.set(
+            yellowRectTwo.left-ledge,
+            yellowRectTwo.top - margin - rectHeight,
+            yellowRectTwo.right+ledge,
+            yellowRectTwo.top-margin
+        )
+        redRectOne.set(
+            yellowRectThree.left-ledge,
+            yellowRectThree.top - margin - rectHeight,
+            yellowRectThree.right+ledge,
+            yellowRectThree.top-margin
+        )
+        redRectTwo.set(
+            redRectOne.left-ledge,
+            redRectOne.top - margin - rectHeight,
+            redRectOne.right+ledge,
+            redRectOne.top-margin
+        )
+        redRectThree.set(
+            redRectTwo.left-ledge,
+            redRectTwo.top - margin - rectHeight,
+            redRectTwo.right+ledge,
+            redRectTwo.top-margin
+        )
+    }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val desiredWidth = 150
-        val desiredHeight = 350
+        val desiredHeight = 150
 
         val widthMode = MeasureSpec.getMode(widthMeasureSpec)
         val widthSize = MeasureSpec.getSize(widthMeasureSpec)
@@ -76,124 +138,63 @@ class ScaleView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
         setMeasuredDimension(width, height)
     }
 
-    private fun drawGreenScale(canvas: Canvas){
+    private fun Canvas.drawGreenScale(){
         paint.color = when(value){
             in 1000..10000 -> ContextCompat.getColor(context, R.color.green_active)
             else -> ContextCompat.getColor(context, R.color.green_not_active)
         }
-        greenRectOne.set(
-            (width-40).toFloat(),
-            (height/2+150).toFloat(),
-            (width/2+40).toFloat(),
-            (height/2+175).toFloat()
-        )
-        canvas.drawRect(greenRectOne,paint)
+        drawRect(greenRectOne,paint)
 
         paint.color = when(value){
             in 2000..10000 -> ContextCompat.getColor(context, R.color.green_active)
             else -> ContextCompat.getColor(context, R.color.green_not_active)
         }
-
-        greenRectTwo.set(
-            greenRectOne.left,
-            greenRectOne.top-margin,
-            greenRectOne.right,
-            greenRectOne.bottom-margin
-        )
-        canvas.drawRect(greenRectTwo,paint)
+        drawRect(greenRectTwo,paint)
 
         paint.color = when(value){
             in 3000..10000 -> ContextCompat.getColor(context, R.color.green_active)
             else -> ContextCompat.getColor(context, R.color.green_not_active)
         }
-
-        greenRectThree.set(
-            greenRectTwo.left,
-            greenRectTwo.top-margin,
-            greenRectTwo.right,
-            greenRectTwo.bottom-margin
-        )
-        canvas.drawRect(greenRectThree,paint)
+        drawRect(greenRectThree,paint)
     }
 
-    private fun drawYellowScale(canvas: Canvas){
+    private fun Canvas.drawYellowScale(){
         paint.color = when(value){
             in 4000..10000 -> ContextCompat.getColor(context, R.color.yellow_active)
             else -> ContextCompat.getColor(context, R.color.yellow_not_active)
         }
-
-        yellowRectOne.set(
-            greenRectThree.left-5,
-            greenRectThree.top-margin,
-            greenRectThree.right+5,
-            greenRectThree.bottom-margin
-        )
-        canvas.drawRect(yellowRectOne,paint)
+        drawRect(yellowRectOne,paint)
 
         paint.color = when(value){
             in 5000..10000 -> ContextCompat.getColor(context, R.color.yellow_active)
             else -> ContextCompat.getColor(context, R.color.yellow_not_active)
         }
-
-        yellowRectTwo.set(
-            yellowRectOne.left-5,
-            yellowRectOne.top-margin,
-            yellowRectOne.right+5,
-            yellowRectOne.bottom-margin
-        )
-        canvas.drawRect(yellowRectTwo,paint)
+        drawRect(yellowRectTwo,paint)
 
         paint.color = when(value){
             in 6000..10000 -> ContextCompat.getColor(context, R.color.yellow_active)
             else -> ContextCompat.getColor(context, R.color.yellow_not_active)
         }
-        yellowRectThree.set(
-            yellowRectTwo.left-5,
-            yellowRectTwo.top-margin,
-            yellowRectTwo.right+5,
-            yellowRectTwo.bottom-margin
-        )
-        canvas.drawRect(yellowRectThree,paint)
+        drawRect(yellowRectThree,paint)
     }
 
-    private fun drawRedScale(canvas: Canvas){
+    private fun Canvas.drawRedScale(){
         paint.color = when(value){
             in 7000..10000 -> ContextCompat.getColor(context, R.color.red_active)
             else -> ContextCompat.getColor(context, R.color.red_not_active)
         }
-
-        redRectOne.set(
-            yellowRectThree.left-5,
-            yellowRectThree.top-margin,
-            yellowRectThree.right+5,
-            yellowRectThree.bottom-margin
-        )
-        canvas.drawRect(redRectOne,paint)
+        drawRect(redRectOne,paint)
 
         paint.color = when(value){
             in 8000..10000 -> ContextCompat.getColor(context, R.color.red_active)
             else -> ContextCompat.getColor(context, R.color.red_not_active)
         }
-
-        redRectTwo.set(
-            redRectOne.left-5,
-            redRectOne.top-margin,
-            redRectOne.right+5,
-            redRectOne.bottom-margin
-        )
-        canvas.drawRect(redRectTwo,paint)
+        drawRect(redRectTwo,paint)
 
         paint.color = when(value){
             in 9000..10000 -> ContextCompat.getColor(context, R.color.red_active)
             else -> ContextCompat.getColor(context, R.color.red_not_active)
         }
-
-        redRectThree.set(
-            redRectTwo.left-5,
-            redRectTwo.top-margin,
-            redRectTwo.right+5,
-            redRectTwo.bottom-margin
-        )
-        canvas.drawRect(redRectThree,paint)
+        drawRect(redRectThree,paint)
     }
 }
