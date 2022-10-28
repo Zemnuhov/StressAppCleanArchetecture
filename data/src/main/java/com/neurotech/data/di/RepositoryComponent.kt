@@ -1,9 +1,10 @@
 package com.neurotech.data.di
 
 import com.neurotech.data.modules.bluetooth.connection.BluetoothConnection
-import com.neurotech.data.modules.bluetooth.data.dataflow.GsrDataBluetooth
-import com.neurotech.data.modules.bluetooth.syncdata.SyncBlePeaks
-import com.neurotech.data.modules.bluetooth.writing.WriteDataDevice
+import com.neurotech.data.modules.bluetooth.connection.BleConnection
+import com.neurotech.data.modules.bluetooth.data.DataFlow
+import com.neurotech.data.modules.bluetooth.syncdata.SyncDataFromDevice
+import com.neurotech.data.modules.bluetooth.writing.WritingDataToDevice
 import com.neurotech.data.modules.settings.SettingsApi
 import com.neurotech.data.modules.storage.database.MarkupDataBase
 import com.neurotech.data.modules.storage.database.PeakDataBase
@@ -37,8 +38,9 @@ interface RepositoryComponent {
     fun inject(repository: ConnectionRepositoryImpl)
     fun inject(repository: ResultDataRepositoryImpl)
     fun inject(bluetoothConnection: BluetoothConnection)
-    fun inject(gsrDataBluetooth: GsrDataBluetooth)
     fun inject(recodingInDeviceImpl: RecodingInDeviceImpl)
-    fun inject(writeDataDevice: WriteDataDevice)
-    fun inject(syncBlePeaks: SyncBlePeaks)
+    fun inject(bleConnection: BleConnection)
+    fun inject(dataFlow: DataFlow)
+    fun inject(syncDataFromDevice: SyncDataFromDevice)
+    fun inject(writingDataToDevice: WritingDataToDevice)
 }

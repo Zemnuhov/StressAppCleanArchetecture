@@ -10,6 +10,7 @@ import com.neurotech.domain.usecases.settings.GetStimulusList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.*
 
 class MarkupFragmentViewModel(
     private val getGoingBeyondLimit: GetGoingBeyondLimit,
@@ -39,9 +40,9 @@ class MarkupFragmentViewModel(
         }
     }
 
-    fun setStressCause(time: String, source: String) {
+    fun setStressCause(source: String, time: List<Date>) {
         scope.launch {
-            setStressCauseByTime.invoke(source, listOf(time))
+            setStressCauseByTime.invoke(source, time)
         }
     }
 }

@@ -16,6 +16,7 @@ import com.neurotech.stressapp.ui.Setting.DayMarkup.DayMarkupFragment
 import com.neurotech.stressapp.ui.DayMarkupUpdate.DayMarkupUpdateFragment
 import com.neurotech.stressapp.ui.Main.Graph.TonicGraphFragment
 import com.neurotech.stressapp.ui.Markup.MarkupFragment
+import com.neurotech.stressapp.ui.RelaxFragment.RelaxFragment
 import com.neurotech.stressapp.ui.Setting.Source.SourceFragment
 import com.neurotech.stressapp.ui.Statistic.StatisticFragment
 import dagger.Component
@@ -56,5 +57,8 @@ interface AppComponent {
     fun inject(fragment: StatisticFragment)
     fun inject(fragment: TonicGraphFragment)
     fun inject(analyticsFragment: AnalyticsFragment)
+    fun inject(relaxFragment: RelaxFragment) {
+
+    }
 
 }

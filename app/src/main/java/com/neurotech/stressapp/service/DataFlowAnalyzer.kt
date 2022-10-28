@@ -104,6 +104,7 @@ class DataFlowAnalyzer(context: Context) {
                         )
                     )
                     deviceBleWriter.recordPeaks(getTenMinutePhase.invoke())
+                    maxValue = 0.0
                 }catch (e: Exception){
 
                 }

@@ -36,6 +36,12 @@ class PhaseDataUseCaseModule {
 
     @Provides
     @Singleton
+    fun provideGetPeaksInInterval(repository: PhaseRepository): GetPeaksInInterval{
+        return GetPeaksInInterval(repository)
+    }
+
+    @Provides
+    @Singleton
     fun provideWritePeak(repository: PhaseRepository): WritePhase{
         return WritePhase(repository)
     }

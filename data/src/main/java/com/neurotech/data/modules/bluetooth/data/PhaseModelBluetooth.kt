@@ -1,4 +1,4 @@
-package com.neurotech.data.modules.bluetooth.data.dataflow
+package com.neurotech.data.modules.bluetooth.data
 
 import java.util.*
 

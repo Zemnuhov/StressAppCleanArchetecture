@@ -11,7 +11,7 @@ import com.neurotech.test.storage.database.entity.PeakEntity
 import com.neurotech.data.modules.storage.database.entity.ResultEntity
 import com.neurotech.test.storage.database.entity.TonicEntity
 
-@Database(entities = [PeakEntity::class, TonicEntity::class, ResultEntity::class, MarkupEntity::class], version = 1)
+@Database(entities = [PeakEntity::class, TonicEntity::class, ResultEntity::class, MarkupEntity::class], version = 2)
 abstract class AppDatabase: RoomDatabase() {
     abstract fun peakDao(): PeakDao
     abstract fun tonicDao(): TonicDao

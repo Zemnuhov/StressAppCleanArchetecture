@@ -1,6 +1,8 @@
 package com.neurotech.stressapp.ui.Statistic
 
 import android.content.Context
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,37 +16,31 @@ import com.neurotech.domain.ThresholdValues
 import com.neurotech.domain.TimeFormat
 import com.neurotech.domain.models.ResultDomainModel
 import com.neurotech.stressapp.R
+import com.neurotech.stressapp.databinding.ItemMarkupSourceBinding
+import com.neurotech.stressapp.databinding.ItemStatisticResultBinding
+import java.util.*
 
 class StatisticFragmentAdapter(private val results: List<ResultDomainModel>) :
     RecyclerView.Adapter<StatisticFragmentAdapter.StatisticCardView>() {
 
-    var context: Context? = null
+    val keepMap = mutableMapOf<Date, String?>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StatisticCardView {
-        context = parent.context
-        val view = LayoutInflater
-            .from(parent.context)
-            .inflate(R.layout.item_statistic_result, parent, false)
-        return StatisticCardView(view)
+        val itemBinding = ItemStatisticResultBinding.inflate(LayoutInflater.from(parent.context),parent, false)
+        return StatisticCardView(itemBinding)
     }
 
     override fun onBindViewHolder(holder: StatisticCardView, position: Int) {
-        val dateTime = results[position].time
-        holder.timeTextView.text = dateTime.toString(TimeFormat.timeFormat)
-        holder.dateTextView.text = dateTime.toString(TimeFormat.dateFormat)
-        holder.peakTextView.text = results[position].peakCount.toString()
-        holder.tonicTextView.text = results[position].tonicAvg.toString()
-        holder.sourceTextView.text = results[position].stressCause ?: ""
-        when (results[position].peakCount) {
-            in 0..ThresholdValues.normal.toInt() -> {
-                holder.colorLayout.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.green_active))
+        val result = results[position]
+        holder.textBind(result)
+        holder.colorBind(result)
+        holder.keepSaveButton.setOnClickListener {
+            if(holder.keepEditText.text.isNotEmpty()){
+                keepMap[result.time] = holder.keepEditText.text.toString()
+            }else{
+                keepMap[result.time] = null
             }
-            in ThresholdValues.normal.toInt()..ThresholdValues.high.toInt() -> {
-                holder.colorLayout.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.yellow_active))
-            }
-            else -> {
-                holder.colorLayout.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.red_active))
-            }
+            holder.saveButtonClick()
         }
     }
 
@@ -52,12 +48,85 @@ class StatisticFragmentAdapter(private val results: List<ResultDomainModel>) :
         return results.size
     }
 
-    class StatisticCardView(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val timeTextView: TextView = itemView.findViewById(R.id.timeStatisticTextView)
-        val dateTextView: TextView = itemView.findViewById(R.id.dateStatisticTextView)
-        val peakTextView: TextView = itemView.findViewById(R.id.peakCountStatisticTextView)
-        val tonicTextView: TextView = itemView.findViewById(R.id.avgTonicStatisticTextView)
-        val sourceTextView: TextView = itemView.findViewById(R.id.sourceStatisticTextView)
-        val colorLayout: ConstraintLayout = itemView.findViewById(R.id.colorLayoutStatisticTextView)
+    class StatisticCardView(private val itemBinding: ItemStatisticResultBinding) : RecyclerView.ViewHolder(itemBinding.root) {
+        val keepEditText = itemBinding.keepEditText
+        val keepSaveButton = itemBinding.keepSaveButton
+        fun textBind(result: ResultDomainModel){
+            itemBinding.timeStatisticTextView.text = result.time.toString(TimeFormat.timeFormat)
+            itemBinding.dateStatisticTextView.text = result.time.toString(TimeFormat.dateFormat)
+            itemBinding.peakCountStatisticTextView.text = result.peakCount.toString()
+            itemBinding.avgTonicStatisticTextView.text = result.tonicAvg.toString()
+            itemBinding.sourceStatisticTextView.text = result.stressCause ?: ""
+            if(result.keep != null){
+                showTextLayout(result.keep!!)
+            }
+            itemBinding.keepButton.setOnClickListener {
+                if(itemBinding.keepEditText.visibility == View.GONE){
+                    showEditLayout()
+                }else{
+                    if (result.keep != null){
+                        showTextLayout(result.keep!!)
+                    }else{
+                        goneAll()
+                    }
+                }
+            }
+        }
+
+        private fun goneAll(){
+            itemBinding.keepLayout.visibility = View.GONE
+            itemBinding.keepEditText.visibility = View.GONE
+            itemBinding.keepSaveButton.visibility = View.GONE
+            itemBinding.keepTextView.visibility = View.GONE
+            itemBinding.keepString.visibility = View.GONE
+        }
+
+        private fun showEditLayout(){
+            itemBinding.keepLayout.visibility = View.VISIBLE
+            itemBinding.keepTextView.visibility = View.GONE
+            itemBinding.keepString.visibility = View.GONE
+            itemBinding.keepEditText.visibility = View.VISIBLE
+            itemBinding.keepSaveButton.visibility = View.VISIBLE
+            itemBinding.keepEditText.hint = "Запишите заметку"
+        }
+
+        private fun showTextLayout(keep: String){
+            itemBinding.keepTextView.text = keep
+            itemBinding.keepLayout.visibility = View.VISIBLE
+            itemBinding.keepEditText.visibility = View.GONE
+            itemBinding.keepSaveButton.visibility = View.GONE
+            itemBinding.keepTextView.visibility = View.VISIBLE
+            itemBinding.keepString.visibility = View.VISIBLE
+        }
+
+        fun saveButtonClick(){
+            if (itemBinding.keepEditText.text.isNotEmpty()){
+                showTextLayout(itemBinding.keepEditText.text.toString())
+            }else{
+                goneAll()
+            }
+
+        }
+
+        fun colorBind(result: ResultDomainModel){
+            val gradientDrawable = itemBinding.colorLayoutStatisticTextView.background.current
+            when (result.peakCount) {
+                in 0..ThresholdValues.normal.toInt() -> {
+                    itemBinding.colorLayoutStatisticTextView.background = gradientDrawable.apply {
+                        this.setTint(ContextCompat.getColor(itemBinding.root.context, R.color.green_active))
+                    }
+                }
+                in ThresholdValues.normal.toInt()..ThresholdValues.high.toInt() -> {
+                    itemBinding.colorLayoutStatisticTextView.background = gradientDrawable.apply {
+                        this.setTint(ContextCompat.getColor(itemBinding.root.context, R.color.yellow_active))
+                    }
+                }
+                else -> {
+                    itemBinding.colorLayoutStatisticTextView.background = gradientDrawable.apply {
+                        this.setTint(ContextCompat.getColor(itemBinding.root.context, R.color.red_active))
+                    }
+                }
+            }
+        }
     }
 }

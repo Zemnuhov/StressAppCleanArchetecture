@@ -8,4 +8,5 @@ data class ResultDomainModel(
     val tonicAvg: Int,
     val conditionAssessment: Int,
     var stressCause: String? = null,
+    var keep: String? = null
 )

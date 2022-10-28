@@ -28,7 +28,7 @@ class PhaseGraphFragment : Fragment() {
 
     private val phaseSeries = LineGraphSeries(arrayOf<DataPoint>())
     private val peakSeries = PointsGraphSeries(arrayOf<DataPoint>())
-    private val maxPoint = 10_000
+    private val maxPoint = 5_000
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -69,8 +69,8 @@ class PhaseGraphFragment : Fragment() {
         binding.phaseGraphMain.addSeries(peakSeries)
         binding.phaseGraphMain.viewport.isYAxisBoundsManual = true
         binding.phaseGraphMain.viewport.isXAxisBoundsManual = false
-        binding.phaseGraphMain.viewport.setMinY(-20.0)
-        binding.phaseGraphMain.viewport.setMaxY(20.0)
+        binding.phaseGraphMain.viewport.setMinY(-30.0)
+        binding.phaseGraphMain.viewport.setMaxY(30.0)
         binding.phaseGraphMain.viewport.setMinX(0.0)
         binding.phaseGraphMain.viewport.setMaxX(30000.0)
         binding.phaseGraphMain.viewport.isScalable = true
@@ -88,5 +88,9 @@ class PhaseGraphFragment : Fragment() {
         peakSeries.color = Color.RED
         peakSeries.size = 3f
         phaseSeries.color = Color.BLACK
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
     }
 }

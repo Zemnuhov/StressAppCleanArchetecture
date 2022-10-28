@@ -19,4 +19,6 @@ data class ResultEntity(
     val conditionAssessment: Int,
     @ColumnInfo(name = "stressCause")
     val stressCause: String? = null,
+    @ColumnInfo(name = "keep")
+    val keep: String? = null
 )

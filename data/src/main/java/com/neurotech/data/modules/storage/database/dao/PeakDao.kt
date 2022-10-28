@@ -20,6 +20,9 @@ interface PeakDao {
     @Query("SELECT COUNT(*) FROM peakentity WHERE timeBegin >= datetime('now','-1 day','localtime')")
     fun getOneDayCountFlow(): Flow<Int>
 
+    @Query("SELECT COUNT(*) FROM peakentity WHERE datetime(timeBegin, 'localtime') >= datetime(:dateTime,'localtime')")
+    fun getPeaksInInterval(dateTime: String): Flow<Int>
+
     @Insert
     fun insertPeak(vararg peak: PeakEntity)
 

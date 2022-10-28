@@ -1,15 +1,18 @@
 package com.neurotech.data.di
 
 import android.content.Context
-import com.neurotech.data.modules.bluetooth.Bluetooth
+import com.neurotech.data.modules.bluetooth.AppBluetoothManager
+import com.neurotech.data.modules.bluetooth.bluetoothscan.BleScanner
+import com.neurotech.data.modules.bluetooth.bluetoothscan.DeviceScanner
+import com.neurotech.data.modules.bluetooth.connection.BleConnection
 import com.neurotech.data.modules.bluetooth.connection.BluetoothConnection
-import com.neurotech.data.modules.bluetooth.connection.Connection
+import com.neurotech.data.modules.bluetooth.data.DataFlow
 import com.neurotech.data.modules.bluetooth.data.GsrData
-import com.neurotech.data.modules.bluetooth.data.dataflow.GsrDataBluetooth
-import com.neurotech.data.modules.bluetooth.syncdata.SyncBlePeaks
 import com.neurotech.data.modules.bluetooth.syncdata.SyncData
-import com.neurotech.data.modules.bluetooth.writing.WriteDataDevice
+import com.neurotech.data.modules.bluetooth.syncdata.SyncDataFromDevice
 import com.neurotech.data.modules.bluetooth.writing.WritingData
+import com.neurotech.data.modules.bluetooth.writing.WritingDataToDevice
+
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -20,32 +23,38 @@ class BluetoothModule {
 
     @Provides
     @Singleton
-    fun provideBluetooth(context: Context): Bluetooth {
-        return Bluetooth(context)
+    fun provideBluetoothManager(context: Context): AppBluetoothManager {
+        return AppBluetoothManager(context)
     }
 
     @Provides
     @Singleton
-    fun provideConnection(): Connection {
-        return BluetoothConnection()
+    fun provideBluetoothScanner(): DeviceScanner {
+        return BleScanner()
+    }
+
+    @Provides
+    @Singleton
+    fun provideConnection(): BluetoothConnection {
+        return BleConnection()
     }
 
     @Provides
     @Singleton
     fun provideGsrData(): GsrData {
-        return GsrDataBluetooth()
+        return DataFlow()
     }
 
     @Provides
     @Singleton
     fun provideWriter(): WritingData {
-        return WriteDataDevice()
+        return WritingDataToDevice()
     }
 
     @Provides
     @Singleton
     fun provideSyncData(): SyncData {
-        return SyncBlePeaks()
+        return SyncDataFromDevice()
     }
 
 

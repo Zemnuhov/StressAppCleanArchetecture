@@ -2,6 +2,7 @@ package com.neurotech.data.di
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.migration.Migration
 import com.neurotech.data.modules.storage.database.dao.PeakDao
 import com.neurotech.stressapp.data.database.AppDatabase
 import com.neurotech.data.modules.storage.database.dao.MarkupDao
@@ -16,13 +17,17 @@ import javax.inject.Singleton
 @Module
 class DataBaseModule {
 
+    val MIGRATION_1_2 = Migration(1,2){
+        it.execSQL("ALTER TABLE ResultEntity ADD COLUMN keep VARCHAR(255) DEFAULT null")
+    }
+
     @Provides
     @Singleton
     fun provideDataBase(context: Context): AppDatabase {
         return Room.databaseBuilder(
             context,
             AppDatabase::class.java, "stress_database"
-        ).build()
+        ).addMigrations(MIGRATION_1_2).build()
     }
 
     @Provides

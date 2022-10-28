@@ -13,7 +13,10 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.neurotech.domain.ThresholdValues
 import com.neurotech.domain.TimeFormat
 import com.neurotech.domain.models.ResultCountSourceDomainModel
@@ -58,6 +61,12 @@ class AnalyticsFragment : Fragment(R.layout.fragment_analytics) {
         super.onViewCreated(view, savedInstanceState)
         observeData()
         setUpCalendar()
+        binding.previousMonth.setOnClickListener {
+            viewModel.previousMonth()
+        }
+        binding.nextMonth.setOnClickListener {
+            viewModel.nextMonth()
+        }
         CoroutineScope(Dispatchers.IO).launch {
             delay(500)
             launch(Dispatchers.Main) {
@@ -171,18 +180,19 @@ class AnalyticsFragment : Fragment(R.layout.fragment_analytics) {
     }
 
     private fun getMonthData(resultEntityList: List<ResultForTheDayDomainModel>): BarData {
-        val dataSet = BarDataSet(arrayListOf(), "")
+        val barEntryList = mutableListOf<BarEntry>()
         val sourceMap = mutableMapOf<Float, String>()
         val yValueList = mutableListOf<Float>()
         var id = 0.01f
-        resultEntityList.forEach {
+        resultEntityList.sortedBy { it.date }.forEach {
             val x = it.date.toString("dd").toFloat()
             val y = it.peaks + id
-            dataSet.addEntry(BarEntry(x, y))
+            barEntryList.add(BarEntry(x, y))
             sourceMap[y] = it.stressCause
             yValueList.add(y)
             id += 0.01f
         }
+        val dataSet = BarDataSet(barEntryList, "")
 
         dataSet.apply {
             valueFormatter = object : IndexAxisValueFormatter() {
@@ -210,6 +220,7 @@ class AnalyticsFragment : Fragment(R.layout.fragment_analytics) {
     private fun settingMonthGraph(data: BarData) {
         binding.staticGraphMP.apply {
             setFitBars(true)
+            setData(data)
             axisLeft.setDrawGridLines(false)
             axisLeft.setDrawAxisLine(false)
             axisLeft.isEnabled = false
@@ -229,8 +240,23 @@ class AnalyticsFragment : Fragment(R.layout.fragment_analytics) {
             legend.isEnabled = false
             description = Description().apply { text = "" }
             animateY(500)
-            setData(data)
-            invalidate()
+            setOnChartValueSelectedListener(object : OnChartValueSelectedListener{
+                override fun onValueSelected(e: Entry?, h: Highlight?) {
+                    if (e != null){
+                        val day = viewModel.monthDate.with(day = e.x.toInt())
+                        if(day<Tempo.now.endOfDay){
+                            binding.calendarView.scrollToDate(day)
+                            binding.calendarView.setSelectionDate(day+1.day)
+                            binding.calendarView.setSelectionDate(day)
+                        }
+                    }
+                }
+
+                override fun onNothingSelected() {
+
+                }
+
+            })
         }
     }
 

@@ -43,6 +43,12 @@ class ResultDataUseCaseModule {
 
     @Provides
     @Singleton
+    fun providesSetKeepByTime(repository: ResultDataRepository): SetKeepByTime {
+        return SetKeepByTime(repository)
+    }
+
+    @Provides
+    @Singleton
     fun providesGetGoingBeyondLimit(repository: ResultDataRepository): GetGoingBeyondLimit {
         return GetGoingBeyondLimit(repository)
     }

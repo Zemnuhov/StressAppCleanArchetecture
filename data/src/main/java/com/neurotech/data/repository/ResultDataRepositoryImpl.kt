@@ -90,7 +90,7 @@ class ResultDataRepositoryImpl : ResultDataRepository {
         if(model.tonicAvg != 0){
             resultDao.insertResult(
                 ResultEntity(
-                    model.time.toString(dateTimeFormatDataBase),
+                    model.time.beginningOfMinute.toString(dateTimeFormatDataBase),
                     model.peakCount,
                     model.tonicAvg,
                     model.conditionAssessment,
@@ -100,8 +100,12 @@ class ResultDataRepositoryImpl : ResultDataRepository {
         }
     }
 
-    override suspend fun setStressCauseByTime(stressCause: String, time: List<String>) {
-        resultDao.setStressCauseByTime(stressCause, time)
+    override suspend fun setStressCauseByTime(stressCause: String, time: List<Date>) {
+        resultDao.setStressCauseByTime(stressCause, time.map { it.toString(TimeFormat.dateTimeFormatDataBase) })
+    }
+
+    override suspend fun setKeepByTime(keep: String?, time: Date) {
+        resultDao.setKeepByTime(keep, time.toString(dateTimeFormatDataBase))
     }
 
     override suspend fun getGoingBeyondLimit(peakLimit: Int): Flow<List<ResultDomainModel>> {
@@ -122,10 +126,10 @@ class ResultDataRepositoryImpl : ResultDataRepository {
         }
     }
 
-    override suspend fun getResultsInMonth(): Flow<List<ResultForTheDayDomainModel>> {
+    override suspend fun getResultsInMonth(month: Date): Flow<List<ResultForTheDayDomainModel>> {
         return flow {
-            val beginningOfMonth = Tempo.now.beginningOfMonth
-            val endOfMonth = Tempo.now.endOfMonth
+            val beginningOfMonth = month.beginningOfMonth
+            val endOfMonth = month.endOfMonth
             resultDao.getResultForTheDay(
                 beginningOfMonth.toString(dateFormatDataBase),
                 endOfMonth.toString(dateFormatDataBase)
@@ -206,7 +210,8 @@ class ResultDataRepositoryImpl : ResultDataRepository {
                             entity.peakCount,
                             entity.tonicAvg,
                             entity.conditionAssessment,
-                            entity.stressCause
+                            entity.stressCause,
+                            entity.keep
                         )
                     }
                 )

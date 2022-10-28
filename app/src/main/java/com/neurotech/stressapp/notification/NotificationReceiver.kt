@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.core.app.NotificationManagerCompat
+import com.cesarferreira.tempo.toDate
+import com.neurotech.domain.TimeFormat
 import com.neurotech.domain.usecases.resultdata.SetStressCauseByTime
 import com.neurotech.stressapp.App
 import kotlinx.coroutines.CoroutineScope
@@ -35,7 +37,7 @@ class NotificationReceiver : BroadcastReceiver() {
                     setStressCauseByTime
                         .invoke(
                             source,
-                            listOf(time)
+                            listOf(time.toDate(TimeFormat.dateTimeFormatDataBase))
                         )
                 }
             }

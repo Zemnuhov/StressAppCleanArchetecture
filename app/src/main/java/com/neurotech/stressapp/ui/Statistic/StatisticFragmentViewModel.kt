@@ -9,6 +9,7 @@ import com.neurotech.domain.TimeFormat
 import com.neurotech.domain.models.ResultDomainModel
 import com.neurotech.domain.usecases.resultdata.GetResultsByInterval
 import com.neurotech.domain.usecases.resultdata.GetResultsCountAndSourceInInterval
+import com.neurotech.domain.usecases.resultdata.SetKeepByTime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -16,7 +17,8 @@ import kotlinx.coroutines.launch
 import java.util.Date
 
 class StatisticFragmentViewModel(
-    private val getResults: GetResultsByInterval
+    private val getResults: GetResultsByInterval,
+    private val setKeepByTime: SetKeepByTime
 ) : ViewModel() {
 
     companion object{
@@ -46,9 +48,14 @@ class StatisticFragmentViewModel(
     init {
         setDayResults()
         Log.e("Time", xLabelOfDay.toString())
-        _dateFlow.postValue(date.toString(TimeFormat.dateFormat))
+        _dateFlow.postValue(date.toString("EE " + TimeFormat.dateFormat))
     }
 
+    fun setKeepByTime(time: Date, keep:String?){
+        scope.launch {
+            setKeepByTime.invoke(keep, time)
+        }
+    }
 
     fun setDayResults(){
         _period = DAY
@@ -81,7 +88,7 @@ class StatisticFragmentViewModel(
                 updateData()
             }
             MONTH -> {
-                date = date.beginningOfMonth - 1.day
+                date = date.beginningOfMonth - 1.minute
                 updateData()
             }
         }
@@ -92,17 +99,22 @@ class StatisticFragmentViewModel(
     fun goToNext(){
         when(period){
             DAY -> {
-                date += 1.day
-                updateData()
-
+                if(date.beginningOfDay != Tempo.now.beginningOfDay){
+                    date += 1.day
+                    updateData()
+                }
             }
             WEEK -> {
-                date += 7.day
-                updateData()
+                if(date.beginningOfDay != Tempo.now.beginningOfDay) {
+                    date += 7.day
+                    updateData()
+                }
             }
             MONTH -> {
-                date = date.endOfMonth + 1.day
-                updateData()
+                if(date.beginningOfMonth != Tempo.now.beginningOfMonth) {
+                    date = date.endOfMonth + 1.minute
+                    updateData()
+                }
             }
         }
     }
@@ -128,7 +140,7 @@ class StatisticFragmentViewModel(
                         _results.postValue(it.sortedBy { it.time })
                     }
                 }
-                _dateFlow.postValue(date.toString(TimeFormat.dateFormat))
+                _dateFlow.postValue(date.toString("EE " +TimeFormat.dateFormat))
             }
             WEEK -> {
                 job = scope.launch {

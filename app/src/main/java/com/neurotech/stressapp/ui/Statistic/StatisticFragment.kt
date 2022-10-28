@@ -1,12 +1,10 @@
 package com.neurotech.stressapp.ui.Statistic
 
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -14,12 +12,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cesarferreira.tempo.*
 import com.jjoe64.graphview.DefaultLabelFormatter
-import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter
 import com.jjoe64.graphview.series.BarGraphSeries
 import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
 import com.neurotech.domain.ThresholdValues
-import com.neurotech.domain.TimeFormat
 import com.neurotech.stressapp.App
 import com.neurotech.stressapp.R
 import com.neurotech.stressapp.databinding.FragmentStatisticBinding
@@ -42,6 +38,9 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
     }
     private var barSeries = BarGraphSeries(arrayOf<DataPoint>())
     private var tonicSeries = LineGraphSeries(arrayOf<DataPoint>())
+    private var resultDateList = listOf<Date>()
+
+    private var adapter = StatisticFragmentAdapter(listOf())
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -74,13 +73,21 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
         buttonListeners()
     }
 
+    private fun scrollToClick(timeLong: Long){
+        val position = resultDateList.binarySearch(Date(timeLong))
+        binding.recyclerView.smoothScrollToPosition(position)
+    }
+
     private fun mapValue(value: Double, min: Int): Double {
         return value  / 10000 * (min+100 - min) + min
     }
 
     private fun setObservers() {
         viewModel.results.observe(viewLifecycleOwner) {
-            binding.recyclerView.adapter = StatisticFragmentAdapter(it)
+            binding.recyclerView.setItemViewCacheSize(it.size)
+            adapter = StatisticFragmentAdapter(it)
+            binding.recyclerView.adapter = adapter
+            resultDateList = it.map { it.time }
         }
         viewModel.results.observe(viewLifecycleOwner) {
             barSeries = BarGraphSeries(arrayOf<DataPoint>())
@@ -101,6 +108,41 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
         viewModel.dateFlow.observe(viewLifecycleOwner){
             binding.graphDate.text = it
         }
+    }
+
+    private fun clickToData(xValue: Double){
+        barSeries.setValueDependentColor { data:DataPoint ->
+            if(data.x != xValue){
+                if (data.y < ThresholdValues.normal) {
+                    return@setValueDependentColor ContextCompat.getColor(
+                        requireContext(),
+                        R.color.green_active
+                    )
+                }
+                if (data.y in ThresholdValues.normal .. ThresholdValues.high) {
+                    return@setValueDependentColor ContextCompat
+                        .getColor(requireContext(), R.color.yellow_active)
+                }
+                return@setValueDependentColor ContextCompat.getColor(requireContext(), R.color.red_active)
+            }
+            if (data.y < ThresholdValues.normal) {
+                return@setValueDependentColor ContextCompat.getColor(
+                    requireContext(),
+                    R.color.green_selected
+                )
+            }
+            if (data.y in ThresholdValues.normal .. ThresholdValues.high) {
+                return@setValueDependentColor ContextCompat
+                    .getColor(requireContext(), R.color.yellow_selected)
+            }
+            return@setValueDependentColor ContextCompat.getColor(requireContext(), R.color.red_selected)
+        }
+        barSeries.setOnDataPointTapListener { _, dataPoint ->
+            scrollToClick(dataPoint.x.toLong())
+            clickToData(dataPoint.x)
+        }
+        binding.statisticGraph.removeSeries(barSeries)
+        binding.statisticGraph.addSeries(barSeries)
     }
 
     private fun graphSettings() {
@@ -145,7 +187,7 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
 
         barSeries.apply {
             spacing = 1
-            dataWidth = 500000.0
+            dataWidth = 550000.0
             setValueDependentColor { data: DataPoint ->
                 if (data.y < ThresholdValues.normal) {
                     return@setValueDependentColor ContextCompat.getColor(
@@ -160,11 +202,20 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
                 ContextCompat.getColor(requireContext(), R.color.red_active)
             }
 
-            setOnDataPointTapListener { series, dataPoint ->
-                Toast.makeText(context, "${dataPoint.y}  ${dataPoint.x.toLong()}", Toast.LENGTH_SHORT).show()
+            setOnDataPointTapListener { entry, dataPoint ->
+                scrollToClick(dataPoint.x.toLong())
+                clickToData(dataPoint.x)
             }
         }
         tonicSeries.color = Color.BLACK
         binding.statisticGraph.invalidate()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        adapter.keepMap.forEach { (time, keep) ->
+            viewModel.setKeepByTime(time, keep)
+        }
+
     }
 }

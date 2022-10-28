@@ -1,4 +1,4 @@
-package com.neurotech.data.modules.bluetooth.connection
+package com.neurotech.data.modules.bluetooth.bluetoothscan
 
 data class DeviceModelBluetooth(
     val name: String,

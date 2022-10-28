@@ -1,11 +1,14 @@
 package com.neurotech.data.repository
 
+import com.cesarferreira.tempo.toString
 import com.neurotech.data.di.RepositoryDI.Companion.component
 import com.neurotech.data.modules.storage.database.dao.PeakDao
+import com.neurotech.domain.TimeFormat
 import com.neurotech.domain.models.PeakDomainModel
 import com.neurotech.domain.repository.PhaseRepository
 import com.neurotech.test.storage.database.entity.PeakEntity
 import kotlinx.coroutines.flow.Flow
+import java.util.*
 import javax.inject.Inject
 
 class PhaseRepositoryImpl : PhaseRepository {
@@ -31,6 +34,10 @@ class PhaseRepositoryImpl : PhaseRepository {
 
     override suspend fun getOneDayCountFlow(): Flow<Int> {
         return phaseDao.getOneDayCountFlow()
+    }
+
+    override suspend fun getPeaksInInterval(dateTime: Date): Flow<Int> {
+        return phaseDao.getPeaksInInterval(dateTime.toString(TimeFormat.dateTimeFormatDataBase))
     }
 
     override suspend fun writePhase(model: PeakDomainModel) {

@@ -137,4 +137,9 @@ class SearchFragment : Fragment(R.layout.fragment_search), SearchCardAdapter.Cal
             ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
         }
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

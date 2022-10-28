@@ -1,62 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/markupFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#EAEAEA"
-    android:id="@+id/markupFragment"
     android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/graphInMarkup"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/default_indent"
         android:layout_marginTop="@dimen/default_indent"
-        android:layout_marginRight="@dimen/default_indent"
-        android:layout_marginLeft="@dimen/default_indent"
-        android:layout_marginBottom="@dimen/half_small_indent"
+        android:layout_marginEnd="@dimen/default_indent"
+        android:layout_weight="1.5"
         android:background="@drawable/shadow"
         android:orientation="horizontal"
-        android:layout_weight="1.5"/>
+        app:layout_constraintBottom_toTopOf="@+id/guideline8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/linearLayout4"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/default_indent"
         android:layout_weight="1"
-        android:layout_marginTop="@dimen/half_small_indent"
-        android:layout_marginRight="@dimen/default_indent"
-        android:layout_marginLeft="@dimen/default_indent"
-        android:layout_marginBottom="@dimen/small_indent"
         android:background="@drawable/shadow"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/guideline9"
+        app:layout_constraintEnd_toEndOf="@+id/graphInMarkup"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="@+id/graphInMarkup"
+        app:layout_constraintTop_toTopOf="@+id/guideline8">
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/markupRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="@dimen/default_indent"
-            />
+            tools:listitem="@layout/item_markup"
+            android:padding="@dimen/default_indent" />
+
         <TextView
             android:id="@+id/allMarkupsComplete"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/markup_is_ok"
-            android:textSize="@dimen/default_text_size"
             android:layout_gravity="center"
-            android:gravity="center"
             android:background="@drawable/black_shadow"
-            />
+            android:gravity="center"
+            android:text="@string/markup_is_ok"
+            android:textSize="@dimen/default_text_size" />
     </LinearLayout>
-
-
 
     <Button
         android:id="@+id/saveButton"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/app_standart_button"
-        android:layout_marginLeft="@dimen/default_indent"
-        android:layout_marginRight="@dimen/default_indent"
         android:layout_marginBottom="@dimen/default_indent"
+        android:background="@drawable/app_standart_button"
         android:text="@string/save_button_text"
-        />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout4"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout4" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.3" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_percent="0.78"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/sourceRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="@dimen/small_indent"
+        app:layout_constraintBottom_toTopOf="@+id/saveButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline9"
+        app:layout_constraintVertical_bias="0.0"
+        tools:listitem="@layout/item_markup_source" />
 
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

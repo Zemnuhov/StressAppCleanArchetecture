@@ -27,8 +27,11 @@ interface ResultDao {
     @Query("SELECT stressCause, COUNT(*) as count  FROM resultentity WHERE stressCause in (:sources) GROUP BY stressCause")
     fun getCountBySources(sources: List<String>): Flow<List<ResultSourceCounterItem>>
 
-    @Query("UPDATE resultentity SET stressCause = :stressCause WHERE time = :time")
+    @Query("UPDATE resultentity SET stressCause = :stressCause WHERE time in (:time)")
     fun setStressCauseByTime(stressCause: String, time: List<String>)
+
+    @Query("UPDATE resultentity SET keep = :keep WHERE time = :time")
+    fun setKeepByTime(keep: String?, time: String)
 
     @Query("SELECT * FROM resultentity WHERE peakCount > :peakLimit GROUP BY time")
     fun getStressResult(peakLimit: Int): Flow<List<ResultEntity>>
@@ -49,7 +52,7 @@ interface ResultDao {
             "from ResultEntity " +
             "where stressCause not null group by stressCause, date(time,'localtime'))" +
             " group by day) as a" +
-            "   on date(time,'localtime') = day where datetime(time,'localtime') between datetime(:beginInterval) and datetime(:endInterval)" +
+            "   on date(time,'localtime') = day where datetime(time,'localtime') between datetime(:beginInterval,'localtime') and datetime(:endInterval,'localtime')" +
             "   group by date(time,'localtime')")
     fun getResultForTheDay(beginInterval: String, endInterval:String): Flow<List<ResultForTheDay>>
 
@@ -58,4 +61,3 @@ interface ResultDao {
     
 }
 
-//select  date(time), sum(peakCount), avg(tonicAvg), (select count from (select stressCause, count(*) as count from ResultEntity group by stressCause)) as a from ResultEntity group by date(time)

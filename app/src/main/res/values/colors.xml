@@ -16,6 +16,10 @@
     <color name="red_active">#ff7043</color>
     <color name="background_day_color">#EAEAEA</color>
 
+    <color name="yellow_selected">#716A28</color>
+    <color name="green_selected">#416542</color>
+    <color name="red_selected">#78341F</color>
+
     <color name="pie_chart_user1">#ff7043</color>
     <color name="pie_chart_user2">#ffa270</color>
 

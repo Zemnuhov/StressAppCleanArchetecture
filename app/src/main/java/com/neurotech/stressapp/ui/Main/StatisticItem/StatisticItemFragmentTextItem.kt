@@ -1,10 +1,15 @@
 package com.neurotech.stressapp.ui.Main.StatisticItem
 
+import android.annotation.SuppressLint
+import android.content.res.Resources
+import android.graphics.ColorFilter
+import android.graphics.drawable.ShapeDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.neurotech.stressapp.R
 import com.neurotech.stressapp.databinding.ItemMainStatisticSourceBinding
 
 class StatisticItemFragmentTextItem: Fragment() {
@@ -34,6 +39,10 @@ class StatisticItemFragmentTextItem: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if(arguments != null){
             binding.imageColorSources.setColorFilter(color)
+            val gradientDrawable = binding.imageColorSources.background.current
+            binding.imageColorSources.background = gradientDrawable.apply {
+                this.setTint(color)
+            }
             binding.nameSources.text = source
             binding.countSourcesStatistic.text = count.toString()
         }
