@@ -82,7 +82,7 @@ class ScaleView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
             else -> ContextCompat.getColor(context, R.color.green_not_active)
         }
         greenRectOne.set(
-            (width/2-40).toFloat(),
+            (width-40).toFloat(),
             (height/2+150).toFloat(),
             (width/2+40).toFloat(),
             (height/2+175).toFloat()
