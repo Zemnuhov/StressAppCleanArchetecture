@@ -25,8 +25,8 @@ class ScaleView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
     private val redRectThree = RectF()
 
     private val margin get() = (height - rectHeight*9)/9
-    private val rectHeight get() = height/11
-    private val rectWidth get() = width/5
+    private val rectHeight get() = height/13
+    private val rectWidth get() = width/4
     private val ledge get() = rectWidth / 6
 
      var value = 0
