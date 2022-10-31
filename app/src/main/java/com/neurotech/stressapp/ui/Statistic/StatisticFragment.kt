@@ -20,6 +20,9 @@ import com.neurotech.stressapp.App
 import com.neurotech.stressapp.R
 import com.neurotech.stressapp.databinding.FragmentStatisticBinding
 import com.neurotech.stressapp.ui.Main.StatisticItem.StatisticItemFragment
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -53,12 +56,17 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
     }
 
     private fun buttonListeners() {
-        binding.dayButton.setOnClickListener { viewModel.setDayResults() }
-        binding.weekButton.setOnClickListener { viewModel.setWeekResults() }
-        binding.monthButton.setOnClickListener { viewModel.setMonthResults() }
+        CoroutineScope(Dispatchers.IO).launch{
+            binding.switchButton.state.collect{
+                when(it){
+                    1-> viewModel.setDayResults()
+                    2-> viewModel.setWeekResults()
+                    else -> viewModel.setMonthResults()
+                }
+            }
+        }
         binding.leftButton.setOnClickListener { viewModel.goToPrevious() }
         binding.rightButton.setOnClickListener { viewModel.goToNext() }
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
