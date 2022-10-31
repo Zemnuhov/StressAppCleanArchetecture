@@ -7,6 +7,18 @@
     android:background="@color/background_day_color"
     android:orientation="vertical">
 
+    <com.neurotech.stressapp.ui.customview.SwitchButton
+        android:id="@+id/switchButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:selectedBackgroundColor="@color/primary"
+        app:textSize="@dimen/default_text_size"
+        app:animationSpeed="200"
+        android:layout_marginTop="@dimen/small_indent"
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout"
+        app:layout_constraintTop_toTopOf="@+id/guideline4" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
@@ -61,61 +73,18 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout3"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/small_indent"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/mainStatisticLayout"
-        app:layout_constraintEnd_toEndOf="@+id/linearLayout"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/linearLayout"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
-
-        <Button
-            android:id="@+id/dayButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/default_indent"
-            android:layout_marginBottom="@dimen/small_indent"
-            android:layout_weight="1"
-            android:background="@drawable/app_standart_button"
-            android:text="День" />
-
-        <Button
-            android:id="@+id/weekButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/small_indent"
-            android:layout_marginEnd="@dimen/small_indent"
-            android:layout_weight="1"
-            android:background="@drawable/app_standart_button"
-            android:text="Неделя" />
-
-        <Button
-            android:id="@+id/monthButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/default_indent"
-            android:layout_weight="1"
-            android:background="@drawable/app_standart_button"
-            android:text="Месяц" />
-
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/mainStatisticLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="@dimen/small_indent"
         android:layout_marginBottom="@dimen/default_indent"
         android:layout_weight="1.1"
         android:background="@drawable/shadow"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/recyclerView"
-        app:layout_constraintEnd_toEndOf="@+id/linearLayout3"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/linearLayout3"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
+        app:layout_constraintEnd_toEndOf="@+id/switchButton"
+        app:layout_constraintStart_toStartOf="@+id/switchButton"
+        app:layout_constraintTop_toBottomOf="@+id/switchButton" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
