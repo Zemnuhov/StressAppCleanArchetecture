@@ -1,5 +1,6 @@
 package com.neurotech.data.repository
 
+import android.util.Log
 import com.neurotech.data.di.RepositoryDI.Companion.component
 import com.neurotech.data.modules.bluetooth.bluetoothscan.DeviceScanner
 import com.neurotech.data.modules.bluetooth.connection.BluetoothConnection

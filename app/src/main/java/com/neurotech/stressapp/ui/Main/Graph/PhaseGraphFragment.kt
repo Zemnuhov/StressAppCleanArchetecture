@@ -1,6 +1,8 @@
 package com.neurotech.stressapp.ui.Main.Graph
 
+import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,6 +11,8 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.shape.MaterialShapeDrawable
+import com.google.android.material.shape.ShapeAppearanceModel
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter
 import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
@@ -26,8 +30,8 @@ class PhaseGraphFragment : Fragment() {
 
     val viewModel by lazy { ViewModelProvider(this, factory)[GraphFragmentViewModel::class.java] }
 
-    private val phaseSeries = LineGraphSeries(arrayOf<DataPoint>())
-    private val peakSeries = PointsGraphSeries(arrayOf<DataPoint>())
+    private var phaseSeries = LineGraphSeries(arrayOf<DataPoint>())
+    private var peakSeries = PointsGraphSeries(arrayOf<DataPoint>())
     private val maxPoint = 5_000
 
     override fun onCreateView(
@@ -48,6 +52,19 @@ class PhaseGraphFragment : Fragment() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        phaseSeries = LineGraphSeries(arrayOf<DataPoint>())
+        peakSeries = PointsGraphSeries(arrayOf<DataPoint>())
+        viewModel.phaseValuesInMemory.map { DataPoint(it.time, it.value) }.forEach{
+            if (it.y > viewModel.threshold) {
+                peakSeries.appendData(it, true, maxPoint)
+            }
+            phaseSeries.appendData(it, true, maxPoint)
+        }
+        settingGraph()
+    }
+
 
     private fun setObservers() {
         viewModel.phaseValue.observe(viewLifecycleOwner) {
@@ -65,6 +82,7 @@ class PhaseGraphFragment : Fragment() {
     }
 
     private fun settingGraph() {
+        binding.phaseGraphMain.removeAllSeries()
         binding.phaseGraphMain.addSeries(phaseSeries)
         binding.phaseGraphMain.addSeries(peakSeries)
         binding.phaseGraphMain.viewport.isYAxisBoundsManual = true

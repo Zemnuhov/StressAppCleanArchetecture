@@ -1,20 +1,26 @@
 package com.neurotech.stressapp.ui.Main.MainHost
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
+import android.widget.Toolbar
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.neurotech.stressapp.App
 import com.neurotech.stressapp.R
 import com.neurotech.stressapp.Singleton
 import com.neurotech.stressapp.databinding.FragmentHostBinding
 import com.neurotech.stressapp.service.Service
+import com.neurotech.stressapp.ui.MainActivity
 import javax.inject.Inject
 
 class MainHostFragment : Fragment(R.layout.fragment_host) {
@@ -36,16 +42,7 @@ class MainHostFragment : Fragment(R.layout.fragment_host) {
                 return when(menuItem.itemId){
                     R.id.disconnect_device ->{
                         viewModel.disconnectDevice()
-                        findNavController().navigate(R.id.action_mainHostFragment_to_searchFragment,
-                            bundleOf(),
-                            navOptions {
-                                this.anim {
-                                    enter = R.anim.nav_default_enter_anim
-                                    popEnter = R.anim.nav_default_pop_enter_anim
-                                    exit = R.anim.nav_default_exit_anim
-                                    popExit = R.anim.nav_default_pop_exit_anim
-                                }
-                            })
+                        findNavController().navigate(R.id.action_mainHostFragment_to_searchFragment)
                         true
                     }
                     R.id.recording -> {
@@ -78,9 +75,12 @@ class MainHostFragment : Fragment(R.layout.fragment_host) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         menuController()
         service.bindService()
-        val navHostFragment =
-            childFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
-        val navController = navHostFragment.navController
+        val navHostFragment = childFragmentManager
+            .findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+        val navController = navHostFragment.findNavController()
+        val appBarConfiguration = AppBarConfiguration(navController.graph)
         binding.bottomNavigationView.setupWithNavController(navController)
+        NavigationUI.setupActionBarWithNavController(requireActivity() as MainActivity, navController,appBarConfiguration)
     }
+
 }

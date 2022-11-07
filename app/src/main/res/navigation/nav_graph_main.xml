@@ -8,23 +8,35 @@
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.neurotech.stressapp.ui.Main.MainFragment"
-        android:label="MainFragment"
+        android:label="Главная"
         tools:layout="@layout/fragment_main">
         <action
             android:id="@+id/action_mainFragment_to_statisticFragment"
-            app:destination="@id/statisticFragment" />
+            app:destination="@id/statisticFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_mainFragment_to_relaxFragment"
-            app:destination="@id/relaxFragment" />
+            app:destination="@id/relaxFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.neurotech.stressapp.ui.Setting.SettingsFragment"
-        android:label="SettingsFragment"
+        android:label="Персональные настройки"
         tools:layout="@layout/fragment_settings">
         <action
             android:id="@+id/action_settingsFragment_to_dayMarkupUpdateFragment"
-            app:destination="@id/dayMarkupUpdateFragment" />
+            app:destination="@id/dayMarkupUpdateFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@animator/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/dayMarkupUpdateFragment"
@@ -37,11 +49,11 @@
     <fragment
         android:id="@+id/markupFragment"
         android:name="com.neurotech.stressapp.ui.Markup.MarkupFragment"
-        android:label="MarkupFragment" />
+        android:label="Разметка" />
     <fragment
         android:id="@+id/statisticFragment"
         android:name="com.neurotech.stressapp.ui.Statistic.StatisticFragment"
-        android:label="StatisticFragment" >
+        android:label="Статистика">
         <action
             android:id="@+id/action_statisticFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
@@ -49,11 +61,11 @@
     <fragment
         android:id="@+id/analyticsFragment"
         android:name="com.neurotech.stressapp.ui.Analitycs.AnalyticsFragment"
-        android:label="AnalyticsFragment" />
+        android:label="Аналитика" />
     <fragment
         android:id="@+id/relaxFragment"
         android:name="com.neurotech.stressapp.ui.RelaxFragment.RelaxFragment"
-        android:label="RelaxFragment" >
+        android:label="Режим расслабления">
         <action
             android:id="@+id/action_relaxFragment_to_mainFragment"
             app:destination="@id/mainFragment" />

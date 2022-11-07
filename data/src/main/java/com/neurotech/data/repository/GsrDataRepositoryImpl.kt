@@ -43,4 +43,12 @@ class GsrDataRepositoryImpl : GsrDataRepository {
         }
         return phaseSharedFlow
     }
+
+    override fun getPhaseValueInMemory(): List<PhaseFlowDomainModel> {
+        return dataFlow.getPhaseValueInMemory().map { PhaseFlowDomainModel(it.value, it.time) }
+    }
+
+    override fun getTonicValueInMemory(): List<TonicFlowDomainModel> {
+        return dataFlow.getTonicValueInMemory().map { TonicFlowDomainModel(it.value, it.time) }
+    }
 }

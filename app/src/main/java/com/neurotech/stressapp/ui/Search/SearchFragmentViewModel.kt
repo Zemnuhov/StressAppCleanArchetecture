@@ -40,7 +40,11 @@ class SearchFragmentViewModel(
                         _deviceState.postValue(it)
                     }
                 }
+            }
+        )
 
+        jobs.add(
+            scope.launch{
                 getScanState.invoke().collect {
                     Log.e("AAA", it.toString())
                     _searchState.postValue(it)

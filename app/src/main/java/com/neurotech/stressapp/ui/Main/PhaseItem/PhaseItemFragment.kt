@@ -1,6 +1,7 @@
 package com.neurotech.stressapp.ui.Main.PhaseItem
 
 import android.graphics.Color
+import android.graphics.Paint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View

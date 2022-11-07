@@ -25,8 +25,8 @@ class TonicGraphFragment: Fragment() {
 
     val viewModel by lazy { ViewModelProvider(this, factory)[GraphFragmentViewModel::class.java] }
 
-    private val tonicSeries = LineGraphSeries(arrayOf<DataPoint>())
-    private val maxPoint = 10_000
+    private var tonicSeries = LineGraphSeries(arrayOf<DataPoint>())
+    private val maxPoint = 5_000
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,7 +60,15 @@ class TonicGraphFragment: Fragment() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        val points = viewModel.tonicValuesInMemory.map { DataPoint(it.time, it.value.toDouble()) }.toTypedArray()
+        tonicSeries = LineGraphSeries(points)
+        settingGraph()
+    }
+
     private fun settingGraph() {
+        binding.phaseGraphMain.removeAllSeries()
         binding.phaseGraphMain.addSeries(tonicSeries)
         binding.phaseGraphMain.viewport.isYAxisBoundsManual = true
         binding.phaseGraphMain.viewport.isXAxisBoundsManual = false

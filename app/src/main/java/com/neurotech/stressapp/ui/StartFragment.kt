@@ -6,6 +6,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
+import androidx.navigation.ui.AppBarConfiguration
 import com.neurotech.domain.usecases.connection.GetConnectionState
 import com.neurotech.stressapp.App
 import com.neurotech.stressapp.R
@@ -29,31 +30,10 @@ class StartFragment : Fragment(R.layout.fragment_start) {
     }
 
     private suspend fun startApplication() {
-        delay(1000)
         if (connectionState.invoke() == "CONNECTED") {
-            findNavController().navigate(R.id.action_startFragment_to_mainHostFragment,
-                bundleOf(),
-                navOptions {
-                    anim {
-                        enter = R.anim.nav_default_enter_anim
-                        popEnter = R.anim.nav_default_pop_enter_anim
-                        exit = R.anim.nav_default_exit_anim
-                        popExit = R.anim.nav_default_pop_exit_anim
-                    }
-                }
-            )
+            findNavController().navigate(R.id.action_startFragment_to_mainHostFragment)
         } else {
-            findNavController().navigate(R.id.action_startFragment_to_searchFragment,
-                bundleOf(),
-                navOptions {
-                    anim {
-                        enter = R.anim.nav_default_enter_anim
-                        popEnter = R.anim.nav_default_pop_enter_anim
-                        exit = R.anim.nav_default_exit_anim
-                        popExit = R.anim.nav_default_pop_exit_anim
-                    }
-                }
-            )
+            findNavController().navigate(R.id.action_startFragment_to_searchFragment)
         }
     }
 }

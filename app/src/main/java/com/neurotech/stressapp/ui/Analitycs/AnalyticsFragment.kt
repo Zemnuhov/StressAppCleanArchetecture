@@ -1,9 +1,11 @@
 package com.neurotech.stressapp.ui.Analitycs
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.LinearInterpolator
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -74,6 +76,7 @@ class AnalyticsFragment : Fragment(R.layout.fragment_analytics) {
             }
         }
     }
+
 
     private fun observeData(){
         viewModel.setInterval(

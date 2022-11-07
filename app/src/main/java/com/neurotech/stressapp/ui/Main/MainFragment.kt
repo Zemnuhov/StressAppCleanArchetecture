@@ -1,24 +1,35 @@
 package com.neurotech.stressapp.ui.Main
 
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.view.animation.LinearInterpolator
 import androidx.core.os.bundleOf
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
+import com.neurotech.domain.BleConstant
+import com.neurotech.stressapp.App
 import com.neurotech.stressapp.R
 import com.neurotech.stressapp.databinding.FragmentMainBinding
 import com.neurotech.stressapp.ui.Main.Graph.PhaseGraphFragment
+import com.neurotech.stressapp.ui.Main.MainHost.MainFragmentViewModel
+import com.neurotech.stressapp.ui.Main.MainHost.MainFragmentViewModelFactory
 import com.neurotech.stressapp.ui.Main.PhaseItem.PhaseItemFragment
 import com.neurotech.stressapp.ui.Main.StatisticItem.StatisticItemFragment
 import com.neurotech.stressapp.ui.Main.TonicItem.TonicItemFragment
+import javax.inject.Inject
 
 class MainFragment: Fragment(R.layout.fragment_main) {
 
+    @Inject
+    lateinit var factory: MainFragmentViewModelFactory
     private var _binding: FragmentMainBinding? = null
     private val binding: FragmentMainBinding get() = _binding!!
+    val viewModel by lazy { ViewModelProvider(this, factory)[MainFragmentViewModel::class.java] }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,24 +40,29 @@ class MainFragment: Fragment(R.layout.fragment_main) {
         return binding.root
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        (activity?.application as App).component.inject(this)
         binding.imageView2.setOnClickListener {
-            findNavController().navigate(
-                R.id.action_mainFragment_to_relaxFragment,
-                bundleOf(),
-                navOptions {
-                    anim {
-                        enter = R.anim.nav_default_enter_anim
-                        popEnter = R.anim.nav_default_pop_enter_anim
-                        exit = R.anim.nav_default_exit_anim
-                        popExit = R.anim.nav_default_pop_exit_anim
-                    }
-                }
-            )
+            findNavController().navigate(R.id.action_mainFragment_to_relaxFragment)
         }
         fillFragment()
-        super.onViewCreated(view, savedInstanceState)
+        connectionObserver()
+
+    }
+
+    private fun connectionObserver(){
+        viewModel.connectionState.observe(viewLifecycleOwner){
+            if(it == BleConstant.CONNECTED){
+                binding.disconnectView.visibility = View.GONE
+            }else{
+                binding.disconnectView.alpha = 0F
+                binding.disconnectView.visibility = View.VISIBLE
+                ObjectAnimator.ofFloat(binding.disconnectView, View.ALPHA,0F, 100F).apply {
+                    duration = 1000
+                    start()
+                }
+            }
+        }
     }
 
     private fun fillFragment(){
@@ -66,5 +82,6 @@ class MainFragment: Fragment(R.layout.fragment_main) {
 
     override fun onDestroy() {
         super.onDestroy()
+        _binding = null
     }
 }

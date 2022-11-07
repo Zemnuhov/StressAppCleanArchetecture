@@ -1,10 +1,12 @@
 package com.neurotech.stressapp.ui.Markup
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.LinearInterpolator
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -46,6 +48,7 @@ class MarkupFragment : Fragment(R.layout.fragment_markup), MarkupFragmentAdapter
                 viewModel.setStressCause(source, dateList)
             }
         }
+
     }
 
     private fun fillMarkupRecyclerView(){

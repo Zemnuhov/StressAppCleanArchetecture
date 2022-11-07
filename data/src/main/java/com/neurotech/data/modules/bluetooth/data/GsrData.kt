@@ -5,4 +5,6 @@ import kotlinx.coroutines.flow.Flow
 interface GsrData {
     suspend fun getTonicValueFlow(): Flow<TonicModelBluetooth>
     suspend fun getPhaseValueFlow(): Flow<PhaseModelBluetooth>
+    fun getPhaseValueInMemory(): List<PhaseModelBluetooth>
+    fun getTonicValueInMemory(): List<TonicModelBluetooth>
 }

@@ -2,6 +2,7 @@ package com.neurotech.stressapp.ui.customview
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.util.AttributeSet
@@ -11,7 +12,9 @@ import com.neurotech.stressapp.R
 import kotlin.math.min
 
 class ScaleView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
-    private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        setShadowLayer(1f,0F,0F, Color.GRAY)
+    }
     private val greenRectOne = RectF()
     private val greenRectTwo = RectF()
     private val greenRectThree = RectF()

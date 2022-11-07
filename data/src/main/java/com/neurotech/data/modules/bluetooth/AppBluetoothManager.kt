@@ -30,7 +30,7 @@ import no.nordicsemi.android.ble.ktx.stateAsFlow
 import no.nordicsemi.android.ble.ktx.suspend
 import java.nio.ByteBuffer
 
-@Suppress("OPT_IN_IS_NOT_ENABLED")
+
 class AppBluetoothManager(context: Context) : BleManager(context) {
     private var phaseFlowCharacteristic: BluetoothGattCharacteristic? = null
     private var tonicFlowCharacteristic: BluetoothGattCharacteristic? = null
@@ -54,7 +54,7 @@ class AppBluetoothManager(context: Context) : BleManager(context) {
     val tonicValueFlow: Flow<Int> get() = _tonicValueFlow
     val memoryStateFlow: Flow<Int> get() = _memoryStateFlow
 
-    private val delay = 40L
+    //private val delay = 40L
 
 
     override fun getGattCallback(): BleManagerGattCallback {
@@ -151,7 +151,7 @@ class AppBluetoothManager(context: Context) : BleManager(context) {
             .enqueue()
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+
     private fun observeNotification() {
         val filter = ExpRunningAverage(0.1)
         enableNotifications(phaseFlowCharacteristic).enqueue()
@@ -166,7 +166,7 @@ class AppBluetoothManager(context: Context) : BleManager(context) {
                         var value = (ByteBuffer.wrap(bytes).int).toDouble()
                         value = filter.filter(value)
                         _phaseValueFlow.emit(value)
-                        delay(delay)
+                        //delay(delay)
                     }
                 }
         }
@@ -177,7 +177,7 @@ class AppBluetoothManager(context: Context) : BleManager(context) {
                     if (bytes != null) {
                         val value = ByteBuffer.wrap(bytes).int
                         _tonicValueFlow.emit(value)
-                        delay(delay)
+                        //delay(delay)
                     }
                 }
         }
