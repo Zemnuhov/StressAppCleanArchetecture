@@ -3,7 +3,6 @@ package com.neurotech.stressapp.notification
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.core.app.NotificationManagerCompat
 import com.cesarferreira.tempo.toDate
 import com.neurotech.domain.TimeFormat

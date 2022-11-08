@@ -1,12 +1,9 @@
 package com.neurotech.stressapp.ui.Search
 
 import android.Manifest
-import android.animation.ValueAnimator
-import android.app.Activity
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.*
-import android.view.animation.LinearInterpolator
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
@@ -18,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.neurotech.stressapp.App
 import com.neurotech.stressapp.R
 import com.neurotech.stressapp.databinding.FragmentSearchBinding
-import com.neurotech.stressapp.ui.MainActivity
 import javax.inject.Inject
 
 class SearchFragment : Fragment(R.layout.fragment_search), SearchCardAdapter.CallBack {

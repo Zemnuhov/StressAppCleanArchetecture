@@ -1,7 +1,7 @@
 package com.neurotech.data.di
 
-import com.neurotech.data.modules.bluetooth.connection.BluetoothConnection
 import com.neurotech.data.modules.bluetooth.connection.BleConnection
+import com.neurotech.data.modules.bluetooth.connection.BluetoothConnection
 import com.neurotech.data.modules.bluetooth.data.DataFlow
 import com.neurotech.data.modules.bluetooth.syncdata.SyncDataFromDevice
 import com.neurotech.data.modules.bluetooth.writing.WritingDataToDevice

@@ -1,18 +1,18 @@
 package com.neurotech.stressapp.ui.Statistic
 
-import android.animation.ValueAnimator
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.LinearInterpolator
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.cesarferreira.tempo.*
+import com.cesarferreira.tempo.beginningOfDay
+import com.cesarferreira.tempo.endOfDay
+import com.cesarferreira.tempo.toString
 import com.jjoe64.graphview.DefaultLabelFormatter
 import com.jjoe64.graphview.series.BarGraphSeries
 import com.jjoe64.graphview.series.DataPoint
@@ -72,6 +72,7 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        postponeEnterTransition()
         val statisticItem = StatisticItemFragment()
         statisticItem.arguments = bundleOf(StatisticItemFragment.BUNDLE_KEY to "GONE")
         childFragmentManager.beginTransaction()
@@ -113,6 +114,7 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
                     tonicSeries.appendData(point,true, 10000)
                 }
             graphSettings()
+            startPostponedEnterTransition()
         }
 
         viewModel.dateFlow.observe(viewLifecycleOwner){

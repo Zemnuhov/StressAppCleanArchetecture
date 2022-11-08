@@ -1,22 +1,15 @@
 package com.neurotech.stressapp.ui.Statistic
 
-import android.content.Context
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.cesarferreira.tempo.toDate
 import com.cesarferreira.tempo.toString
 import com.neurotech.domain.ThresholdValues
 import com.neurotech.domain.TimeFormat
 import com.neurotech.domain.models.ResultDomainModel
 import com.neurotech.stressapp.R
-import com.neurotech.stressapp.databinding.ItemMarkupSourceBinding
 import com.neurotech.stressapp.databinding.ItemStatisticResultBinding
 import java.util.*
 

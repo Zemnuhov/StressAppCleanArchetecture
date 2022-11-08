@@ -2,18 +2,13 @@ package com.neurotech.stressapp.ui
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navOptions
-import androidx.navigation.ui.AppBarConfiguration
 import com.neurotech.domain.usecases.connection.GetConnectionState
 import com.neurotech.stressapp.App
 import com.neurotech.stressapp.R
-
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

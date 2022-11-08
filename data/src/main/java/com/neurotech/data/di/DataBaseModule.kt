@@ -3,11 +3,10 @@ package com.neurotech.data.di
 import android.content.Context
 import androidx.room.Room
 import androidx.room.migration.Migration
-import com.neurotech.data.modules.storage.database.dao.PeakDao
-import com.neurotech.stressapp.data.database.AppDatabase
 import com.neurotech.data.modules.storage.database.dao.MarkupDao
-
+import com.neurotech.data.modules.storage.database.dao.PeakDao
 import com.neurotech.data.modules.storage.database.dao.ResultDao
+import com.neurotech.stressapp.data.database.AppDatabase
 import com.neurotech.test.storage.database.dao.TonicDao
 import dagger.Module
 import dagger.Provides

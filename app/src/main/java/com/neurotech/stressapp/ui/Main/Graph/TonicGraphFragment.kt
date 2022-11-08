@@ -1,7 +1,6 @@
 package com.neurotech.stressapp.ui.Main.Graph
 
 import android.graphics.Color
-import android.media.Image
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter
 import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
-import com.jjoe64.graphview.series.PointsGraphSeries
 import com.neurotech.stressapp.App
 import com.neurotech.stressapp.databinding.ItemMainPhaseGraphBinding
 import javax.inject.Inject

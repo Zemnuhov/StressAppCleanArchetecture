@@ -2,7 +2,6 @@ package com.neurotech.domain.repository
 
 import com.neurotech.domain.models.DeviceDomainModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharedFlow
 
 interface ConnectionRepository {
     suspend fun getDeviceListFlow(): Flow<List<DeviceDomainModel>>

@@ -14,7 +14,6 @@ import com.neurotech.stressapp.Singleton
 import com.neurotech.stressapp.notification.NotificationBuilderApp
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.zip
-import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 

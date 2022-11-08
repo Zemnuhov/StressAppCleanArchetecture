@@ -2,9 +2,7 @@ package com.neurotech.stressapp.ui.Markup
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.neurotech.stressapp.databinding.ItemMarkupSourceBinding
@@ -37,6 +35,7 @@ class MarkupFragmentAdapterSource(private val sourceList:List<String>): Recycler
 class SourceHolder(private val itemBinding: ItemMarkupSourceBinding) : RecyclerView.ViewHolder(itemBinding.root){
     fun bind(source: String, callback: MarkupFragmentAdapterSource.Callback){
         itemBinding.sourceInMarkup.text = source
+        itemBinding.root.elevation = 10F
         itemBinding.itemMarkupSource.setOnClickListener {
             val xScaleAnimationPlus = ObjectAnimator.ofFloat(itemBinding.root, "scaleX", 1f)
             val yScaleAnimationPlus = ObjectAnimator.ofFloat(itemBinding.root, "scaleY", 1f)

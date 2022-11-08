@@ -8,13 +8,12 @@ import com.cesarferreira.tempo.*
 import com.neurotech.domain.TimeFormat
 import com.neurotech.domain.models.ResultDomainModel
 import com.neurotech.domain.usecases.resultdata.GetResultsByInterval
-import com.neurotech.domain.usecases.resultdata.GetResultsCountAndSourceInInterval
 import com.neurotech.domain.usecases.resultdata.SetKeepByTime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.util.Date
+import java.util.*
 
 class StatisticFragmentViewModel(
     private val getResults: GetResultsByInterval,

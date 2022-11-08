@@ -20,9 +20,11 @@ import com.neurotech.data.modules.bluetooth.ListUUID.timeUUID
 import com.neurotech.data.modules.bluetooth.ListUUID.tonicFlowUUID
 import com.neurotech.data.modules.bluetooth.data.filters.ExpRunningAverage
 import com.neurotech.test.storage.database.entity.PeakEntity
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
 import no.nordicsemi.android.ble.BleManager
 import no.nordicsemi.android.ble.PhyRequest
 import no.nordicsemi.android.ble.ktx.asFlow

@@ -4,7 +4,6 @@ import com.neurotech.domain.usecases.recorddevice.RecordPeaksInDevice
 import com.neurotech.domain.usecases.recorddevice.RecordTimeInDevice
 import com.neurotech.domain.usecases.recorddevice.RecordTonicInDevice
 import java.util.*
-import javax.inject.Inject
 
 class DeviceBleWriter(
     private val recordPeaksInDevice: RecordPeaksInDevice,

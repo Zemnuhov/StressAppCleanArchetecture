@@ -1,15 +1,10 @@
 package com.neurotech.stressapp.ui.Main.StatisticItem
 
-import android.annotation.SuppressLint
-import android.content.res.Resources
-import android.graphics.ColorFilter
-import android.graphics.drawable.ShapeDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.neurotech.stressapp.R
 import com.neurotech.stressapp.databinding.ItemMainStatisticSourceBinding
 
 class StatisticItemFragmentTextItem: Fragment() {

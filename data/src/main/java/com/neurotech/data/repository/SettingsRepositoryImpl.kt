@@ -3,12 +3,8 @@ package com.neurotech.data.repository
 import com.neurotech.data.di.RepositoryDI.Companion.component
 import com.neurotech.data.modules.settings.Settings
 import com.neurotech.domain.repository.SettingsRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SettingsRepositoryImpl: SettingsRepository {

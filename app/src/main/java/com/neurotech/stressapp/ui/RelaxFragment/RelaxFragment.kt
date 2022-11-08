@@ -1,19 +1,15 @@
 package com.neurotech.stressapp.ui.RelaxFragment
 
-import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.LinearInterpolator
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.neurotech.stressapp.App
 import com.neurotech.stressapp.R
 import com.neurotech.stressapp.databinding.FragmentRelaxBinding
 import com.neurotech.stressapp.ui.Main.Graph.PhaseGraphFragment
-import com.neurotech.stressapp.ui.customview.RelaxScaleView
 import javax.inject.Inject
 
 class RelaxFragment: Fragment(R.layout.fragment_relax) {

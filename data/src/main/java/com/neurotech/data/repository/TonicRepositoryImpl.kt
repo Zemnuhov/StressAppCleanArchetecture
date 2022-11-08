@@ -2,9 +2,9 @@ package com.neurotech.data.repository
 
 import com.cesarferreira.tempo.toString
 import com.neurotech.data.di.RepositoryDI.Companion.component
-import com.neurotech.domain.repository.TonicRepository
 import com.neurotech.data.modules.storage.TonicStorage
 import com.neurotech.domain.models.TonicFlowDomainModel
+import com.neurotech.domain.repository.TonicRepository
 import com.neurotech.test.storage.database.entity.TonicEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

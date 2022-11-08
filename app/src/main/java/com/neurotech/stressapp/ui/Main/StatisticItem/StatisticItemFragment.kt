@@ -18,7 +18,6 @@ import com.neurotech.domain.models.ResultCountSourceDomainModel
 import com.neurotech.stressapp.App
 import com.neurotech.stressapp.R
 import com.neurotech.stressapp.databinding.ItemMainStatisticBinding
-import kotlinx.coroutines.currentCoroutineContext
 import javax.inject.Inject
 
 class StatisticItemFragment : Fragment() {

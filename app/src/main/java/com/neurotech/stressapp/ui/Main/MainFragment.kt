@@ -1,16 +1,13 @@
 package com.neurotech.stressapp.ui.Main
 
 import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.os.Bundle
-import android.view.*
-import android.view.animation.LinearInterpolator
-import androidx.core.os.bundleOf
-import androidx.core.view.MenuProvider
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navOptions
 import com.neurotech.domain.BleConstant
 import com.neurotech.stressapp.App
 import com.neurotech.stressapp.R

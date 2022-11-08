@@ -7,7 +7,6 @@ import com.neurotech.data.modules.storage.PeakStorage
 import com.neurotech.data.modules.storage.database.dao.PeakDao
 import com.neurotech.test.storage.database.entity.PeakEntity
 import kotlinx.coroutines.flow.Flow
-import java.lang.Exception
 import javax.inject.Inject
 
 class PeakDataBase(): PeakStorage {
