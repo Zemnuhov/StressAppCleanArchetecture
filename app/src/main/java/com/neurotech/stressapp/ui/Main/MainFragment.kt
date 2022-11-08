@@ -55,7 +55,7 @@ class MainFragment: Fragment(R.layout.fragment_main) {
                 binding.disconnectView.alpha = 0F
                 binding.disconnectView.visibility = View.VISIBLE
                 ObjectAnimator.ofFloat(binding.disconnectView, View.ALPHA,0F, 100F).apply {
-                    duration = 1000
+                    duration = 10000
                     start()
                 }
             }

@@ -28,7 +28,7 @@ class MainHostFragment : Fragment(R.layout.fragment_host) {
     val viewModel by lazy { ViewModelProvider(this, factory)[MainFragmentViewModel::class.java] }
 
     private fun menuController(){
-        activity?.addMenuProvider(object : MenuProvider{
+        requireActivity().addMenuProvider(object : MenuProvider{
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menu.findItem(R.id.menu_search).isVisible = false
                 menu.findItem(R.id.disconnect_device).isVisible = true
@@ -77,5 +77,4 @@ class MainHostFragment : Fragment(R.layout.fragment_host) {
         binding.bottomNavigationView.setupWithNavController(navController)
         NavigationUI.setupActionBarWithNavController(requireActivity() as MainActivity, navController,appBarConfiguration)
     }
-
 }
