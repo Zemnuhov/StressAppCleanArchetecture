@@ -39,12 +39,12 @@ class SwitchButton(context: Context, attrs: AttributeSet?) : View(context, attrs
 
     private val textPosition get() =  width/3F
 
-    private val dayText = "День"
-    private val weekText = "Неделя"
-    private val monthText = "Месяц"
-    private val widthView = textPaint.measureText(dayText) +
-            textPaint.measureText(weekText) +
-            textPaint.measureText(monthText) + 30 * 3
+    private var leftText = "День"
+    private var centerText = "Неделя"
+    private var rightText = "Месяц"
+    private val widthView = textPaint.measureText(leftText) +
+            textPaint.measureText(centerText) +
+            textPaint.measureText(rightText) + 30 * 3
     private var _duration = 300L
 
     private val _state = MutableStateFlow(1)
@@ -63,6 +63,13 @@ class SwitchButton(context: Context, attrs: AttributeSet?) : View(context, attrs
             }
 
         }
+    }
+
+    fun setText(left:String, center:String, right:String){
+        leftText = left
+        centerText = center
+        rightText = right
+        invalidate()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -199,14 +206,14 @@ class SwitchButton(context: Context, attrs: AttributeSet?) : View(context, attrs
     private fun Canvas.drawSwitchText(){
         val fontMetrics = textPaint.fontMetrics
         val yPosition = heightView/2 + (abs(fontMetrics.ascent) - fontMetrics.descent)/2
-        var textWidth = textPaint.measureText(dayText)
+        var textWidth = textPaint.measureText(leftText)
         var xPosition = textPosition/2 - textWidth/2
-        drawText(dayText, xPosition, yPosition, textPaint)
-        textWidth = textPaint.measureText(weekText)
+        drawText(leftText, xPosition, yPosition, textPaint)
+        textWidth = textPaint.measureText(centerText)
         xPosition = (textPosition+textPosition/2) - textWidth/2
-        drawText(weekText, xPosition, yPosition, textPaint)
-        textWidth = textPaint.measureText(monthText)
+        drawText(centerText, xPosition, yPosition, textPaint)
+        textWidth = textPaint.measureText(rightText)
         xPosition = (textPosition*2 + textPosition/2) - textWidth/2
-        drawText(monthText, xPosition, yPosition, textPaint)
+        drawText(rightText, xPosition, yPosition, textPaint)
     }
 }

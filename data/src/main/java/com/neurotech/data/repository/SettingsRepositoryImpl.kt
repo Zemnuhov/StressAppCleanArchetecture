@@ -38,4 +38,15 @@ class SettingsRepositoryImpl: SettingsRepository {
         settings.deleteStimulus(source)
         stimulusFlow.value = settings.getStimulusList()
     }
+
+    override fun deviceInMemory(): String? {
+        return when(settings.getDevice()){
+            settings.getDefaultMac() -> null
+            else -> settings.getDevice()
+        }
+    }
+
+    override fun saveDevice(MAC: String) {
+        settings.saveDevice(MAC)
+    }
 }

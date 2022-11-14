@@ -1,6 +1,7 @@
 package com.neurotech.stressapp.di
 
 import com.neurotech.domain.repository.ConnectionRepository
+import com.neurotech.domain.repository.SettingsRepository
 import com.neurotech.domain.usecases.connection.*
 import dagger.Module
 import dagger.Provides
@@ -11,8 +12,11 @@ class ConnectionUseCaseModule {
 
     @Provides
     @Singleton
-    fun provideConnectionToPeripheral(repository: ConnectionRepository): ConnectionToPeripheral{
-        return ConnectionToPeripheral(repository)
+    fun provideConnectionToPeripheral(
+        connectionRepository: ConnectionRepository,
+        settingsRepository: SettingsRepository
+    ): ConnectionToPeripheral{
+        return ConnectionToPeripheral(connectionRepository,settingsRepository)
     }
 
     @Provides

@@ -1,9 +1,11 @@
 package com.neurotech.domain.usecases.connection
 
 import com.neurotech.domain.repository.ConnectionRepository
+import com.neurotech.domain.repository.SettingsRepository
 
-class ConnectionToPeripheral(val repository: ConnectionRepository) {
+class ConnectionToPeripheral(val connectionRepository: ConnectionRepository, val settingsRepository: SettingsRepository) {
     suspend operator fun invoke(MAC: String){
-        repository.connectionToPeripheral(MAC)
+        settingsRepository.saveDevice(MAC)
+        connectionRepository.connectionToPeripheral(MAC)
     }
 }

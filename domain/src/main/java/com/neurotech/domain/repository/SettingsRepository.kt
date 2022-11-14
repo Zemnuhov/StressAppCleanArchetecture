@@ -8,4 +8,6 @@ interface SettingsRepository {
     fun getStimulusList(): List<String>
     fun addStimulus(source:String)
     fun deleteStimulus(source: String)
+    fun deviceInMemory(): String?
+    fun saveDevice(MAC:String)
 }

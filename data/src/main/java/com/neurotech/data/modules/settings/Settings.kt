@@ -9,4 +9,5 @@ interface Settings {
     fun getStimulusList(): List<String>
     fun addStimulus(source:String): Boolean
     fun deleteStimulus(source: String)
+    fun getDefaultMac():String
 }

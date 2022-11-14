@@ -4,22 +4,23 @@ import com.neurotech.stressapp.notification.NotificationBuilderApp
 import com.neurotech.stressapp.notification.NotificationReceiver
 import com.neurotech.stressapp.service.AppService
 import com.neurotech.stressapp.service.DataFlowAnalyzer
-import com.neurotech.stressapp.ui.Analitycs.AnalyticsFragment
-import com.neurotech.stressapp.ui.DayMarkupUpdate.DayMarkupUpdateFragment
-import com.neurotech.stressapp.ui.Main.Graph.PhaseGraphFragment
-import com.neurotech.stressapp.ui.Main.Graph.TonicGraphFragment
-import com.neurotech.stressapp.ui.Main.MainFragment
-import com.neurotech.stressapp.ui.Main.MainHost.MainHostFragment
-import com.neurotech.stressapp.ui.Main.PhaseItem.PhaseItemFragment
-import com.neurotech.stressapp.ui.Main.StatisticItem.StatisticItemFragment
-import com.neurotech.stressapp.ui.Main.TonicItem.TonicItemFragment
-import com.neurotech.stressapp.ui.Markup.MarkupFragment
-import com.neurotech.stressapp.ui.RelaxFragment.RelaxFragment
-import com.neurotech.stressapp.ui.Search.SearchFragment
-import com.neurotech.stressapp.ui.Setting.DayMarkup.DayMarkupFragment
-import com.neurotech.stressapp.ui.Setting.Source.SourceFragment
+import com.neurotech.stressapp.ui.analitycs.AnalyticsFragment
+import com.neurotech.stressapp.ui.markupupdate.DayMarkupUpdateFragment
+import com.neurotech.stressapp.ui.main.Graph.PhaseGraphFragment
+import com.neurotech.stressapp.ui.main.Graph.TonicGraphFragment
+import com.neurotech.stressapp.ui.main.MainFragment
+import com.neurotech.stressapp.ui.main.MainHost.MainHostFragment
+import com.neurotech.stressapp.ui.main.PhaseItem.PhaseItemFragment
+import com.neurotech.stressapp.ui.main.StatisticItem.StatisticItemFragment
+import com.neurotech.stressapp.ui.main.TonicItem.TonicItemFragment
+import com.neurotech.stressapp.ui.markup.MarkupFragment
+import com.neurotech.stressapp.ui.relax.RelaxFragment
+import com.neurotech.stressapp.ui.search.SearchFragment
+import com.neurotech.stressapp.ui.setting.DayMarkup.DayMarkupFragment
+import com.neurotech.stressapp.ui.setting.Source.SourceFragment
 import com.neurotech.stressapp.ui.StartFragment
-import com.neurotech.stressapp.ui.Statistic.StatisticFragment
+import com.neurotech.stressapp.ui.statistic.StatisticFragment
+import com.neurotech.stressapp.ui.useraccount.UserAccountFragment
 import dagger.Component
 import javax.inject.Singleton
 
@@ -60,5 +61,6 @@ interface AppComponent {
     fun inject(analyticsFragment: AnalyticsFragment)
     fun inject(relaxFragment: RelaxFragment)
     fun inject(mainFragment: MainFragment)
+    fun inject(userAccountFragment: UserAccountFragment)
 
 }

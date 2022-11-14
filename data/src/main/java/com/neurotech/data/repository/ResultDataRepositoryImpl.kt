@@ -11,12 +11,10 @@ import com.neurotech.data.modules.storage.database.entity.ResultSourceCounterIte
 import com.neurotech.domain.TimeFormat
 import com.neurotech.domain.TimeFormat.dateFormatDataBase
 import com.neurotech.domain.TimeFormat.dateTimeFormatDataBase
-import com.neurotech.domain.models.ResultCountSourceDomainModel
-import com.neurotech.domain.models.ResultDomainModel
-import com.neurotech.domain.models.ResultForTheDayDomainModel
-import com.neurotech.domain.models.ResultTimeAndPeakDomainModel
+import com.neurotech.domain.models.*
 import com.neurotech.domain.repository.ResultDataRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import java.util.*
 import javax.inject.Inject
@@ -147,7 +145,7 @@ class ResultDataRepositoryImpl : ResultDataRepository {
                     if (day !in datesList) {
                         resultForTheDayList.add(
                             ResultForTheDay(
-                                day.toString(dateFormatDataBase), 0, 0, ""
+                                day.toString(dateFormatDataBase), 0, 0, 0,""
                             )
                         )
                     }
@@ -158,7 +156,7 @@ class ResultDataRepositoryImpl : ResultDataRepository {
                             resultEntity.date.toDate(dateFormatDataBase).beginningOfDay,
                             resultEntity.peaks,
                             resultEntity.tonic,
-                            resultEntity.stressCause
+                            resultEntity.stressCause?:""
                         )
                     }
                 )
@@ -214,6 +212,26 @@ class ResultDataRepositoryImpl : ResultDataRepository {
                             entity.keep
                         )
                     }
+                )
+            }
+        }
+    }
+
+    override suspend fun getUserParameterInInterval(
+        beginInterval: Date,
+        endInterval: Date
+    ): Flow<UserParameterDomainModel> {
+        return flow {
+            resultDao.getUserParameterInInterval(
+                beginInterval.toString(dateFormatDataBase),
+                endInterval.toString(dateFormatDataBase)
+                ).collect{
+                emit(
+                    UserParameterDomainModel(
+                        it.peaksInDay,
+                        it.peaksInTenMinute,
+                        it.tonicAverage
+                    )
                 )
             }
         }

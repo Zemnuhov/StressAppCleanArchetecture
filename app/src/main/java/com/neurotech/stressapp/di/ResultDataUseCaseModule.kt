@@ -76,4 +76,10 @@ class ResultDataUseCaseModule {
     fun providesGetResultsInInterval(repository: ResultDataRepository): GetResultsByInterval {
         return GetResultsByInterval(repository)
     }
+
+    @Provides
+    @Singleton
+    fun providesGetUserParameterInInterval(repository: ResultDataRepository): GetUserParameterInInterval {
+        return GetUserParameterInInterval(repository)
+    }
 }

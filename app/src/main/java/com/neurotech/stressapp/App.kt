@@ -1,6 +1,7 @@
 package com.neurotech.stressapp
 
 import android.app.Application
+import androidx.fragment.app.Fragment
 import com.neurotech.data.di.RepositoryDI
 import com.neurotech.stressapp.di.AppComponent
 import com.neurotech.stressapp.di.AppModule
@@ -19,5 +20,9 @@ class App: Application() {
         RepositoryDI(applicationContext)
         /////????/////
         Singleton.context = applicationContext
+    }
+
+    fun Fragment.getAppComponent():AppComponent{
+        return component
     }
 }

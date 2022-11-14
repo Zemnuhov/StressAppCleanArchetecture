@@ -1,5 +1,10 @@
 package com.neurotech.data.repository
 
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothManager
+import android.content.Context
+import androidx.core.content.ContextCompat.getSystemService
 import com.neurotech.data.di.RepositoryDI.Companion.component
 import com.neurotech.data.modules.bluetooth.bluetoothscan.DeviceScanner
 import com.neurotech.data.modules.bluetooth.connection.BluetoothConnection
@@ -15,6 +20,10 @@ class ConnectionRepositoryImpl: ConnectionRepository {
     lateinit var connection: BluetoothConnection
     @Inject
     lateinit var scanner: DeviceScanner
+
+    @Inject
+    lateinit var context: Context
+
 
     init {
         component.inject(this)
@@ -37,9 +46,10 @@ class ConnectionRepositoryImpl: ConnectionRepository {
     }
 
     override suspend fun connectionToPeripheral(MAC: String) {
-        val device = scanner.getBluetoothDeviceByMac(MAC)
-        if(device != null){
-            connection.connectionToPeripheral(device)
+        val bluetoothManager: BluetoothManager? = getSystemService(context, BluetoothManager::class.java)
+        val bluetoothAdapter: BluetoothAdapter? = bluetoothManager?.adapter
+        if(bluetoothAdapter != null){
+            connection.connectionToPeripheral(bluetoothAdapter.getRemoteDevice(MAC))
         }
     }
 

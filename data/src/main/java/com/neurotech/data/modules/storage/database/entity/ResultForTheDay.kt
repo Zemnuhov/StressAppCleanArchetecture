@@ -7,8 +7,10 @@ data class ResultForTheDay(
     val date: String,
     @ColumnInfo(name = "peaks")
     val peaks: Int,
+    @ColumnInfo(name = "peaksAvg")
+    val peaksAvg: Int,
     @ColumnInfo(name = "tonic")
     val tonic: Int,
     @ColumnInfo(name = "stressCause")
-    val stressCause: String
+    val stressCause: String?
 )

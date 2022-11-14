@@ -1,10 +1,7 @@
 package com.neurotech.stressapp.di
 
 import com.neurotech.domain.repository.SettingsRepository
-import com.neurotech.domain.usecases.settings.AddStimulus
-import com.neurotech.domain.usecases.settings.DeleteStimulus
-import com.neurotech.domain.usecases.settings.GetStimulusList
-import com.neurotech.domain.usecases.settings.GetThreshold
+import com.neurotech.domain.usecases.settings.*
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -35,5 +32,11 @@ class SettingsModule {
     @Singleton
     fun provideGetThreshold(repository: SettingsRepository): GetThreshold{
         return GetThreshold(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetDeviceInMemory(repository: SettingsRepository): GetDeviceInMemory{
+        return GetDeviceInMemory(repository)
     }
 }

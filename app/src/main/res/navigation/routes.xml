@@ -24,7 +24,7 @@
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.neurotech.stressapp.ui.Search.SearchFragment"
+        android:name="com.neurotech.stressapp.ui.search.SearchFragment"
         android:label="Поиск устройства">
         <action
             android:id="@+id/action_searchFragment_to_mainHostFragment"
@@ -38,7 +38,7 @@
     </fragment>
     <fragment
         android:id="@+id/mainHostFragment"
-        android:name="com.neurotech.stressapp.ui.Main.MainHost.MainHostFragment"
+        android:name="com.neurotech.stressapp.ui.main.MainHost.MainHostFragment"
         android:label="MainHostFragment" >
         <action
             android:id="@+id/action_mainHostFragment_to_searchFragment"

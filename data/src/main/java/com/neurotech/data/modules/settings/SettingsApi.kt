@@ -58,4 +58,8 @@ class SettingsApi : Settings {
         stimulusList.remove(source)
         settingsModel.setSettings(settingsModel.STIMULUS_TAG, stimulusList.joinToString("|"))
     }
+
+    override fun getDefaultMac(): String {
+        return defaultMAC
+    }
 }
