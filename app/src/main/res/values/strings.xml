@@ -21,7 +21,7 @@
     <string name="watch_icon">watch_icon</string>
     <string name="mac_address_title">MAC:</string>
     <string name="event_title">Событие</string>
-    <string name="time_interval_default">8:00 - 12:00</string>
+    <string name="time_interval_default">8:00 – 12:00</string>
     <string name="delete_icon">delete_icon</string>
     <string name="default_date">dd.MM.yyyy</string>
 </resources>

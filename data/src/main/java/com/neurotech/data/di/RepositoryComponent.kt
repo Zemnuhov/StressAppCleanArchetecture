@@ -6,10 +6,8 @@ import com.neurotech.data.modules.bluetooth.data.DataFlow
 import com.neurotech.data.modules.bluetooth.syncdata.SyncDataFromDevice
 import com.neurotech.data.modules.bluetooth.writing.WritingDataToDevice
 import com.neurotech.data.modules.settings.SettingsApi
-import com.neurotech.data.modules.storage.database.MarkupDataBase
-import com.neurotech.data.modules.storage.database.PeakDataBase
-import com.neurotech.data.modules.storage.database.ResultDataBase
-import com.neurotech.data.modules.storage.database.TonicDataBase
+import com.neurotech.data.modules.storage.database.DataBaseController
+import com.neurotech.data.modules.storage.firebase.FirebaseData
 import com.neurotech.data.repository.*
 import dagger.Component
 import javax.inject.Singleton
@@ -21,15 +19,10 @@ import javax.inject.Singleton
         AppModule::class,
         DataBaseModule::class,
         SettingsModule::class,
-        StorageModule::class,
     ]
 )
 interface RepositoryComponent {
     fun inject(settingsApi: SettingsApi)
-    fun inject(dataBase: MarkupDataBase)
-    fun inject(peakDataBase: PeakDataBase)
-    fun inject(dataBase: ResultDataBase)
-    fun inject(dataBase: TonicDataBase)
     fun inject(repository: TonicRepositoryImpl)
     fun inject(repository: SettingsRepositoryImpl)
     fun inject(repository: PhaseRepositoryImpl)
@@ -43,4 +36,9 @@ interface RepositoryComponent {
     fun inject(dataFlow: DataFlow)
     fun inject(syncDataFromDevice: SyncDataFromDevice)
     fun inject(writingDataToDevice: WritingDataToDevice)
+    fun inject(hourResultRepositoryImpl: HourResultRepositoryImpl)
+    fun inject(dataBaseController: DataBaseController)
+    fun inject(dayResultRepositoryImpl: DayResultRepositoryImpl)
+    fun inject(userRepositoryImpl: UserRepositoryImpl)
+    fun inject(firebaseData: FirebaseData)
 }

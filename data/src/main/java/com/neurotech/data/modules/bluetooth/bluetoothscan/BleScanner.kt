@@ -2,6 +2,7 @@ package com.neurotech.data.modules.bluetooth.bluetoothscan
 
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
+import com.neurotech.data.DataModuleLog.appLog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

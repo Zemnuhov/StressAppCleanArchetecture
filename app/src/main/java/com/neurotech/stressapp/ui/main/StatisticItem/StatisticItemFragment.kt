@@ -39,8 +39,8 @@ class StatisticItemFragment : Fragment() {
             ContextCompat.getColor(requireContext(), R.color.primary_light),
             ContextCompat.getColor(requireContext(), R.color.secondary),
             ContextCompat.getColor(requireContext(), R.color.secondary_dark),
-            ContextCompat.getColor(requireContext(), R.color.pie_chart_user1),
-            ContextCompat.getColor(requireContext(), R.color.pie_chart_user2)
+            ContextCompat.getColor(requireContext(), R.color.third_dark),
+            ContextCompat.getColor(requireContext(), R.color.third)
         )
     }
 
@@ -127,6 +127,8 @@ class StatisticItemFragment : Fragment() {
         binding.pieChart.setDrawSliceText(false)
         binding.pieChart.legend.isEnabled = false
         binding.pieChart.description = null
+        binding.pieChart.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card_background))
+        binding.pieChart.setHoleColor(ContextCompat.getColor(requireContext(), R.color.card_background))
         binding.pieChart.invalidate()
 
 

@@ -1,6 +1,9 @@
 package com.neurotech.data.di
 
 import android.content.Context
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.neurotech.data.modules.settings.Settings
 import com.neurotech.data.modules.settings.SettingsApi
 import com.neurotech.data.modules.settings.SharedPrefSettings
@@ -21,5 +24,10 @@ class SettingsModule {
     @Singleton
     fun provideSettings():Settings{
         return SettingsApi()
+    }
+
+    @Provides
+    fun provideFirebaseAuth(): FirebaseAuth {
+        return Firebase.auth
     }
 }

@@ -7,15 +7,19 @@ import com.neurotech.domain.models.ResultDomainModel
 import com.neurotech.domain.usecases.resultdata.GetGoingBeyondLimit
 import com.neurotech.domain.usecases.resultdata.SetStressCauseByTime
 import com.neurotech.domain.usecases.settings.GetStimulusList
+import com.neurotech.domain.usecases.user.GetUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.newSingleThreadContext
 import java.util.*
 
 class MarkupFragmentViewModel(
     private val getGoingBeyondLimit: GetGoingBeyondLimit,
     private val getStimulusList: GetStimulusList,
-    private val setStressCauseByTime: SetStressCauseByTime
+    private val setStressCauseByTime: SetStressCauseByTime,
+    private val getUser: GetUser
 ) : ViewModel() {
     private val _tenMinuteResultBeyondLimit = MutableLiveData<List<ResultDomainModel>>()
     val tenMinuteResultBeyondLimit: LiveData<List<ResultDomainModel>> get() = _tenMinuteResultBeyondLimit
@@ -28,7 +32,7 @@ class MarkupFragmentViewModel(
     init {
         scope.launch {
             launch {
-                getGoingBeyondLimit.invoke(15).collect {
+                getGoingBeyondLimit.invoke(getUser.invoke().first().peakNormal).collect {
                     _tenMinuteResultBeyondLimit.postValue(it)
                 }
             }
@@ -40,9 +44,11 @@ class MarkupFragmentViewModel(
         }
     }
 
-    fun setStressCause(source: String, time: List<Date>) {
+    fun setStressCause(map: Map<String,List<Date>>) {
         scope.launch {
-            setStressCauseByTime.invoke(source, time)
+            map.forEach { (source, time) ->
+                setStressCauseByTime.invoke(source, time)
+            }
         }
     }
 }

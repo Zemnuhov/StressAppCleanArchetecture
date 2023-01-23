@@ -1,6 +1,10 @@
 package com.neurotech.stressapp.di
 
+
+import com.neurotech.domain.repository.DayResultRepository
+import com.neurotech.domain.repository.HourResultRepository
 import com.neurotech.domain.repository.ResultDataRepository
+import com.neurotech.domain.repository.SettingsRepository
 import com.neurotech.domain.usecases.resultdata.*
 import dagger.Module
 import dagger.Provides
@@ -12,8 +16,11 @@ class ResultDataUseCaseModule {
 
     @Provides
     @Singleton
-    fun providesGetCountBySources(repository: ResultDataRepository): GetCountBySources {
-        return GetCountBySources(repository)
+    fun providesGetCountBySources(
+        resultDataRepository: ResultDataRepository,
+        settingsRepository: SettingsRepository
+    ): GetCountBySources {
+        return GetCountBySources(resultDataRepository, settingsRepository)
     }
 
     @Provides
@@ -61,14 +68,19 @@ class ResultDataUseCaseModule {
 
     @Provides
     @Singleton
-    fun providesGetResultsInMonth(repository: ResultDataRepository): GetResultsInMonth {
+    fun providesGetResultsInMonth(
+        repository: DayResultRepository
+    ): GetResultsInMonth {
         return GetResultsInMonth(repository)
     }
 
     @Provides
     @Singleton
-    fun providesGetResultsCountAndSourceInInterval(repository: ResultDataRepository): GetResultsCountAndSourceInInterval {
-        return GetResultsCountAndSourceInInterval(repository)
+    fun providesGetResultsCountAndSourceInInterval(
+        resultDataRepository: ResultDataRepository,
+        settingsRepository: SettingsRepository
+    ): GetResultsCountAndSourceInInterval {
+        return GetResultsCountAndSourceInInterval(resultDataRepository,settingsRepository)
     }
 
     @Provides
@@ -81,5 +93,23 @@ class ResultDataUseCaseModule {
     @Singleton
     fun providesGetUserParameterInInterval(repository: ResultDataRepository): GetUserParameterInInterval {
         return GetUserParameterInInterval(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun providesGetResultForTheHourByInterval(repository: HourResultRepository): GetResultForTheHourByInterval {
+        return GetResultForTheHourByInterval(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun providesGetLastFiveValidDay(repository: DayResultRepository): GetLastFiveValidDay {
+        return GetLastFiveValidDay(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun providesGetMaxParam(repository: DayResultRepository): GetMaxParam {
+        return GetMaxParam(repository)
     }
 }

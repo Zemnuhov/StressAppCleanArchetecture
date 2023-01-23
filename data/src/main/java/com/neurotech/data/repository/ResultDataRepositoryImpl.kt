@@ -1,48 +1,72 @@
 package com.neurotech.data.repository
 
-import android.util.Log
-import com.cesarferreira.tempo.*
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import com.cesarferreira.tempo.beginningOfMinute
+import com.cesarferreira.tempo.toString
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.neurotech.data.di.RepositoryDI.Companion.component
-import com.neurotech.data.modules.settings.Settings
+import com.neurotech.data.modules.storage.database.DataBaseController
 import com.neurotech.data.modules.storage.database.dao.ResultDao
 import com.neurotech.data.modules.storage.database.entity.ResultEntity
-import com.neurotech.data.modules.storage.database.entity.ResultForTheDay
-import com.neurotech.data.modules.storage.database.entity.ResultSourceCounterItem
-import com.neurotech.domain.TimeFormat
-import com.neurotech.domain.TimeFormat.dateFormatDataBase
+import com.neurotech.data.modules.storage.firebase.FirebaseAPI
 import com.neurotech.domain.TimeFormat.dateTimeFormatDataBase
-import com.neurotech.domain.models.*
+import com.neurotech.domain.models.ResultCountSourceDomainModel
+import com.neurotech.domain.models.ResultDomainModel
+import com.neurotech.domain.models.ResultTimeAndPeakDomainModel
+import com.neurotech.domain.models.UserParameterDomainModel
 import com.neurotech.domain.repository.ResultDataRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ResultDataRepositoryImpl : ResultDataRepository {
 
     @Inject
     lateinit var resultDao: ResultDao
+
     @Inject
-    lateinit var settings: Settings
+    lateinit var firebaseDatabase: FirebaseDatabase
+
+    @Inject
+    lateinit var firebaseAuth: FirebaseAuth
+
+    @Inject
+    lateinit var firebaseData: FirebaseAPI
+
+    @Inject
+    lateinit var workManager: WorkManager
 
     init {
         component.inject(this)
+        val dbControlRequest =
+            PeriodicWorkRequestBuilder<DataBaseController>(1, TimeUnit.DAYS)
+                .addTag("db_control")
+                .setConstraints(
+                    Constraints.Builder()
+                        .setRequiredNetworkType(NetworkType.CONNECTED)
+                        .build()
+                )
+                .build()
+        workManager.cancelAllWorkByTag("db_control")
+        workManager.enqueue(dbControlRequest)
+
     }
 
     override suspend fun getResults(): Flow<List<ResultDomainModel>> {
         return flow {
             resultDao.getResult().collect {
                 emit(it.map { resultEntity ->
-                    ResultDomainModel(
-                        resultEntity.time.toDate(dateTimeFormatDataBase).beginningOfMinute,
-                        resultEntity.peakCount,
-                        resultEntity.tonicAvg,
-                        resultEntity.conditionAssessment,
-                        resultEntity.stressCause
-                    )
-                }
-                )
+                    resultEntity.toDomain()
+                })
             }
         }
     }
@@ -52,8 +76,7 @@ class ResultDataRepositoryImpl : ResultDataRepository {
             resultDao.getResultsInOneHour().collect {
                 emit(it.map { resultTimeAndPeak ->
                     ResultTimeAndPeakDomainModel(
-                        resultTimeAndPeak.time,
-                        resultTimeAndPeak.peakCount
+                        resultTimeAndPeak.time, resultTimeAndPeak.peakCount
                     )
                 })
             }
@@ -67,173 +90,113 @@ class ResultDataRepositoryImpl : ResultDataRepository {
     override suspend fun getCountBySources(sources: List<String>): Flow<List<ResultCountSourceDomainModel>> {
         return flow {
             resultDao.getCountBySources(sources).collect {
-                val listSource = it.toMutableList()
-                settings.getStimulusList().forEach { stimulus ->
-                    if (stimulus !in listSource.map { item -> item.source }) {
-                        listSource.add(ResultSourceCounterItem(stimulus, 0))
-                    }
-                }
-                emit(listSource.map { resultSourceCounterItem ->
-                    Log.e("ResultSourceCounterItem", resultSourceCounterItem.toString())
+                emit(it.map { resultSourceCounterItem ->
                     ResultCountSourceDomainModel(
-                        resultSourceCounterItem.source,
-                        resultSourceCounterItem.count
+                        resultSourceCounterItem.source, resultSourceCounterItem.count
                     )
-                }.sortedBy { entity -> entity.count }.reversed())
+                })
             }
         }
     }
 
     override suspend fun writeResult(model: ResultDomainModel) {
-        if(model.tonicAvg != 0){
-            resultDao.insertResult(
-                ResultEntity(
-                    model.time.beginningOfMinute.toString(dateTimeFormatDataBase),
-                    model.peakCount,
-                    model.tonicAvg,
-                    model.conditionAssessment,
-                    model.stressCause
-                )
-            )
-        }
+        val result = ResultEntity(
+            model.time.beginningOfMinute.toString(dateTimeFormatDataBase),
+            model.peakCount,
+            model.tonicAvg,
+            model.conditionAssessment,
+            model.stressCause
+        )
+        resultDao.insertResult(result)
+        firebaseData.writeTenMinuteResult(result)
     }
 
     override suspend fun setStressCauseByTime(stressCause: String, time: List<Date>) {
-        resultDao.setStressCauseByTime(stressCause, time.map { it.toString(TimeFormat.dateTimeFormatDataBase) })
+        CoroutineScope(Dispatchers.IO).launch {
+            resultDao.setStressCauseByTime(stressCause,
+                time.map { it.toString(dateTimeFormatDataBase) })
+            firebaseData.writeTenMinuteResults(resultDao.getResultInTimes(time.map {
+                it.toString(
+                    dateTimeFormatDataBase
+                )
+            }))
+        }
     }
 
     override suspend fun setKeepByTime(keep: String?, time: Date) {
         resultDao.setKeepByTime(keep, time.toString(dateTimeFormatDataBase))
+        firebaseData.writeTenMinuteResults(
+            resultDao.getResultInTimes(
+                listOf(
+                    time.toString(
+                        dateTimeFormatDataBase
+                    )
+                )
+            )
+        )
     }
 
     override suspend fun getGoingBeyondLimit(peakLimit: Int): Flow<List<ResultDomainModel>> {
         return flow {
             resultDao.getStressResult(peakLimit).collect {
-                emit(
-                    it.map { resultEntity ->
-                        ResultDomainModel(
-                            resultEntity.time.toDate(dateTimeFormatDataBase).beginningOfMinute,
-                            resultEntity.peakCount,
-                            resultEntity.tonicAvg,
-                            resultEntity.conditionAssessment,
-                            resultEntity.stressCause
-                        )
-                    }
-                )
+                emit(it.map { resultEntity ->
+                    resultEntity.toDomain()
+                })
             }
         }
     }
 
-    override suspend fun getResultsInMonth(month: Date): Flow<List<ResultForTheDayDomainModel>> {
-        return flow {
-            val beginningOfMonth = month.beginningOfMonth
-            val endOfMonth = month.endOfMonth
-            resultDao.getResultForTheDay(
-                beginningOfMonth.toString(dateFormatDataBase),
-                endOfMonth.toString(dateFormatDataBase)
-            ).collect {
-                val resultForTheDayList = it.toMutableList()
-                val datesList =
-                    it.map { entity -> entity.date.toDate(dateFormatDataBase).beginningOfDay }
-                (beginningOfMonth.toString("dd").toInt()..
-                        endOfMonth.toString("dd").toInt()).forEach { dayNumber ->
-                    val day = Tempo.with(
-                        beginningOfMonth.toString("yyyy").toInt(),
-                        beginningOfMonth.toString("MM").toInt(),
-                        dayNumber
-                    ).beginningOfDay
-                    if (day !in datesList) {
-                        resultForTheDayList.add(
-                            ResultForTheDay(
-                                day.toString(dateFormatDataBase), 0, 0, 0,""
-                            )
-                        )
-                    }
-                }
-                emit(
-                    resultForTheDayList.map { resultEntity ->
-                        ResultForTheDayDomainModel(
-                            resultEntity.date.toDate(dateFormatDataBase).beginningOfDay,
-                            resultEntity.peaks,
-                            resultEntity.tonic,
-                            resultEntity.stressCause?:""
-                        )
-                    }
-                )
-            }
-        }
-    }
 
     override suspend fun getResultsCountAndSourceInInterval(
-        beginInterval: Date,
-        endInterval: Date
+        stimulusList: List<String>, beginInterval: Date, endInterval: Date
     ): Flow<List<ResultCountSourceDomainModel>> {
         return flow {
             resultDao.getCountStressCauseInInterval(
-                settings.getStimulusList(),
+                stimulusList,
                 beginInterval.toString(dateTimeFormatDataBase),
                 endInterval.toString(dateTimeFormatDataBase)
             ).collect {
-                val sourceList = it.toMutableList()
-                settings.getStimulusList().forEach { stimulus ->
-                    if (stimulus !in sourceList.map { entity -> entity.source }) {
-                        sourceList.add(ResultSourceCounterItem(stimulus, 0))
-                    }
-                }
-                emit(
-                    sourceList.map { resultEntity ->
-                        ResultCountSourceDomainModel(
-                            resultEntity.source,
-                            resultEntity.count
-                        )
-                    }.sortedBy { entity -> entity.source }
-                )
+                emit(it.map { resultEntity ->
+                    ResultCountSourceDomainModel(
+                        resultEntity.source, resultEntity.count
+                    )
+                })
             }
         }
     }
 
     override suspend fun getResultsInInterval(
-        beginInterval: Date,
-        endInterval: Date
+        beginInterval: Date, endInterval: Date
     ): Flow<List<ResultDomainModel>> {
         return flow {
             resultDao.getResultsInInterval(
                 beginInterval.toString(dateTimeFormatDataBase),
                 endInterval.toString(dateTimeFormatDataBase)
-            ).collect{
-                emit(
-                    it.map { entity ->
-                        ResultDomainModel(
-                            entity.time.toDate(dateTimeFormatDataBase).beginningOfMinute,
-                            entity.peakCount,
-                            entity.tonicAvg,
-                            entity.conditionAssessment,
-                            entity.stressCause,
-                            entity.keep
-                        )
-                    }
-                )
+            ).collect {
+                emit(it.map { entity ->
+                    entity.toDomain()
+                })
             }
         }
     }
 
     override suspend fun getUserParameterInInterval(
-        beginInterval: Date,
-        endInterval: Date
+        beginInterval: Date, endInterval: Date
     ): Flow<UserParameterDomainModel> {
+        firebaseData.getUserInfo()
         return flow {
             resultDao.getUserParameterInInterval(
-                beginInterval.toString(dateFormatDataBase),
-                endInterval.toString(dateFormatDataBase)
-                ).collect{
+                beginInterval.toString(dateTimeFormatDataBase), endInterval.toString(
+                    dateTimeFormatDataBase
+                )
+            ).collect {
                 emit(
                     UserParameterDomainModel(
-                        it.peaksInDay,
-                        it.peaksInTenMinute,
-                        it.tonicAverage
+                        it.tonic, it.tenMinutePhase, it.hourPhase, it.dayPhase
                     )
                 )
             }
         }
     }
+
 }

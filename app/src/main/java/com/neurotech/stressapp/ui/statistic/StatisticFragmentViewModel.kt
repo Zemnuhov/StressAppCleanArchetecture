@@ -4,29 +4,34 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import com.cesarferreira.tempo.*
 import com.neurotech.domain.TimeFormat
 import com.neurotech.domain.models.ResultDomainModel
+import com.neurotech.domain.models.UserDomain
+import com.neurotech.domain.usecases.resultdata.GetResultForTheHourByInterval
 import com.neurotech.domain.usecases.resultdata.GetResultsByInterval
+import com.neurotech.domain.usecases.resultdata.GetResultsInMonth
 import com.neurotech.domain.usecases.resultdata.SetKeepByTime
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import com.neurotech.domain.usecases.user.GetUser
+import com.neurotech.stressapp.Interval
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.last
 import java.util.*
 
 class StatisticFragmentViewModel(
     private val getResults: GetResultsByInterval,
-    private val setKeepByTime: SetKeepByTime
+    private val setKeepByTime: SetKeepByTime,
+    private val getResultForTheHourByInterval: GetResultForTheHourByInterval,
+    private val getResultsInMonth: GetResultsInMonth,
+    private val getUser: GetUser
 ) : ViewModel() {
 
-    companion object{
-        const val DAY = "DAY"
-        const val WEEK = "WEEK"
-        const val MONTH = "MONTH"
-    }
-    private var _period = DAY
-    val period: String get() = _period
+
+    private var _period = Interval.DAY
+    val period: Interval get() = _period
 
     private val _results = MutableLiveData<List<ResultDomainModel>>()
     val results: LiveData<List<ResultDomainModel>> get() = _results
@@ -44,6 +49,14 @@ class StatisticFragmentViewModel(
             time += 10.minute
         }
     }
+
+    var user :Deferred<UserDomain> = scope.async {
+        return@async getUser.invoke().first()
+    }
+
+
+    var state = 1
+
     init {
         setDayResults()
         Log.e("Time", xLabelOfDay.toString())
@@ -57,39 +70,40 @@ class StatisticFragmentViewModel(
     }
 
     fun setDayResults(){
-        _period = DAY
+        _period = Interval.DAY
         date = Tempo.now
         updateData()
     }
 
     fun setWeekResults(){
-        _period = WEEK
+        _period = Interval.WEEK
         date = Tempo.now
         updateData()
 
     }
 
     fun setMonthResults(){
-        _period = MONTH
+        _period = Interval.MONTH
         date = Tempo.now
         updateData()
     }
 
     fun goToPrevious(){
         when(period){
-            DAY -> {
+            Interval.DAY -> {
                 date -= 1.day
                 updateData()
 
             }
-            WEEK -> {
+            Interval.WEEK -> {
                 date -= 7.day
                 updateData()
             }
-            MONTH -> {
+            Interval.MONTH -> {
                 date = date.beginningOfMonth - 1.minute
                 updateData()
             }
+            else -> {}
         }
 
 
@@ -97,24 +111,25 @@ class StatisticFragmentViewModel(
 
     fun goToNext(){
         when(period){
-            DAY -> {
+            Interval.DAY -> {
                 if(date.beginningOfDay != Tempo.now.beginningOfDay){
                     date += 1.day
                     updateData()
                 }
             }
-            WEEK -> {
+            Interval.WEEK -> {
                 if(date.beginningOfDay != Tempo.now.beginningOfDay) {
                     date += 7.day
                     updateData()
                 }
             }
-            MONTH -> {
+            Interval.MONTH -> {
                 if(date.beginningOfMonth != Tempo.now.beginningOfMonth) {
                     date = date.endOfMonth + 1.minute
                     updateData()
                 }
             }
+            else -> {}
         }
     }
 
@@ -123,8 +138,9 @@ class StatisticFragmentViewModel(
     private fun updateData(){
         job?.cancel()
         when(period){
-            DAY ->{
+            Interval.DAY ->{
                 job = scope.launch {
+                    state = 1
                     getResults.invoke(date.beginningOfDay, date.endOfDay).collect {
                         val resultTimes = it.map { it.time.toString("HH:mm") }
                         val resultMutableList = it.toMutableList()
@@ -141,7 +157,8 @@ class StatisticFragmentViewModel(
                 }
                 _dateFlow.postValue(date.toString("EE " +TimeFormat.dateFormat))
             }
-            WEEK -> {
+            Interval.WEEK -> {
+                state = 2
                 job = scope.launch {
                     val beginWeek: Date = if(date.isMonday){
                         date.beginningOfDay
@@ -154,19 +171,37 @@ class StatisticFragmentViewModel(
                     }
                     val endWeek = beginWeek + 7.day - 1.minute
                     _dateFlow.postValue("${beginWeek.toString(TimeFormat.dateFormat)} - ${endWeek.toString(TimeFormat.dateFormat)}")
-                    getResults.invoke(beginWeek,endWeek).collect {
-                        _results.postValue(it)
+                    getResultForTheHourByInterval.invoke(beginWeek,endWeek).collect {
+                        _results.postValue(it.map {
+                            ResultDomainModel(
+                                it.date,
+                                it.peaks,
+                                it.tonic,
+                                1,
+                                it.stressCause
+                            )
+                        })
                     }
                 }
             }
-            MONTH -> {
+            Interval.MONTH -> {
+                state = 3
                 job = scope.launch {
-                    getResults.invoke(date.beginningOfMonth,date.endOfMonth).collect {
-                        _results.postValue(it)
+                    getResultsInMonth.invoke(date.beginningOfMonth,false).collect {
+                        _results.postValue(it.map {
+                            ResultDomainModel(
+                                it.date,
+                                it.peaks,
+                                it.tonic,
+                                1,
+                                it.stressCause
+                            )
+                        })
                     }
                 }
                 _dateFlow.postValue("${date.beginningOfMonth.toString(TimeFormat.dateFormat)} - ${date.endOfMonth.toString(TimeFormat.dateFormat)}")
             }
+            else -> {}
         }
     }
 

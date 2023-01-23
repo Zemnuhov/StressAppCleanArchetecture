@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.neurotech.domain.BleConstant
 import com.neurotech.stressapp.App
 import com.neurotech.stressapp.R
@@ -24,6 +25,8 @@ class MainFragment: Fragment(R.layout.fragment_main) {
 
     @Inject
     lateinit var factory: MainFragmentViewModelFactory
+    @Inject
+    lateinit var firebaseAnalytics: FirebaseAnalytics
     private var _binding: FragmentMainBinding? = null
     private val binding: FragmentMainBinding get() = _binding!!
     val viewModel by lazy { ViewModelProvider(this, factory)[MainFragmentViewModel::class.java] }

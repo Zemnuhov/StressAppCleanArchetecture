@@ -1,5 +1,6 @@
 package com.neurotech.stressapp.ui.analitycs
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,9 +18,11 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
+import com.jjoe64.graphview.series.DataPoint
+import com.jjoe64.graphview.series.LineGraphSeries
 import com.neurotech.domain.ThresholdValues
+import com.neurotech.domain.models.DayResultDomainModel
 import com.neurotech.domain.models.ResultCountSourceDomainModel
-import com.neurotech.domain.models.ResultForTheDayDomainModel
 import com.neurotech.stressapp.App
 import com.neurotech.stressapp.R
 import com.neurotech.stressapp.databinding.FragmentAnalyticsBinding
@@ -33,6 +36,8 @@ class AnalyticsFragment : Fragment(R.layout.fragment_analytics) {
 
     @Inject
     lateinit var factory: AnalyticsViewModelFactory
+
+
     private var _binding: FragmentAnalyticsBinding? = null
     private val binding get() = _binding!!
     private val appColors by lazy {
@@ -45,6 +50,8 @@ class AnalyticsFragment : Fragment(R.layout.fragment_analytics) {
     private val viewModel by lazy {
         ViewModelProvider(this, factory)[AnalyticsViewModel::class.java]
     }
+
+    private var barSeries = LineGraphSeries(arrayOf<DataPoint>())
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -75,7 +82,7 @@ class AnalyticsFragment : Fragment(R.layout.fragment_analytics) {
     }
 
 
-    private fun observeData(){
+    private fun observeData() {
         viewModel.setInterval(
             Tempo.now.beginningOfDay,
             Tempo.now.endOfDay
@@ -86,6 +93,36 @@ class AnalyticsFragment : Fragment(R.layout.fragment_analytics) {
         viewModel.resultsInMonth.observe(viewLifecycleOwner) {
             settingMonthGraph(getMonthData(it))
         }
+        viewModel.dayRatingList.observe(viewLifecycleOwner) {
+            barSeries = LineGraphSeries(it.mapIndexed{index, d ->
+                DataPoint(index + 1.toDouble(), d)
+            }.toTypedArray())
+            settingRatingGraph()
+        }
+        viewModel.userRating.observe(viewLifecycleOwner) {
+            binding.ratingTextView.text = it.toString()
+            binding.ratingTextView.setTextColor(
+                if (it < 2) {
+
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.green_active
+                    )
+
+                } else if (it in 2..4) {
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.yellow_active
+                    )
+                } else {
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.red_active
+                    )
+                }
+            )
+        }
+
     }
 
     private fun setUpCalendar() {
@@ -179,7 +216,7 @@ class AnalyticsFragment : Fragment(R.layout.fragment_analytics) {
         }
     }
 
-    private fun getMonthData(resultEntityList: List<ResultForTheDayDomainModel>): BarData {
+    private fun getMonthData(resultEntityList: List<DayResultDomainModel>): BarData {
         val barEntryList = mutableListOf<BarEntry>()
         val sourceMap = mutableMapOf<Float, String>()
         val yValueList = mutableListOf<Float>()
@@ -230,6 +267,7 @@ class AnalyticsFragment : Fragment(R.layout.fragment_analytics) {
             xAxis.position = XAxis.XAxisPosition.BOTTOM
             xAxis.labelRotationAngle = 45f
             xAxis.textSize = 7F
+            data.barWidth = 0.7F
             xAxis.valueFormatter = object : IndexAxisValueFormatter() {
                 override fun getFormattedValue(value: Float): String {
                     return "${value.toInt()}"
@@ -240,13 +278,13 @@ class AnalyticsFragment : Fragment(R.layout.fragment_analytics) {
             legend.isEnabled = false
             description = Description().apply { text = "" }
             animateY(500)
-            setOnChartValueSelectedListener(object : OnChartValueSelectedListener{
+            setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
-                    if (e != null){
+                    if (e != null) {
                         val day = viewModel.monthDate.with(day = e.x.toInt())
-                        if(day<Tempo.now.endOfDay){
+                        if (day < Tempo.now.endOfDay) {
                             binding.calendarView.scrollToDate(day)
-                            binding.calendarView.setSelectionDate(day+1.day)
+                            binding.calendarView.setSelectionDate(day)
                             binding.calendarView.setSelectionDate(day)
                         }
                     }
@@ -259,6 +297,49 @@ class AnalyticsFragment : Fragment(R.layout.fragment_analytics) {
             })
         }
     }
+
+    private fun settingRatingGraph() {
+        binding.ratingGraph.apply {
+            removeAllSeries()
+            addSeries(barSeries)
+            setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card_background))
+            viewport.isXAxisBoundsManual = true
+            viewport.isYAxisBoundsManual = true
+            viewport.setMinX(1.0)
+            viewport.setMaxX(5.0)
+            viewport.setMinY(0.0)
+            viewport.setMaxY(5.0)
+            viewport.isScalable = true
+            viewport.isScrollable = true
+            viewport.setScalableY(false)
+            viewport.setScrollableY(false)
+            gridLabelRenderer.padding = 16
+            gridLabelRenderer.gridColor = ContextCompat.getColor(requireContext(), R.color.graph_grid)
+            gridLabelRenderer.isVerticalLabelsVisible = false
+            gridLabelRenderer.numHorizontalLabels = 10
+            gridLabelRenderer.isHorizontalLabelsVisible = false
+        }
+        barSeries.color = Color.BLACK
+//        barSeries.apply {
+//            dataWidth = 0.2
+//
+//            setValueDependentColor { data: DataPoint ->
+//                if (data.y < 2) {
+//                    return@setValueDependentColor ContextCompat.getColor(
+//                        requireContext(),
+//                        R.color.green_active
+//                    )
+//                }
+//                if (data.y in 2.0..4.0) {
+//                    return@setValueDependentColor ContextCompat
+//                        .getColor(requireContext(), R.color.yellow_active)
+//                }
+//                ContextCompat.getColor(requireContext(), R.color.red_active)
+//            }
+//        }
+        binding.ratingGraph.invalidate()
+    }
+
 
     override fun onStop() {
         super.onStop()

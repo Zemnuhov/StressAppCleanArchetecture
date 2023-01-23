@@ -9,43 +9,46 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center">
+
         <TextView
-            android:layout_weight="1.25"
-            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1.25"
+            android:gravity="center"
             android:text="@string/phase_item_title"
-            android:textSize="@dimen/default_text_size"
-            android:textColor="@color/black"
-            android:layout_gravity="center"/>
+            android:textColor="@color/text_color"
+            android:textSize="@dimen/default_text_size" />
 
         <com.jjoe64.graphview.GraphView
             android:id="@+id/peaks_counter_graph"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1" />
+
         <TextView
             android:id="@+id/peaks_counter"
-            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:layout_weight="1.25"
+            android:gravity="center"
             android:text="@string/default_value"
+            android:textColor="@color/text_color"
             android:textSize="@dimen/peak_text_size"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:layout_gravity="center"/>
+            android:textStyle="bold" />
     </LinearLayout>
+
     <TextView
         android:id="@+id/time_range_phase"
         android:layout_width="@dimen/range_size"
         android:layout_height="@dimen/range_size"
-        android:gravity="end|bottom"
         android:layout_gravity="end|bottom"
-        android:textColor="@color/black"
-        android:textSize="@dimen/default_text_size"
         android:layout_marginEnd="@dimen/small_indent"
-        android:layout_marginBottom="@dimen/small_indent"/>
+        android:layout_marginBottom="@dimen/small_indent"
+        android:gravity="end|bottom"
+        android:textColor="@color/text_color"
+        android:textSize="@dimen/default_text_size" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

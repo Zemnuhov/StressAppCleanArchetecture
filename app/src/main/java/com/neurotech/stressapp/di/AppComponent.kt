@@ -4,6 +4,7 @@ import com.neurotech.stressapp.notification.NotificationBuilderApp
 import com.neurotech.stressapp.notification.NotificationReceiver
 import com.neurotech.stressapp.service.AppService
 import com.neurotech.stressapp.service.DataFlowAnalyzer
+import com.neurotech.stressapp.ui.MainActivity
 import com.neurotech.stressapp.ui.analitycs.AnalyticsFragment
 import com.neurotech.stressapp.ui.markupupdate.DayMarkupUpdateFragment
 import com.neurotech.stressapp.ui.main.Graph.PhaseGraphFragment
@@ -22,7 +23,9 @@ import com.neurotech.stressapp.ui.StartFragment
 import com.neurotech.stressapp.ui.statistic.StatisticFragment
 import com.neurotech.stressapp.ui.useraccount.UserAccountFragment
 import dagger.Component
+import javax.inject.Scope
 import javax.inject.Singleton
+
 
 @Singleton
 @Component(
@@ -37,7 +40,8 @@ import javax.inject.Singleton
         SettingsModule::class,
         TonicDataUseCaseModule::class,
         ServiceModule::class,
-        RecodingInDeviceUseCaseModule::class
+        RecodingInDeviceUseCaseModule::class,
+        UserUseCaseModule::class
     ]
 )
 interface AppComponent {
@@ -62,5 +66,5 @@ interface AppComponent {
     fun inject(relaxFragment: RelaxFragment)
     fun inject(mainFragment: MainFragment)
     fun inject(userAccountFragment: UserAccountFragment)
-
+    fun inject(mainActivity: MainActivity)
 }

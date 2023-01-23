@@ -48,11 +48,7 @@ class WritingDataToDevice: WritingData {
         }
     }
 
-    override suspend fun writePeaks(peaks: Int) {
-        //TODO("Not yet implemented")
-    }
-
-    override suspend fun writeTonic(value: Int) {
-        //TODO("Not yet implemented")
+    override suspend fun writeNotifyFlag(isNotify: Boolean) {
+        manager.writeNotifyFlag(isNotify)
     }
 }

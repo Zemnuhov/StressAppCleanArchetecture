@@ -2,16 +2,16 @@ package com.neurotech.data.repository
 
 import com.cesarferreira.tempo.toString
 import com.neurotech.data.di.RepositoryDI.Companion.component
-import com.neurotech.data.modules.storage.TonicStorage
 import com.neurotech.domain.models.TonicFlowDomainModel
 import com.neurotech.domain.repository.TonicRepository
+import com.neurotech.test.storage.database.dao.TonicDao
 import com.neurotech.test.storage.database.entity.TonicEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class TonicRepositoryImpl: TonicRepository {
     @Inject
-    lateinit var tonicData: TonicStorage
+    lateinit var tonicDao: TonicDao
     private val timeFormat = "yyyy-MM-dd HH:mm:ss.SSS"
 
     init {
@@ -19,22 +19,22 @@ class TonicRepositoryImpl: TonicRepository {
     }
 
     override suspend fun getTenMinuteAvgFlow(): Flow<Int?> {
-        return tonicData.getTenMinuteAvgFlow()
+        return tonicDao.getTenMinuteAvgFlow()
     }
 
     override suspend fun getTenMinuteAvg(): Int {
-        return tonicData.getTenMinuteAvg()
+        return tonicDao.getTenMinuteAvg()
     }
 
     override suspend fun getOneHourAvgFlow(): Flow<Int?> {
-        return tonicData.getOneHourAvgFlow()
+        return tonicDao.getOneHourAvgFlow()
     }
 
     override suspend fun getOneDayAvgFlow(): Flow<Int?> {
-        return tonicData.getOneDayAvgFlow()
+        return tonicDao.getOneDayAvgFlow()
     }
 
     override suspend fun writeTonic(model: TonicFlowDomainModel) {
-        tonicData.insertTonicValue(TonicEntity(model.time.toString(timeFormat),model.value))
+        tonicDao.insertTonicValue(TonicEntity(model.time.toString(timeFormat),model.value))
     }
 }

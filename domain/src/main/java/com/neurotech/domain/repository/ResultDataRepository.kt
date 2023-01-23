@@ -13,8 +13,7 @@ interface ResultDataRepository {
     suspend fun setStressCauseByTime(stressCause: String, time: List<Date>)
     suspend fun setKeepByTime(keep: String?, time: Date)
     suspend fun getGoingBeyondLimit(peakLimit: Int):Flow<List<ResultDomainModel>>
-    suspend fun getResultsInMonth(month: Date): Flow<List<ResultForTheDayDomainModel>>
-    suspend fun getResultsCountAndSourceInInterval(beginInterval:Date, endInterval:Date): Flow<List<ResultCountSourceDomainModel>>
+    suspend fun getResultsCountAndSourceInInterval(stimulusList: List<String> ,beginInterval:Date, endInterval:Date): Flow<List<ResultCountSourceDomainModel>>
     suspend fun getResultsInInterval(beginInterval:Date, endInterval:Date): Flow<List<ResultDomainModel>>
     suspend fun getUserParameterInInterval(beginInterval:Date, endInterval:Date): Flow<UserParameterDomainModel>
 }

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter
@@ -12,6 +13,7 @@ import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
 import com.jjoe64.graphview.series.PointsGraphSeries
 import com.neurotech.stressapp.App
+import com.neurotech.stressapp.R
 import com.neurotech.stressapp.databinding.ItemMainPhaseGraphBinding
 import javax.inject.Inject
 
@@ -89,8 +91,8 @@ class PhaseGraphFragment : Fragment() {
         binding.phaseGraphMain.viewport.isScrollable = true
         binding.phaseGraphMain.viewport.setScalableY(false)
         binding.phaseGraphMain.viewport.setScrollableY(false)
-        binding.phaseGraphMain.setBackgroundColor(Color.WHITE)
-        binding.phaseGraphMain.gridLabelRenderer.gridColor = Color.WHITE
+        binding.phaseGraphMain.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card_background))
+        binding.phaseGraphMain.gridLabelRenderer.gridColor = ContextCompat.getColor(requireContext(), R.color.card_background)
         binding.phaseGraphMain.gridLabelRenderer.isHorizontalLabelsVisible = false
         binding.phaseGraphMain.gridLabelRenderer.isVerticalLabelsVisible = false
         binding.phaseGraphMain.gridLabelRenderer.setHumanRounding(false)

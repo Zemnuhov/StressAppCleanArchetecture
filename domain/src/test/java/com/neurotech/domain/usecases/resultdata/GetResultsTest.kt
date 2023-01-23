@@ -8,19 +8,20 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.mockito.kotlin.mock
+import java.util.*
 
 class GetResultsTest {
     @Test
     fun test1() = runTest {
         val repository = mock<ResultDataRepository>()
         val testData = flow {
-            emit(listOf(ResultDomainModel("11:20", 10, 2000, 1)))
+            emit(listOf(ResultDomainModel(Date(), 10, 2000, 1)))
         }
         Mockito.`when`(repository.getResults()).thenReturn(testData)
 
         val useCase = GetResults(repository = repository)
         val actual = useCase.invoke()
-        val expected = listOf(ResultDomainModel("11:20", 10, 2000, 1))
+        val expected = listOf(ResultDomainModel(Date(), 10, 2000, 1))
 
         actual.collect{
             Assertions.assertArrayEquals(it.toTypedArray(), expected.toTypedArray())

@@ -5,12 +5,17 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.neurotech.domain.models.ResultTimeAndPeakDomainModel
+import com.neurotech.domain.models.UserDomain
 import com.neurotech.domain.usecases.phasedata.GetOneDayCountFlow
 import com.neurotech.domain.usecases.phasedata.GetOneHourCountFlow
 import com.neurotech.domain.usecases.phasedata.GetTenMinuteCountFlow
 import com.neurotech.domain.usecases.resultdata.GetResultsInOneHour
+import com.neurotech.domain.usecases.user.GetUser
 import com.neurotech.stressapp.Singleton
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class PhaseItemFragmentViewModel(
@@ -18,6 +23,7 @@ class PhaseItemFragmentViewModel(
     private val getOneHourCountFlow: GetOneHourCountFlow,
     private val getOneDayCountFlow: GetOneDayCountFlow,
     private val getResultsInOneHour: GetResultsInOneHour,
+    private val getUser: GetUser
 ) : ViewModel() {
 
     private val _peakCount = MutableLiveData<Int>()
@@ -28,11 +34,13 @@ class PhaseItemFragmentViewModel(
 
     private val jobList: MutableList<Job> = mutableListOf()
 
+    val user: Deferred<UserDomain> = viewModelScope.async { getUser.invoke().first() }
+
     init{
         viewModelScope.launch {
-            getResultsInOneHour.invoke().collect{
-                _resultsInHour.postValue(it)
-            }
+                getResultsInOneHour.invoke().collect{
+                    _resultsInHour.postValue(it)
+                }
         }
     }
 

@@ -38,9 +38,7 @@ class MarkupFragment : Fragment(R.layout.fragment_markup), MarkupFragmentAdapter
         fillMarkupRecyclerView()
         fillSourceRecyclerView()
         binding.saveButton.setOnClickListener {
-            adapterMarkup.resultMap.forEach{ (source, dateList) ->
-                viewModel.setStressCause(source, dateList)
-            }
+            viewModel.setStressCause(adapterMarkup.resultMap)
         }
 
     }
@@ -88,6 +86,6 @@ class MarkupFragment : Fragment(R.layout.fragment_markup), MarkupFragmentAdapter
     override fun clickBySource(source: String) {
         adapterMarkup.setSource(source)
         adapterMarkup.notifyItemRangeChanged(0,adapterMarkup.itemCount)
-        binding.sourceRecyclerView.setItemViewCacheSize(adapterMarkup.itemCount)
+        binding.markupRecyclerView.setItemViewCacheSize(adapterMarkup.itemCount)
     }
 }

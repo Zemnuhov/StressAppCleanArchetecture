@@ -17,15 +17,12 @@ import com.jjoe64.graphview.DefaultLabelFormatter
 import com.jjoe64.graphview.series.BarGraphSeries
 import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
-import com.neurotech.domain.ThresholdValues
 import com.neurotech.stressapp.App
+import com.neurotech.stressapp.Interval
 import com.neurotech.stressapp.R
 import com.neurotech.stressapp.databinding.FragmentStatisticBinding
 import com.neurotech.stressapp.ui.main.StatisticItem.StatisticItemFragment
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.*
 import javax.inject.Inject
 
@@ -46,7 +43,7 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
     private var tonicSeries = LineGraphSeries(arrayOf<DataPoint>())
     private var resultDateList = listOf<Date>()
 
-    private var adapter = StatisticFragmentAdapter(listOf())
+    private var adapter = StatisticFragmentAdapter(listOf(),0)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,9 +59,19 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
         CoroutineScope(Dispatchers.IO).launch{
             binding.switchButton.state.collect{
                 when(it){
-                    1-> viewModel.setDayResults()
-                    2-> viewModel.setWeekResults()
-                    else -> viewModel.setMonthResults()
+                    1-> {
+                        viewModel.setDayResults()
+                        barSeries.dataWidth = 550000.0
+
+                    }
+                    2-> {
+                        viewModel.setWeekResults()
+                        barSeries.dataWidth = (barSeries.highestValueX - barSeries.lowestValueX)/300
+                    }
+                    else -> {
+                        viewModel.setMonthResults()
+                        barSeries.dataWidth = (barSeries.highestValueX - barSeries.lowestValueX)/100
+                    }
                 }
             }
         }
@@ -73,14 +80,14 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        postponeEnterTransition()
         val statisticItem = StatisticItemFragment()
         statisticItem.arguments = bundleOf(StatisticItemFragment.BUNDLE_KEY to "GONE")
         childFragmentManager.beginTransaction()
             .replace(binding.mainStatisticLayout.id, statisticItem)
             .commit()
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
-        binding.recyclerView.adapter = StatisticFragmentAdapter(listOf())
+        binding.recyclerView.adapter = StatisticFragmentAdapter(listOf(),0)
+        barSeries.dataWidth = 550000.0
         setObservers()
         buttonListeners()
     }
@@ -100,14 +107,23 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
     }
 
     private fun mapValue(value: Double, min: Int): Double {
-        return value  / 10000 * (min+100 - min) + min
+        return value  / 10000 * (min+barSeries.highestValueY - min) + min
     }
 
     private fun setObservers() {
         viewModel.results.observe(viewLifecycleOwner) {
             binding.recyclerView.setItemViewCacheSize(it.size)
-            adapter = StatisticFragmentAdapter(it)
-            binding.recyclerView.adapter = adapter
+            CoroutineScope(Dispatchers.IO).launch {
+                val normal = when(viewModel.state){
+                    1 -> viewModel.user.await().peakNormal
+                    2 -> viewModel.user.await().peakInHourNormal
+                    else -> viewModel.user.await().peakInDayNormal
+                }
+                adapter = StatisticFragmentAdapter(it, normal)
+                launch(Dispatchers.Main) {
+                    binding.recyclerView.adapter = adapter
+                }
+            }
             resultDateList = it.map { it.time }
         }
         viewModel.results.observe(viewLifecycleOwner) { resultModel ->
@@ -120,11 +136,12 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
                     val bar = DataPoint(time, peaks)
                     barSeries.appendData(bar, true, 10000)
                     val tonic = result.tonicAvg.toDouble()
-                    val point = DataPoint(time, mapValue(tonic,resultModel.maxOf { it.peakCount }-20))
+                    val point = DataPoint(time, mapValue(tonic,resultModel.maxOf { it.peakCount }-5))
                     tonicSeries.appendData(point,true, 10000)
                 }
-            graphSettings()
-            startPostponedEnterTransition()
+            runBlocking {
+                graphSettings()
+            }
         }
 
         viewModel.dateFlow.observe(viewLifecycleOwner){
@@ -132,28 +149,33 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
         }
     }
 
-    private fun clickToData(xValue: Double){
+    private suspend fun clickToData(xValue: Double){
+        val normal = when(viewModel.state){
+            1 -> viewModel.user.await().peakNormal
+            2 -> viewModel.user.await().peakInHourNormal
+            else -> viewModel.user.await().peakInDayNormal
+        }
         barSeries.setValueDependentColor { data:DataPoint ->
             if(data.x != xValue){
-                if (data.y < ThresholdValues.normal) {
+                if (data.y < normal) {
                     return@setValueDependentColor ContextCompat.getColor(
                         requireContext(),
                         R.color.green_active
                     )
                 }
-                if (data.y in ThresholdValues.normal .. ThresholdValues.high) {
+                if (normal <= data.y  && data.y<= (normal*2)) {
                     return@setValueDependentColor ContextCompat
                         .getColor(requireContext(), R.color.yellow_active)
                 }
                 return@setValueDependentColor ContextCompat.getColor(requireContext(), R.color.red_active)
             }
-            if (data.y < ThresholdValues.normal) {
+            if (data.y < normal) {
                 return@setValueDependentColor ContextCompat.getColor(
                     requireContext(),
                     R.color.green_selected
                 )
             }
-            if (data.y in ThresholdValues.normal .. ThresholdValues.high) {
+            if (normal <= data.y  && data.y<= (normal*2)) {
                 return@setValueDependentColor ContextCompat
                     .getColor(requireContext(), R.color.yellow_selected)
             }
@@ -161,20 +183,22 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
         }
         barSeries.setOnDataPointTapListener { _, dataPoint ->
             scrollToClick(dataPoint.x.toLong())
-            clickToData(dataPoint.x)
+            runBlocking {
+                clickToData(dataPoint.x)
+            }
         }
         binding.statisticGraph.removeSeries(barSeries)
         binding.statisticGraph.addSeries(barSeries)
     }
 
-    private fun graphSettings() {
+    private suspend fun graphSettings() {
         val minX = Date(barSeries.lowestValueX.toLong()).beginningOfDay.time.toDouble() - 500000
         val maxX = Date(barSeries.highestValueX.toLong()).endOfDay.time.toDouble() + 500000
         binding.statisticGraph.apply {
             removeAllSeries()
             addSeries(tonicSeries)
             addSeries(barSeries)
-            setBackgroundColor(Color.WHITE)
+            setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card_background))
             viewport.isXAxisBoundsManual = true
             viewport.isYAxisBoundsManual = true
             viewport.setMinX(minX)
@@ -187,7 +211,7 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
             viewport.setScalableY(false)
             viewport.setScrollableY(false)
             gridLabelRenderer.padding = 16
-            gridLabelRenderer.gridColor = Color.GRAY
+            gridLabelRenderer.gridColor = ContextCompat.getColor(requireContext(), R.color.graph_grid)
             gridLabelRenderer.isVerticalLabelsVisible = false
             gridLabelRenderer.numHorizontalLabels = 10
             gridLabelRenderer.labelFormatter = object :DefaultLabelFormatter(){
@@ -196,7 +220,7 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
                     return when(date.toString("mm").toInt() % 10){
                         0 -> {
                             when(viewModel.period){
-                                StatisticFragmentViewModel.DAY -> date.toString("HH:mm")
+                                Interval.DAY -> date.toString("HH:mm")
                                 else -> date.toString("dd HH:mm")
                             }
                         }
@@ -205,19 +229,21 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
                 }
             }
         }
-
-
         barSeries.apply {
-            spacing = 1
-            dataWidth = 550000.0
+            barSeries.spacing = 20
+            val normal = when(viewModel.state){
+                1 -> viewModel.user.await().peakNormal
+                2 -> viewModel.user.await().peakInHourNormal
+                else -> viewModel.user.await().peakInDayNormal
+            }
             setValueDependentColor { data: DataPoint ->
-                if (data.y < ThresholdValues.normal) {
+                if (data.y < normal) {
                     return@setValueDependentColor ContextCompat.getColor(
                         requireContext(),
                         R.color.green_active
                     )
                 }
-                if (data.y in ThresholdValues.normal .. ThresholdValues.high) {
+                if ( normal <= data.y  && data.y<= (normal*2)) {
                     return@setValueDependentColor ContextCompat
                         .getColor(requireContext(), R.color.yellow_active)
                 }
@@ -226,9 +252,12 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
 
             setOnDataPointTapListener { _, dataPoint ->
                 scrollToClick(dataPoint.x.toLong())
-                clickToData(dataPoint.x)
+                runBlocking {
+                    clickToData(dataPoint.x)
+                }
             }
         }
+
         tonicSeries.color = Color.BLACK
         binding.statisticGraph.invalidate()
     }

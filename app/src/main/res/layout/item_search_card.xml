@@ -31,18 +31,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/small_indent"
                     android:text="@string/device_name_title"
-                    android:textSize="@dimen/default_text_size"
-                    android:layout_marginEnd="@dimen/small_indent"/>
+                    android:textColor="@color/text_color"
+                    android:textSize="@dimen/default_text_size" />
+
                 <TextView
+                    android:id="@+id/name_device"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/name_device"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/default_text_size"/>
+                    android:textColor="@color/text_color"
+                    android:textSize="@dimen/default_text_size"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <androidx.appcompat.widget.LinearLayoutCompat
@@ -50,19 +54,21 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:paddingTop="10dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/mac_address_title"
-                    android:textSize="@dimen/default_text_size"
                     android:layout_marginEnd="@dimen/small_indent"
-                    />
+                    android:text="@string/mac_address_title"
+                    android:textColor="@color/text_color"
+                    android:textSize="@dimen/default_text_size" />
+
                 <TextView
+                    android:id="@+id/mac_device"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/mac_device"
-                    android:textSize="@dimen/default_text_size"
-                    />
+                    android:textColor="@color/text_color"
+                    android:textSize="@dimen/default_text_size" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
         </LinearLayout>

@@ -34,6 +34,7 @@ class NotificationBuilderApp(private val context: Context) {
     private val titleNotification = "StressApp"
     private val foregroundContent = "Будьте спокойны..."
     private val warningContent = "Был обнаружен повышенный стресс"
+    private val disconnectContent = "Произошёл разрыв с устройством"
 
     private val dateTimeFormat = "yyyy-MM-dd HH:mm:ss.SSS"
     private val timeFormat = "HH:mm"
@@ -158,6 +159,43 @@ class NotificationBuilderApp(private val context: Context) {
             notify(3, builder.build())
         }
 
+    }
+
+    suspend fun buildDisconnectNotification() {
+        val pendingIntent: PendingIntent =
+            Intent(context, MainActivity::class.java).let { notificationIntent ->
+                PendingIntent.getActivity(
+                    context.applicationContext,
+                    0,
+                    notificationIntent,
+                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                )
+            }
+
+        val builder = NotificationCompat.Builder(context, WARNING_CHANNEL_ID)
+            .setSmallIcon(R.drawable.icon_stress)
+            .setContentTitle(titleNotification)
+            .setContentText(disconnectContent)
+            .setContentIntent(pendingIntent)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setAutoCancel(true)
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createNotificationChannel(WARNING_CHANNEL_ID, WARNING_CHANNEL_ID, WARNING_CHANNEL_ID)
+        }
+
+        with(NotificationManagerCompat.from(context)) {
+            cancel(4)
+            notify(4, builder.build())
+        }
+
+    }
+
+    fun cancelDisconnectNotification(){
+        with(NotificationManagerCompat.from(context)) {
+            cancel(4)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

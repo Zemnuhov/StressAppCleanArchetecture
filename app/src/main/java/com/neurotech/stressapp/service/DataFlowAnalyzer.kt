@@ -3,6 +3,7 @@ package com.neurotech.stressapp.service
 import android.content.Context
 import android.content.IntentFilter
 import android.net.ConnectivityManager
+import android.util.Log
 import com.cesarferreira.tempo.Tempo
 import com.cesarferreira.tempo.minus
 import com.cesarferreira.tempo.seconds
@@ -47,7 +48,7 @@ class DataFlowAnalyzer(context: Context) {
     lateinit var deviceBleWriter: DeviceBleWriter
 
 
-    var notificationReceiver: NotificationReceiver
+    private var notificationReceiver: NotificationReceiver
     private val notificationBuilderApp by lazy { NotificationBuilderApp(context) }
     private var lastInsertDatabase = Tempo.now
     private var isPeak = false
@@ -79,7 +80,6 @@ class DataFlowAnalyzer(context: Context) {
                 val time = tonicItem.time
                 val value = tonicItem.value
                 writeTonic.invoke(TonicFlowDomainModel(value, time))
-                deviceBleWriter.recordTonic(value)
             }
         }
     }
@@ -102,10 +102,9 @@ class DataFlowAnalyzer(context: Context) {
                             maxValue
                         )
                     )
-                    deviceBleWriter.recordPeaks(getTenMinutePhase.invoke())
                     maxValue = 0.0
                 }catch (e: Exception){
-
+                    Log.e("WritePhaseError", e.toString())
                 }
             }
             isPeak = false

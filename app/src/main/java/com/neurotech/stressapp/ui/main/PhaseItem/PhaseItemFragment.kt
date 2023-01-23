@@ -16,6 +16,10 @@ import com.neurotech.stressapp.App
 import com.neurotech.stressapp.R
 import com.neurotech.stressapp.Singleton
 import com.neurotech.stressapp.databinding.ItemMainPhaseBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 
@@ -49,7 +53,7 @@ class PhaseItemFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        graphSetting()
+        //graphSetting()
         setObservers()
         binding.timeRangePhase.text = timeInterval[indexInterval]
         binding.timeRangePhase.setOnClickListener {
@@ -78,44 +82,51 @@ class PhaseItemFragment : Fragment() {
                     true,
                     6)
             }
-            graphSetting()
-            binding.peaksCounterGraph.invalidate()
+            CoroutineScope(Dispatchers.Main).launch {
+                graphSetting()
+            }
         }
     }
 
 
-    private fun graphSetting() {
-        binding.peaksCounterGraph.removeAllSeries()
-        binding.peaksCounterGraph.viewport.isXAxisBoundsManual = true
-        binding.peaksCounterGraph.viewport.isYAxisBoundsManual = true
-        binding.peaksCounterGraph.viewport.setMinX(barSeries.lowestValueX-500000)
-        binding.peaksCounterGraph.viewport.setMaxX(barSeries.highestValueX + 500000)
-        binding.peaksCounterGraph.viewport.setMinY(0.0)
-        binding.peaksCounterGraph.viewport.setMaxY(barSeries.highestValueY + 2)
-        binding.peaksCounterGraph.viewport.isScalable = false
-        binding.peaksCounterGraph.viewport.isScrollable = false
-        binding.peaksCounterGraph.viewport.setScalableY(false)
-        binding.peaksCounterGraph.viewport.setScrollableY(false)
-        binding.peaksCounterGraph.setBackgroundColor(Color.WHITE)
-        binding.peaksCounterGraph.gridLabelRenderer.gridColor = Color.BLACK
-        binding.peaksCounterGraph.gridLabelRenderer.isVerticalLabelsVisible = false
-        binding.peaksCounterGraph.gridLabelRenderer.isHorizontalLabelsVisible = false
+    private suspend fun graphSetting() {
+        binding.peaksCounterGraph.apply {
+            removeAllSeries()
+            addSeries(barSeries)
+            viewport.isXAxisBoundsManual = true
+            viewport.isYAxisBoundsManual = true
+            viewport.setMinX(barSeries.lowestValueX-500000)
+            viewport.setMaxX(barSeries.highestValueX + 500000)
+            viewport.setMinY(0.0)
+            viewport.setMaxY(barSeries.highestValueY + 2)
+            viewport.isScalable = false
+            viewport.isScrollable = false
+            viewport.setScalableY(false)
+            viewport.setScrollableY(false)
+            setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card_background))
+            gridLabelRenderer.gridColor = Color.BLACK
+            gridLabelRenderer.isVerticalLabelsVisible = false
+            gridLabelRenderer.isHorizontalLabelsVisible = false
+        }
+
         barSeries.spacing = 1
         barSeries.dataWidth = 500000.0
+        val normal = viewModel.user.await().peakNormal.toDouble()
         barSeries.setValueDependentColor { data: DataPoint ->
-            if (data.y < ThresholdValues.normal) {
+            if (data.y < normal) {
                 return@setValueDependentColor ContextCompat.getColor(
                     requireContext(),
                     R.color.green_active
                 )
             }
-            if (data.y in ThresholdValues.normal .. ThresholdValues.high) {
+            if (data.y in normal .. normal*2) {
                 return@setValueDependentColor ContextCompat
                     .getColor(requireContext(), R.color.yellow_active)
             }
             ContextCompat.getColor(requireContext(), R.color.red_active)
         }
-        binding.peaksCounterGraph.addSeries(barSeries)
+        binding.peaksCounterGraph.invalidate()
+
     }
 
 

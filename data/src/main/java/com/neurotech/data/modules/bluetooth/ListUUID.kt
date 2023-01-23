@@ -3,12 +3,15 @@ package com.neurotech.data.modules.bluetooth
 import java.util.*
 
 object ListUUID {
+
+    val settingServiceUUID: UUID = UUID.fromString("4303e3c0-df78-454a-8972-88fd0285cf8e")
+    val notifyStateCharacteristicUUID: UUID = UUID.fromString("4303e3c1-df78-454a-8972-88fd0285cf8e")
+
     val dataServiceUUID: UUID = UUID.fromString("1556b7b0-f1b6-4bc3-8880-035e1299a745")
     val phaseFlowUUID: UUID = UUID.fromString("1556b7b1-f1b6-4bc3-8880-035e1299a745")
     val tonicFlowUUID: UUID = UUID.fromString("1556b7b2-f1b6-4bc3-8880-035e1299a745")
     val timeUUID: UUID = UUID.fromString("1556b7b3-f1b6-4bc3-8880-035e1299a745")
     val dateUUID: UUID = UUID.fromString("1556b7b4-f1b6-4bc3-8880-035e1299a745")
-    val characteristicServiceUUID: UUID = UUID.fromString("1556b7b5-f1b6-4bc3-8880-035e1299a745")
 
     val memoryServiceUUID: UUID  = UUID.fromString("bacdabd0-ba2c-4e38-86ed-b35684fd3bb1")
     val memoryCharacteristicUUID: UUID = UUID.fromString("bacdabd1-ba2c-4e38-86ed-b35684fd3bb1")

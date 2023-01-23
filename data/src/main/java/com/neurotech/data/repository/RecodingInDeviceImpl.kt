@@ -19,15 +19,11 @@ class RecodingInDeviceImpl: RecodingInDevice {
         component.inject(this)
     }
 
-    override suspend fun recodingPeaks(peaks: Int) {
-        writer.writePeaks(peaks)
-    }
-
-    override suspend fun recodingTonic(value: Int) {
-        writer.writeTonic(value)
-    }
-
     override suspend fun recodingTime(time: Date) {
         writer.writeTime(time)
+    }
+
+    override suspend fun recodingNotifyFlag(isNotify: Boolean) {
+        writer.writeNotifyFlag(isNotify)
     }
 }

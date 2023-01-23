@@ -7,15 +7,17 @@
     android:layout_marginEnd="@dimen/default_indent"
     android:layout_marginTop="@dimen/small_indent"
     android:orientation="horizontal">
+
     <TextView
         android:id="@+id/title_stress"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/default_value"
-        android:layout_weight="1"
-        android:textSize="@dimen/default_text_size"
         android:layout_gravity="center"
-        android:gravity="center|start"/>
+        android:layout_weight="1"
+        android:gravity="center|start"
+        android:text="@string/default_value"
+        android:textColor="@color/text_color"
+        android:textSize="@dimen/default_text_size" />
 
     <ImageView
         android:id="@+id/deleted_source"

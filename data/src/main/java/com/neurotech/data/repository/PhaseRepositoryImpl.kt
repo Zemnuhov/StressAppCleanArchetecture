@@ -1,6 +1,8 @@
 package com.neurotech.data.repository
 
+import android.util.Log
 import com.cesarferreira.tempo.toString
+import com.neurotech.data.DataModuleLog.appLog
 import com.neurotech.data.di.RepositoryDI.Companion.component
 import com.neurotech.data.modules.storage.database.dao.PeakDao
 import com.neurotech.domain.TimeFormat
@@ -41,6 +43,11 @@ class PhaseRepositoryImpl : PhaseRepository {
     }
 
     override suspend fun writePhase(model: PeakDomainModel) {
-        phaseDao.insertPeak(PeakEntity(model.timeBegin, model.timeEnd, model.max))
+        try {
+            phaseDao.insertPeak(PeakEntity(model.timeBegin, model.timeEnd, model.max))
+        }catch (e:Exception){
+            appLog(e.message.toString())
+        }
+
     }
 }

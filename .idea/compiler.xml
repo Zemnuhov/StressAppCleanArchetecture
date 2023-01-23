@@ -4,6 +4,7 @@
     <bytecodeTargetLevel target="1.8">
       <module name="StressApp.app" target="11" />
       <module name="StressApp.data" target="11" />
+      <module name="StressApp.di" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

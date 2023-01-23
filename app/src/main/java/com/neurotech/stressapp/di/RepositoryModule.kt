@@ -57,4 +57,23 @@ class RepositoryModule {
     fun provideRecodingInDevice(): RecodingInDevice {
         return RecodingInDeviceImpl()
     }
+
+    @Provides
+    @Singleton
+    fun provideHourResultRepository(): HourResultRepository {
+        return HourResultRepositoryImpl()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDayResultRepository(): DayResultRepository {
+        return DayResultRepositoryImpl()
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserRepository(): UserRepository {
+        return UserRepositoryImpl()
+    }
+
 }

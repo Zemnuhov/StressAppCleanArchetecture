@@ -9,11 +9,12 @@ import com.cesarferreira.tempo.toString
 import com.neurotech.domain.ThresholdValues
 import com.neurotech.domain.TimeFormat
 import com.neurotech.domain.models.ResultDomainModel
+import com.neurotech.domain.models.UserDomain
 import com.neurotech.stressapp.R
 import com.neurotech.stressapp.databinding.ItemStatisticResultBinding
 import java.util.*
 
-class StatisticFragmentAdapter(private val results: List<ResultDomainModel>) :
+class StatisticFragmentAdapter(private val results: List<ResultDomainModel>, private val normalValue: Int) :
     RecyclerView.Adapter<StatisticFragmentAdapter.StatisticCardView>() {
 
     val keepMap = mutableMapOf<Date, String?>()
@@ -41,7 +42,7 @@ class StatisticFragmentAdapter(private val results: List<ResultDomainModel>) :
         return results.size
     }
 
-    class StatisticCardView(private val itemBinding: ItemStatisticResultBinding) : RecyclerView.ViewHolder(itemBinding.root) {
+    inner class StatisticCardView(private val itemBinding: ItemStatisticResultBinding) : RecyclerView.ViewHolder(itemBinding.root) {
         val keepEditText = itemBinding.keepEditText
         val keepSaveButton = itemBinding.keepSaveButton
         fun textBind(result: ResultDomainModel){
@@ -104,12 +105,12 @@ class StatisticFragmentAdapter(private val results: List<ResultDomainModel>) :
         fun colorBind(result: ResultDomainModel){
             val gradientDrawable = itemBinding.colorLayoutStatisticTextView.background.current
             when (result.peakCount) {
-                in 0..ThresholdValues.normal.toInt() -> {
+                in 0..normalValue -> {
                     itemBinding.colorLayoutStatisticTextView.background = gradientDrawable.apply {
                         this.setTint(ContextCompat.getColor(itemBinding.root.context, R.color.green_active))
                     }
                 }
-                in ThresholdValues.normal.toInt()..ThresholdValues.high.toInt() -> {
+                in normalValue..normalValue*2 -> {
                     itemBinding.colorLayoutStatisticTextView.background = gradientDrawable.apply {
                         this.setTint(ContextCompat.getColor(itemBinding.root.context, R.color.yellow_active))
                     }

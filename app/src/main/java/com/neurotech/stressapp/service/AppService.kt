@@ -6,7 +6,10 @@ import android.os.Binder
 import android.os.IBinder
 import android.util.Log
 import com.cesarferreira.tempo.toString
+import com.neurotech.domain.BleConstant
 import com.neurotech.domain.TimeFormat
+import com.neurotech.domain.usecases.connection.GetConnectionState
+import com.neurotech.domain.usecases.connection.GetConnectionStateFlow
 import com.neurotech.domain.usecases.gsrdata.GetPhaseValueFlow
 import com.neurotech.domain.usecases.gsrdata.GetTonicValueFlow
 import com.neurotech.stressapp.App
@@ -26,6 +29,8 @@ class AppService : Service() {
     @Inject
     lateinit var getTonicValueFlow: GetTonicValueFlow
 
+    @Inject
+    lateinit var getConnectionStateFlow: GetConnectionStateFlow
     private val dataFlowAnalyzer by lazy { DataFlowAnalyzer(applicationContext) }
     private val binder = LocalBinder()
     private val notificationBuilderApp by lazy { NotificationBuilderApp(applicationContext) }
@@ -50,6 +55,14 @@ class AppService : Service() {
         launch { setTonicListeners() }
         launch { setPhaseListeners() }
         launch { setTimeListener() }
+        launch {
+            getConnectionStateFlow.invoke().collect{
+                when(it){
+                    BleConstant.DISCONNECTED -> notificationBuilderApp.buildDisconnectNotification()
+                    BleConstant.CONNECTED -> notificationBuilderApp.cancelDisconnectNotification()
+                }
+            }
+        }
         ////??////////
         launch { setRecoding() }
     }
@@ -85,12 +98,12 @@ class AppService : Service() {
         }
     }
 
-    private suspend fun setTimeListener() {
+    private suspend fun setTimeListener() = coroutineScope{
         while (true) {
             if (Calendar.getInstance()[Calendar.MINUTE] % 10 == 0) {
                 dataFlowAnalyzer.writeResultTenMinutes()
             }
-            delay(30000)
+            delay(59000)
         }
     }
 

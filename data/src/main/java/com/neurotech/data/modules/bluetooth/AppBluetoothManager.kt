@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattService
 import android.content.Context
+import android.util.Log
 import com.neurotech.data.DataModuleLog.appLog
 import com.neurotech.data.modules.bluetooth.ListUUID.dataServiceUUID
 import com.neurotech.data.modules.bluetooth.ListUUID.dateUUID
@@ -15,16 +16,16 @@ import com.neurotech.data.modules.bluetooth.ListUUID.memoryServiceUUID
 import com.neurotech.data.modules.bluetooth.ListUUID.memoryTimeBeginCharacteristicUUID
 import com.neurotech.data.modules.bluetooth.ListUUID.memoryTimeEndCharacteristicUUID
 import com.neurotech.data.modules.bluetooth.ListUUID.memoryTonicCharacteristicUUID
+import com.neurotech.data.modules.bluetooth.ListUUID.notifyStateCharacteristicUUID
 import com.neurotech.data.modules.bluetooth.ListUUID.phaseFlowUUID
+import com.neurotech.data.modules.bluetooth.ListUUID.settingServiceUUID
 import com.neurotech.data.modules.bluetooth.ListUUID.timeUUID
 import com.neurotech.data.modules.bluetooth.ListUUID.tonicFlowUUID
 import com.neurotech.data.modules.bluetooth.data.filters.ExpRunningAverage
 import com.neurotech.test.storage.database.entity.PeakEntity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.launch
 import no.nordicsemi.android.ble.BleManager
 import no.nordicsemi.android.ble.PhyRequest
 import no.nordicsemi.android.ble.ktx.asFlow
@@ -34,6 +35,9 @@ import java.nio.ByteBuffer
 
 
 class AppBluetoothManager(context: Context) : BleManager(context) {
+
+    private var notifyStateCharacteristic: BluetoothGattCharacteristic? = null
+
     private var phaseFlowCharacteristic: BluetoothGattCharacteristic? = null
     private var tonicFlowCharacteristic: BluetoothGattCharacteristic? = null
     private var timeCharacteristic: BluetoothGattCharacteristic? = null
@@ -46,44 +50,54 @@ class AppBluetoothManager(context: Context) : BleManager(context) {
     private var memoryDateEndCharacteristic: BluetoothGattCharacteristic? = null
     private var memoryMaxPeakValueCharacteristic: BluetoothGattCharacteristic? = null
     private var memoryTonicCharacteristic: BluetoothGattCharacteristic? = null
-    val scope = CoroutineScope(Dispatchers.IO)
+    val scope = CoroutineScope(newSingleThreadContext("BleFlow"))
 
     private val _phaseValueFlow = MutableSharedFlow<Double>()
     private val _tonicValueFlow = MutableSharedFlow<Int>()
     private val _memoryStateFlow = MutableSharedFlow<Int>()
+    private val _memoryTonicFlow = MutableSharedFlow<Int>()
+
 
     val phaseValueFlow: Flow<Double> get() = _phaseValueFlow
     val tonicValueFlow: Flow<Int> get() = _tonicValueFlow
     val memoryStateFlow: Flow<Int> get() = _memoryStateFlow
-
-    //private val delay = 40L
-
+    val memoryTonicFlow: Flow<Int> get() = _memoryTonicFlow
 
     override fun getGattCallback(): BleManagerGattCallback {
         return MyGattCallbackImpl()
     }
 
     init {
-        scope.launch {
+        scope.launch(Dispatchers.IO) {
+            delay(500)
             stateAsFlow().collect {
                 if (it.isReady) {
                     observeNotification()
                 }
             }
         }
+
     }
 
     private inner class MyGattCallbackImpl : BleManagerGattCallback() {
         override fun isRequiredServiceSupported(gatt: BluetoothGatt): Boolean {
+            val settingService = gatt.getService(settingServiceUUID)
             val dataService = gatt.getService(dataServiceUUID)
             val memoryService = gatt.getService(memoryServiceUUID)
+            var settingCharacteristicResult = false
             var dataCharacteristicResult = false
             var memoryCharacteristicResult = false
-            if (dataService != null && memoryService != null) {
+            if (settingService != null && dataService != null && memoryService != null) {
+                settingCharacteristicResult = settingCharacteristicInit(settingService)
                 dataCharacteristicResult = dataCharacteristicInit(dataService)
                 memoryCharacteristicResult = memoryCharacteristicInit(memoryService)
             }
-            return dataCharacteristicResult && memoryCharacteristicResult
+            return settingCharacteristicResult && dataCharacteristicResult && memoryCharacteristicResult
+        }
+
+        fun settingCharacteristicInit(settingService: BluetoothGattService): Boolean{
+            notifyStateCharacteristic = settingService.getCharacteristic(notifyStateCharacteristicUUID)
+            return notifyStateCharacteristic != null
         }
 
         fun memoryCharacteristicInit(memoryService: BluetoothGattService): Boolean {
@@ -129,6 +143,8 @@ class AppBluetoothManager(context: Context) : BleManager(context) {
         }
 
         override fun onServicesInvalidated() {
+            notifyStateCharacteristic = null
+
             phaseFlowCharacteristic = null
             tonicFlowCharacteristic = null
             timeCharacteristic = null
@@ -150,6 +166,13 @@ class AppBluetoothManager(context: Context) : BleManager(context) {
             .useAutoConnect(true)
             .usePreferredPhy(PhyRequest.PHY_LE_1M_MASK or PhyRequest.PHY_LE_2M_MASK or PhyRequest.PHY_LE_CODED_MASK)
             .timeout(15_000)
+            .done{connectDevice ->
+                appLog("Connect to device: ${connectDevice.address}")
+                writeNotifyFlag(true)
+            }
+            .fail{connectDevice, status ->
+                appLog("Error connect to device: ${connectDevice.address}  Code: $status")
+            }
             .enqueue()
     }
 
@@ -159,6 +182,7 @@ class AppBluetoothManager(context: Context) : BleManager(context) {
         enableNotifications(phaseFlowCharacteristic).enqueue()
         enableNotifications(tonicFlowCharacteristic).enqueue()
         enableNotifications(memoryCharacteristic).enqueue()
+        enableNotifications(memoryTonicCharacteristic).enqueue()
         writeMemoryFlag()
         scope.launch {
             setNotificationCallback(phaseFlowCharacteristic).asFlow()
@@ -168,7 +192,6 @@ class AppBluetoothManager(context: Context) : BleManager(context) {
                         var value = (ByteBuffer.wrap(bytes).int).toDouble()
                         value = filter.filter(value)
                         _phaseValueFlow.emit(value)
-                        //delay(delay)
                     }
                 }
         }
@@ -179,7 +202,6 @@ class AppBluetoothManager(context: Context) : BleManager(context) {
                     if (bytes != null) {
                         val value = ByteBuffer.wrap(bytes).int
                         _tonicValueFlow.emit(value)
-                        //delay(delay)
                     }
                 }
         }
@@ -190,6 +212,16 @@ class AppBluetoothManager(context: Context) : BleManager(context) {
                     val bytes = it.value
                     bytes?.let { b ->
                         _memoryStateFlow.emit(ByteBuffer.wrap(b).int)
+                    }
+                }
+        }
+
+        scope.launch {
+            setNotificationCallback(memoryTonicCharacteristic).asFlow()
+                .collect {
+                    val bytes = it.value
+                    bytes?.let { b ->
+                        _memoryTonicFlow.emit(ByteBuffer.wrap(b).int)
                     }
                 }
         }
@@ -276,6 +308,28 @@ class AppBluetoothManager(context: Context) : BleManager(context) {
                 )
             }
             .fail { device, status -> appLog("Write memory flag to device fail ${device.address}. Status: $status") }
+            .enqueue()
+    }
+
+    fun writeNotifyFlag(isNotify: Boolean) {
+        val byteValue = if(isNotify){
+            ByteBuffer.allocate(4).putInt(1).array()
+        } else{
+            ByteBuffer.allocate(4).putInt(0).array()
+        }
+        byteValue.reverse()
+        writeCharacteristic(
+            notifyStateCharacteristic,
+            byteValue,
+            BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE
+        )
+            .with { device, data ->
+                appLog(
+                    "Write notify flag to device ${device.address}. Data: ${
+                        data.value?.let { ByteBuffer.wrap(it).int }}"
+                )
+            }
+            .fail { device, status -> appLog("Write notify flag to device fail ${device.address}. Status: $status") }
             .enqueue()
     }
 
