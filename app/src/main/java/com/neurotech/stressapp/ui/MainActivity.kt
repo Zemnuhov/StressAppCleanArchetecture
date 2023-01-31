@@ -64,8 +64,5 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        CoroutineScope(Dispatchers.IO).launch{
-            recordNotifyFlag.invoke(false)
-        }
     }
 }

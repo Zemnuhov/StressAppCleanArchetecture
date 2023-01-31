@@ -57,7 +57,7 @@ class MainHostFragment : Fragment(R.layout.fragment_host) {
                     }
                     R.id.recording -> {
                         //TODO(Удалить)
-                        if (Singleton.recoding) {
+                        if (Singleton.recoding.value) {
                             Singleton.stopRecoding()
                         } else {
                             Singleton.startRecoding()

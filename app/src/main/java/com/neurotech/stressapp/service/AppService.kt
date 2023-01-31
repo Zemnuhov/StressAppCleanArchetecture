@@ -72,7 +72,7 @@ class AppService : Service() {
             getTonicValueFlow.invoke().zip(getPhaseValueFlow.invoke()){ a,b ->
                 hashMapOf("Time" to a.time,"Tonic" to a.value, "Phase" to b.value)
             }.collect{
-                if(Singleton.recoding){
+                if(Singleton.recoding.value){
 
                     Singleton.file.appendText(
                         "${(it["Time"] as Date).toString(TimeFormat.dateTimeFormatDataBase)}, ${it["Tonic"]}, ${it["Phase"]}\n"

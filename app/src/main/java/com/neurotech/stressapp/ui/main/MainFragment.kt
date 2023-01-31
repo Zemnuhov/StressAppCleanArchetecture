@@ -75,6 +75,7 @@ class MainFragment: Fragment(R.layout.fragment_main) {
         childFragmentManager.beginTransaction()
             .replace(R.id.peaks_layout, PhaseItemFragment())
             .commit()
+        //TODO(Тут)
         childFragmentManager.beginTransaction()
             .replace(R.id.statistic_layout, StatisticItemFragment())
             .commit()

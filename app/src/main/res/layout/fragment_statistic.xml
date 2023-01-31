@@ -7,18 +7,6 @@
     android:background="@color/background_color"
     android:orientation="vertical">
 
-    <com.neurotech.stressapp.ui.customview.SwitchButton
-        android:id="@+id/switchButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:selectedBackgroundColor="@color/primary"
-        app:textSize="@dimen/default_text_size"
-        app:animationSpeed="200"
-        android:layout_marginTop="@dimen/small_indent"
-        android:elevation="@dimen/default_elevation"
-        app:layout_constraintEnd_toEndOf="@+id/linearLayout"
-        app:layout_constraintStart_toStartOf="@+id/linearLayout"
-        app:layout_constraintTop_toTopOf="@+id/guideline4" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/linearLayout"
@@ -78,16 +66,16 @@
         android:id="@+id/mainStatisticLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/small_indent"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="@dimen/default_indent"
         android:layout_weight="1.1"
         android:background="@drawable/shadow"
         android:elevation="@dimen/default_elevation"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/recyclerView"
-        app:layout_constraintEnd_toEndOf="@+id/switchButton"
-        app:layout_constraintStart_toStartOf="@+id/switchButton"
-        app:layout_constraintTop_toBottomOf="@+id/switchButton" />
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout"
+        app:layout_constraintTop_toTopOf="@+id/guideline4" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -116,6 +104,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.7" />
+        app:layout_constraintGuide_percent="0.5" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

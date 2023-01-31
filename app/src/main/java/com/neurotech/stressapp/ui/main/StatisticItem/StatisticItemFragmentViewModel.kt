@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.neurotech.domain.models.ResultCountSourceDomainModel
 import com.neurotech.domain.usecases.resultdata.GetCountBySources
 import com.neurotech.domain.usecases.settings.GetStimulusList
+import com.neurotech.stressapp.Singleton
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class StatisticItemFragmentViewModel(
@@ -18,7 +20,15 @@ class StatisticItemFragmentViewModel(
     private val _sourceCount = MutableLiveData<List<ResultCountSourceDomainModel>>()
     val sourceCount: LiveData<List<ResultCountSourceDomainModel>> get() = _sourceCount
 
+    private val _isRecoding = MutableLiveData<Boolean>()
+    val isRecoding: LiveData<Boolean> get() = _isRecoding
+
     init {
+        viewModelScope.launch {
+            Singleton.recoding.collect{
+                _isRecoding.postValue(it)
+            }
+        }
         viewModelScope.launch {
             getStimulusList.getFlow().collect{
                 Log.e("VVV", it.toString())

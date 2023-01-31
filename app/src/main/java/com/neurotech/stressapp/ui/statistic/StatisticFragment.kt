@@ -56,25 +56,7 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
     }
 
     private fun buttonListeners() {
-        CoroutineScope(Dispatchers.IO).launch{
-            binding.switchButton.state.collect{
-                when(it){
-                    1-> {
-                        viewModel.setDayResults()
-                        barSeries.dataWidth = 550000.0
 
-                    }
-                    2-> {
-                        viewModel.setWeekResults()
-                        barSeries.dataWidth = (barSeries.highestValueX - barSeries.lowestValueX)/300
-                    }
-                    else -> {
-                        viewModel.setMonthResults()
-                        barSeries.dataWidth = (barSeries.highestValueX - barSeries.lowestValueX)/100
-                    }
-                }
-            }
-        }
         binding.leftButton.setOnClickListener { viewModel.goToPrevious() }
         binding.rightButton.setOnClickListener { viewModel.goToNext() }
     }
