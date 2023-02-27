@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -18,6 +19,9 @@ import com.neurotech.domain.models.ResultCountSourceDomainModel
 import com.neurotech.stressapp.App
 import com.neurotech.stressapp.R
 import com.neurotech.stressapp.databinding.ItemMainStatisticBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class StatisticItemFragment : Fragment() {
@@ -52,16 +56,28 @@ class StatisticItemFragment : Fragment() {
             findNavController().navigate(R.id.action_mainFragment_to_statisticFragment)
         }
 
+        binding.button2.setOnClickListener {
+            CoroutineScope(Dispatchers.IO).launch{
+                viewModel.writeFileResults()
+                launch(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "Файл записан!", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+
         viewModel.isRecoding.observe(viewLifecycleOwner){
             val gradientDrawable = binding.imageView3.background.current
             if(it){
                 binding.imageView3.background = gradientDrawable.apply {
                     this.setTint(ContextCompat.getColor(requireContext(), R.color.red_active))
                 }
+                binding.recodingStateTextView.text = "Идёт запись"
             }else {
                 binding.imageView3.background = gradientDrawable.apply {
                     this.setTint(ContextCompat.getColor(requireContext(), R.color.card_background))
                 }
+                binding.recodingStateTextView.text = ""
             }
 
         }
